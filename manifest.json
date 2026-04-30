@@ -1,0 +1,16 @@
+{
+  "name": "Phronesis — Verified-correctness forecasting",
+  "short_name": "Phronesis",
+  "description": "Probabilistic forecasting substrate across eight verticals. API-forward. Agentic-commerce-native. Practical wisdom for the energy transition.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#0A1628",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

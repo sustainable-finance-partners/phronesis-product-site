@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verticals — Phronesis</title>
+<meta name="description" content="Eight Phronesis forecasting verticals: energy, computing + AI infrastructure, healthcare, climate physical risk, regulatory, supply-chain, space + space economy, robotics. Five live on production today.">
+<link rel="canonical" href="https://phronesisintel.com/verticals">
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+.phronesis-mark { display:inline-flex; align-items:center; gap:var(--space-2); font-family:var(--font-display); font-weight:700; color:var(--color-deep); letter-spacing:-0.01em; }
+.phronesis-mark .glyph { width:1.5rem; height:1.5rem; border-radius:50%; background:var(--gradient-accent); position:relative; }
+.phronesis-mark .glyph::after { content:''; position:absolute; inset:0.4rem; background:var(--color-deep); border-radius:50%; }
+
+.vertical-deep {
+  background: white;
+  border: 1px solid var(--color-cloud);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  margin-bottom: var(--space-6);
+}
+
+.vertical-deep-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-cloud);
+}
+
+.vertical-deep-num {
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-gold-text);
+  background: rgba(201, 169, 110, 0.12);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+}
+
+.vertical-deep h2 {
+  font-size: var(--text-2xl);
+  margin: 0;
+  flex: 1;
+}
+
+.vertical-deep-status {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+
+.vertical-deep-status.live {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-pulse-text);
+}
+
+.vertical-deep-status.pending {
+  background: var(--color-fog);
+  color: var(--color-whisper);
+}
+
+.vertical-meta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  margin: var(--space-6) 0;
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--color-cloud);
+  border-bottom: 1px solid var(--color-cloud);
+}
+@media (min-width: 640px) {
+  .vertical-meta { grid-template-columns: repeat(3, 1fr); }
+}
+.vertical-meta-item .label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-whisper);
+  margin-bottom: var(--space-1);
+  display: block;
+}
+.vertical-meta-item .value {
+  font-size: var(--text-sm);
+  color: var(--color-deep);
+  font-weight: 500;
+}
+
+.archetype-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-4) 0 0 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2);
+}
+.archetype-list li {
+  font-size: var(--text-sm);
+  color: var(--color-slate);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-fog);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+}
+.archetype-list .archetype-id {
+  color: var(--color-gold-text);
+  font-weight: 600;
+  margin-right: var(--space-2);
+}
+</style>
+</head>
+
+<body>
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <nav class="nav" aria-label="Primary">
+      <a href="/" class="phronesis-mark"><span class="glyph" aria-hidden="true"></span><span>Phronesis</span></a>
+      <ul class="nav-links">
+        <li><a href="/verticals">Verticals</a></li>
+        <li><a href="/scorecard">Scorecard</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/spec">API</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section style="background: var(--gradient-hero); padding: var(--space-16) 0;">
+  <div class="container-narrow">
+    <span class="eyebrow">Vertical Axis</span>
+    <h1>Eight verticals. One substrate.</h1>
+    <p class="lead">Phronesis is an AI-native forecasting substrate instantiated for energy-transition first. Roughly seventy percent of the architecture is vertical-agnostic; the per-vertical layer specializes the prompt library, the data plane, and the canonical-correctness contracts. Five verticals live on production today; three more are pre-launch ratified-form-ready.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+
+<!-- V#1 Energy Transition -->
+<article class="vertical-deep" id="v1-energy">
+  <header class="vertical-deep-header">
+    <span class="vertical-deep-num">V#1</span>
+    <h2>Energy Transition</h2>
+    <span class="vertical-deep-status live">Live</span>
+  </header>
+  <p class="lead">Direct energy forecasts on generation capacity, demand, infrastructure events, climate-fund allocation. The founding vertical of Phronesis. Customer class: capital allocators in energy infrastructure, utility and grid operators, energy-sector corporate strategy, climate-aligned funds.</p>
+  <div class="vertical-meta">
+    <div class="vertical-meta-item"><span class="label">Status</span><span class="value">Production since 2026-04-24</span></div>
+    <div class="vertical-meta-item"><span class="label">Themis cluster</span><span class="value">Themis-Energy (10 rules ratified)</span></div>
+    <div class="vertical-meta-item"><span class="label">Cost / forecast</span><span class="value">Baseline (~$0.013)</span></div>
+  </div>
+  <h3 style="font-size: var(--text-lg);">Archetypes</h3>
+  <ul class="archetype-list">
+    <li><span class="archetype-id">E1</span> Generation capacity additions by region and technology, multi-year horizon</li>
+    <li><span class="archetype-id">E2</span> Locational marginal price (LMP) trajectories under capacity scenarios</li>
+    <li><span class="archetype-id">E3</span> Interconnection queue throughput and project-completion probability</li>
+    <li><span class="archetype-id">E4</span> Critical-minerals supply chain availability for energy-storage build</li>
+    <li><span class="archetype-id">E5</span> FERC ruling and state PUC docket outcome probabilities</li>
+  </ul>
+</article>
+
+<!-- V#2 Computing + AI Infrastructure -->
+<article class="vertical-deep" id="v2-compute">
+  <header class="vertical-deep-header">
+    <span class="vertical-deep-num">V#2</span>
+    <h2>Computing + AI Infrastructure</h2>
+    <span class="vertical-deep-status live">Live</span>
+  </header>
+  <p class="lead">Co-primary vertical with Energy. Forecasts on AI compute power demand, data center electrification, GPU and HBM production, hyperscaler capex, training run trajectories. Cross-vertical Phronesis Grid-Compute Forecast is the flagship intersection product. Customer class: data center operators, hyperscaler infrastructure, utility forecasting desks needing compute-side demand, semiconductor analysts, AI-infrastructure-focused capital allocators.</p>
+  <div class="vertical-meta">
+    <div class="vertical-meta-item"><span class="label">Status</span><span class="value">Production since 2026-04-26</span></div>
+    <div class="vertical-meta-item"><span class="label">Themis cluster</span><span class="value">Themis-Compute (10 rules)</span></div>
+    <div class="vertical-meta-item"><span class="label">Cost / forecast</span><span class="value">$0.0133 first-mint attested</span></div>
+  </div>
+  <h3 style="font-size: var(--text-lg);">Archetypes</h3>
+  <ul class="archetype-list">
+    <li><span class="archetype-id">I1</span> Phronesis Grid-Compute Forecast — cross-vertical AI-compute power demand × grid-capacity intersection (FLAGSHIP)</li>
+    <li><span class="archetype-id">I2</span> GPU + HBM production capacity vs hyperscaler capex demand</li>
+    <li><span class="archetype-id">I3</span> Inference cost trajectory by model class and provider</li>
+    <li><span class="archetype-id">I4</span> Data center build cadence by region and power-availability profile</li>
+    <li><span class="archetype-id">C1</span> AI training run trajectory (cluster size, model scale, time-to-first-token)</li>
+  </ul>
+</article>
+
+<!-- V#3 Healthcare -->
+<article class="vertical-deep" id="v3-healthcare">
+  <header class="vertical-deep-header">
+    <span class="vertical-deep-num">V#3</span>
+    <h2>Healthcare (HIPAA Safe Harbor)</h2>
+    <span class="vertical-deep-status live">Live</span>
+  </header>
+  <p class="lead">Disease incidence, population-health, public-health system forecasts. Operates exclusively under HIPAA Safe Harbor enforcement at the code layer via the Themis-Healthcare substrate; PHI is architecturally excluded from the inference path. Customer class: payers and providers, public-health agencies, pharmaceutical demand forecasting, clinical-trial site planning.</p>
+  <div class="vertical-meta">
+    <div class="vertical-meta-item"><span class="label">Status</span><span class="value">Production since 2026-04-26</span></div>
+    <div class="vertical-meta-item"><span class="label">Themis cluster</span><span class="value">Themis-Healthcare (HIPAA Safe Harbor enforced)</span></div>
+    <div class="vertical-meta-item"><span class="label">Cost / forecast</span><span class="value">$0.0084 first-mint (lowest in stack)</span></div>
+  </div>
+  <h3 style="font-size: var(--text-lg);">Archetypes</h3>
+  <ul class="archetype-list">
+    <li><span class="archetype-id">H1</span> US disease incidence per 100k by demographic and region (e.g., Type 2 diabetes; first H-archetype minted)</li>
+    <li><span class="archetype-id">H2</span> Population-health metric trajectories (life expectancy, age-adjusted mortality)</li>
+    <li><span class="archetype-id">H3</span> Health system capacity by service line and region</li>
+    <li><span class="archetype-id">H4</span> Public-health intervention effect estimates</li>
+    <li><span class="archetype-id">H5–H8</span> Additional H-archetypes in pre-launch substrate</li>
+  </ul>
+</article>
+
+<!-- V#4 Climate Physical Risk -->
+<article class="vertical-deep" id="v4-climate">
+  <header class="vertical-deep-header">
+    <span class="vertical-deep-num">V#4</span>
+    <h2>Climate Physical Risk</h2>
+    <span class="vertical-deep-status pending">Pre-launch</span>
+  </header>
+  <p class="lead">Physical-risk forecasts: hurricane and wildfire frequency, sea-level-rise impact zones, extreme-weather probability, asset-level exposure modeling. Customer class: insurance and reinsurance underwriting, commercial real estate diligence, climate-disclosure funds, infrastructure resilience planning.</p>
+  <div class="vertical-meta">
+    <div class="vertical-meta-item"><span class="label">Status</span><span class="value">Pre-launch substrate ratified-form-ready</span></div>
+    <div class="vertical-meta-item"><span class="label">Themis cluster</span><span class="value">Themis-Climate (ratified rules pending)</span></div>
+    <div class="vertical-meta-item"><span class="label">Activation</span><span class="value">Sprint 4-5 (~Month 4-6)</span></div>
+  </div>
+  <p>Substrate prepared via V#4 Scope Addendum v1.1; data-plane research dossier ready; archetypes K1-K6 defined in scope addendum.</p>
+</article>
+
+<!-- V#5 Regulatory -->
+<article class="vertical-deep" id="v5-regulatory">
+  <header class="vertical-deep-header">
+    <span class="vertical-deep-num">V#5</span>
+    <h2>Regulatory</h2>
+    <span class="vertical-deep-status pending">Pre-launch</span>
+  </header>
+  <p class="lead">Regulatory environment forecasts: legislation passage probability, agency rulemaking timing, jurisdictional outcome variability. Cross-cutting Themis-Regulatory substrate layer at architecture level. Customer class: lobbyists and trade groups, corporate government-affairs, regulators themselves, compliance-aware capital allocators.</p>
+  <div class="vertical-meta">
+    <div class="vertical-meta-item"><span class="label">Status</span><span class="value">Pre-launch substrate ratified-form-ready</span></div>
+    <div class="vertical-meta-item"><span class="label">Themis cluster</span><span class="value">Themis-Regulatory v1.1 scope-narrow (Stripe Tax handles cross-jurisdiction tax)</span></div>
+    <div class="vertical-meta-item"><span class="label">Activation</span><span class="value">Sprint 4-5</span></div>
+  </div>
+</article>
+
+<!-- V#6 Supply-Chain -->
+<article class="vertical-deep" id="v6-supply-chain">
+  <header class="vertical-deep-header">
+    <span class="vertical-deep-num">V#6</span>
+    <h2>Supply-Chain</h2>
+    <span class="vertical-deep-status pending">Pre-launch</span>
+  </header>
+  <p class="lead">Supply-chain resilience forecasts: critical-minerals availability, logistics throughput, manufacturing-supply-chain disruption probability, commodity flow scenarios. Customer class: logistics operators, commodity traders, manufacturing supply-chain teams, critical-minerals investment funds.</p>
+  <div class="vertical-meta">
+    <div class="vertical-meta-item"><span class="label">Status</span><span class="value">Pre-launch substrate ratified-form-ready</span></div>
+    <div class="vertical-meta-item"><span class="label">Themis cluster</span><span class="value">Themis-Supply-Chain (defining)</span></div>
+    <div class="vertical-meta-item"><span class="label">Activation</span><span class="value">Sprint 4-5</span></div>
+  </div>
+</article>
+
+<!-- V#7 Space + Space Economy -->
+<article class="vertical-deep" id="v7-space">
+  <header class="vertical-deep-header">
+    <span class="vertical-deep-num">V#7</span>
+    <h2>Space + Space Economy</h2>
+    <span class="vertical-deep-status live">Live</span>
+  </header>
+  <p class="lead">Space-economy forecasts: launch cadence, IPO probability, orbital-debris density, mission-budget trajectories, commercial-space-station deployment, lunar infrastructure timing, space-based solar power feasibility. Themis-Space cluster enforces ITAR/EAR + national-security-payload + crewed-mission + insurance-grade actuarial hard lines. Customer class: space-economy capital allocators, commercial-space companies, defense-aerospace investors, regulatory observers.</p>
+  <div class="vertical-meta">
+    <div class="vertical-meta-item"><span class="label">Status</span><span class="value">Production since 2026-04-28</span></div>
+    <div class="vertical-meta-item"><span class="label">Themis cluster</span><span class="value">Themis-Space (8 rules #70.1-#70.8 ratified)</span></div>
+    <div class="vertical-meta-item"><span class="label">Cost / forecast</span><span class="value">$0.0149 first-mint (SpaceX-IPO C1 archetype)</span></div>
+  </div>
+  <h3 style="font-size: var(--text-lg);">Archetypes</h3>
+  <ul class="archetype-list">
+    <li><span class="archetype-id">C1</span> SpaceX IPO probability by Q4 2027 (52% canonical p50; first C-archetype minted)</li>
+    <li><span class="archetype-id">C2</span> Commercial launch cadence by provider and orbit class</li>
+    <li><span class="archetype-id">C3</span> Orbital infrastructure deployment cadence</li>
+    <li><span class="archetype-id">S1–S6</span> Additional S-archetypes in pre-launch (orbital debris density, STM, mission-budget, etc.)</li>
+  </ul>
+</article>
+
+<!-- V#8 Robotics -->
+<article class="vertical-deep" id="v8-robotics">
+  <header class="vertical-deep-header">
+    <span class="vertical-deep-num">V#8</span>
+    <h2>Robotics</h2>
+    <span class="vertical-deep-status live">Live</span>
+  </header>
+  <p class="lead">Humanoid and autonomous-system deployment cadence forecasts. Universal cross-pollinator vertical: intersects with V#1 (energy infrastructure robotics), V#2 (compute substrate for robotics), V#7 (space robotics). Per Karpathy diligence Q7: archetype weighting favors digital-interface forecasts (sensors, actuators, software stack maturation) over full-stack autonomy timing. Customer class: industrial robotics buyers, humanoid-platform investors, automation supply-chain analysts, defense-robotics observers.</p>
+  <div class="vertical-meta">
+    <div class="vertical-meta-item"><span class="label">Status</span><span class="value">Production since 2026-04-27</span></div>
+    <div class="vertical-meta-item"><span class="label">Themis cluster</span><span class="value">Themis-Robotics (halt-preflight + safety-critical rules)</span></div>
+    <div class="vertical-meta-item"><span class="label">Cost / forecast</span><span class="value">$0.0151 first-mint (R1 humanoid platform-economics)</span></div>
+  </div>
+  <h3 style="font-size: var(--text-lg);">Archetypes</h3>
+  <ul class="archetype-list">
+    <li><span class="archetype-id">R1</span> Humanoid robot industry deployment cadence by region and customer-segment (first R-archetype minted)</li>
+    <li><span class="archetype-id">R2</span> Industrial robotics market sizing by sector</li>
+    <li><span class="archetype-id">R3</span> Autonomous vehicle deployment timing by jurisdiction</li>
+    <li><span class="archetype-id">R4–R6</span> Cross-vertical I_V2×V8 + I_V7×V8 archetypes in pre-launch</li>
+  </ul>
+</article>
+
+  </div>
+</section>
+
+<!-- Cross-vertical intersections section -->
+<section style="background: var(--color-fog);">
+  <div class="container-narrow">
+    <span class="eyebrow">Cross-vertical intersections</span>
+    <h2 style="font-size: var(--text-3xl);">Intersection forecasts are first-class.</h2>
+    <p class="lead">The Phronesis Cross-Pollination Map is a first-class architectural artifact. Forecasts that cross verticals — V#1×V#2 grid-compute, V#5×V#7 space-regulatory, V#2×V#8 compute-robotics, V#1×V#4 energy-climate — are not bolted on. They are architected at the substrate layer and minted with the same canonical-quantile (p10/p50/p90) discipline as direct-vertical forecasts.</p>
+    <p class="lead">The Phronesis Grid-Compute Forecast (V#1×V#2 intersection at the I1 archetype) is the flagship cross-vertical product. AI compute power demand intersected with grid-capacity scenarios. First-mint attested at $0.0133 on 2026-04-26 — the first cross-vertical intersection forecast in Phronesis history.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h4>Phronesis</h4>
+        <p>The flagship platform of Sustainable Finance Partners, LLC. Operating from Denver, Colorado.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Platform</h5>
+        <ul class="footer-links">
+          <li><a href="/spec">API spec</a></li>
+          <li><a href="/openapi.json">OpenAPI</a></li>
+          <li><a href="/.well-known/agents.txt">agents.txt</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Verticals</h5>
+        <ul class="footer-links">
+          <li><a href="/verticals">All eight</a></li>
+          <li><a href="/scorecard">Scorecard</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul class="footer-links">
+          <li><a href="https://sustainablefinancepartner.com/terms-of-service">Terms of Service</a></li>
+          <li><a href="https://sustainablefinancepartner.com/privacy-policy">Privacy Policy</a></li>
+          <li><a href="https://sustainablefinancepartner.com/refund-policy">Refund Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Sustainable Finance Partners, LLC. All rights reserved.</p>
+      <p>Phronesis is the flagship product of <a href="https://sustainablefinancepartner.com">Sustainable Finance Partners, LLC</a>.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phronesis — Verified-correctness forecasting. Practical wisdom for the energy transition.</title>
+<meta name="description" content="Phronesis mints probabilistic forecasts across eight verticals — energy, computing, healthcare, climate, regulatory, supply-chain, space, and robotics. Every forecast is primary-source-cited, time-stamped, persisted to a canonical ledger, and rendered publicly on a calibration scorecard. API-forward. Agentic-commerce-native. Five-vertical-deep on production.">
+
+<link rel="alternate" type="text/markdown" href="/spec" title="Phronesis API Contract Spec">
+<link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 spec">
+<link rel="api-catalog" href="/.well-known/agents.txt">
+
+<meta name="agent-mcp-endpoint" content="https://phronesis-jrstinehour.replit.app/mcp">
+<meta name="agent-rest-endpoint" content="https://phronesis-jrstinehour.replit.app">
+<meta name="agent-spec" content="/spec">
+<meta name="agent-pricing" content="/pricing">
+<meta name="agent-scorecard" content="/scorecard">
+
+<meta property="og:title" content="Phronesis — Verified-correctness forecasting">
+<meta property="og:description" content="Practical wisdom for the energy transition. API-forward. Five-vertical-deep on production. Calibration scorecard public from day one.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://phronesisintel.com/">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Phronesis",
+  "alternateName": "Phronesis Forecasting Platform",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web, MCP, REST API",
+  "description": "Verified-correctness probabilistic forecasting substrate. Eight verticals; five live on production. Primary-source citation, timestamp discipline, canonical persistence to Mnemosyne ledger, public calibration scorecard.",
+  "url": "https://phronesisintel.com",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Sustainable Finance Partners, LLC",
+    "url": "https://sustainablefinancepartner.com"
+  },
+  "offers": {
+    "@type": "AggregateOffer",
+    "lowPrice": "0.28",
+    "highPrice": "0.50",
+    "priceCurrency": "USD",
+    "offerCount": "8",
+    "description": "Per-call pricing range across eight forecasting verticals. Subscription tiers T1-T4 also available."
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Phronesis Forecasting Platform",
+  "provider": { "@type": "Organization", "name": "Sustainable Finance Partners, LLC" },
+  "serviceType": "Probabilistic forecasting via API and MCP",
+  "areaServed": "Worldwide",
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Phronesis Verticals",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Energy", "description": "Energy transition forecasts. LIVE." }},
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Computing + AI Infrastructure", "description": "Phronesis Grid-Compute Forecast flagship. LIVE." }},
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Healthcare", "description": "HIPAA Safe Harbor disease incidence + population health forecasts. LIVE." }},
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Space", "description": "Launch cadence, IPO probability, orbital infrastructure. LIVE." }},
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Robotics", "description": "Humanoid + autonomous-system deployment. LIVE." }}
+    ]
+  }
+}
+</script>
+
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+/* Phronesis-product-specific extensions on top of shared design system */
+.phronesis-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-base);
+  color: var(--color-deep);
+  letter-spacing: -0.01em;
+}
+
+.phronesis-mark .glyph {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--gradient-accent);
+  display: inline-block;
+  position: relative;
+}
+.phronesis-mark .glyph::after {
+  content: '';
+  position: absolute;
+  inset: 0.4rem;
+  background: var(--color-deep);
+  border-radius: 50%;
+}
+
+.hero-product {
+  background: var(--gradient-hero);
+  padding: var(--space-24) 0 var(--space-16) 0;
+  position: relative;
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .hero-product { padding: var(--space-32) 0 var(--space-24) 0; }
+}
+
+.tagline-mark {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  background: rgba(201, 169, 110, 0.12);
+  color: var(--color-gold-text);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-4);
+}
+
+.metric-bar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  margin: var(--space-8) 0;
+  padding: var(--space-8) 0;
+  border-top: 1px solid var(--color-cloud);
+  border-bottom: 1px solid var(--color-cloud);
+}
+@media (min-width: 768px) {
+  .metric-bar { grid-template-columns: repeat(4, 1fr); gap: var(--space-8); }
+}
+
+.metric {
+  text-align: center;
+}
+.metric-value {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--color-deep);
+  letter-spacing: -0.025em;
+  display: block;
+}
+.metric-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-whisper);
+  margin-top: var(--space-1);
+  display: block;
+}
+
+.diff-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+@media (min-width: 768px) { .diff-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-8); } }
+@media (min-width: 1024px) { .diff-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.diff-card {
+  background: white;
+  border: 1px solid var(--color-cloud);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  position: relative;
+}
+.diff-card-num {
+  position: absolute;
+  top: var(--space-6);
+  right: var(--space-6);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-faint);
+  font-weight: 500;
+}
+.diff-card h3 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-3);
+  padding-right: var(--space-12);
+}
+
+.cta-band {
+  background: var(--color-deep);
+  color: white;
+  padding: var(--space-16) 0;
+}
+.cta-band h2, .cta-band p { color: white; }
+.cta-band p { color: var(--color-cloud); }
+.cta-band .btn-primary {
+  background: white;
+  color: var(--color-deep);
+  border-color: white;
+}
+.cta-band .btn-primary:hover {
+  background: var(--color-cloud);
+  border-color: var(--color-cloud);
+  color: var(--color-deep);
+}
+.cta-band .btn-secondary {
+  background: transparent;
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.cta-band .btn-secondary:hover {
+  border-color: white;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <nav class="nav" aria-label="Primary">
+      <a href="/" class="phronesis-mark" aria-label="Phronesis home">
+        <span class="glyph" aria-hidden="true"></span>
+        <span>Phronesis</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/verticals">Verticals</a></li>
+        <li><a href="/scorecard">Scorecard</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/spec">API</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============================================================
+     Hero — Phronesis-as-product (NOT Phronesis-as-arm-of-SFP)
+     ============================================================ -->
+<section class="hero-product">
+  <div class="container">
+    <div class="hero-content">
+      <span class="tagline-mark">Verified-correctness forecasting</span>
+      <h1>Forecasts you can audit.<br>Decisions you can defend.</h1>
+      <p class="hero-tagline">Phronesis mints probabilistic forecasts across eight verticals. Every forecast is primary-source-cited, time-stamped, persisted to a canonical ledger, and rendered publicly on a calibration scorecard from the moment it issues. API-forward by design. Agents are first-class customers.</p>
+
+      <div class="btn-group" style="margin-top: var(--space-8);">
+        <a href="/spec" class="btn btn-primary">View API spec</a>
+        <a href="/scorecard" class="btn btn-secondary">Open calibration scorecard</a>
+      </div>
+
+      <div class="metric-bar">
+        <div class="metric">
+          <span class="metric-value">5 of 8</span>
+          <span class="metric-label">Verticals live</span>
+        </div>
+        <div class="metric">
+          <span class="metric-value">$0.0084–0.0151</span>
+          <span class="metric-label">Inference cost / forecast</span>
+        </div>
+        <div class="metric">
+          <span class="metric-value">24/7</span>
+          <span class="metric-label">Production uptime</span>
+        </div>
+        <div class="metric">
+          <span class="metric-value">MCP + REST</span>
+          <span class="metric-label">Co-equal at every endpoint</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     What Phronesis is — for first-time visitors
+     ============================================================ -->
+<section style="padding: var(--space-16) 0;">
+  <div class="container-narrow">
+    <span class="eyebrow">What Phronesis is</span>
+    <h2 style="font-size: var(--text-3xl);">A forecasting platform for capital allocators in domains where rules cannot be mechanically applied.</h2>
+    <p class="lead" style="margin-top: var(--space-4);">Aristotle distinguished phronesis — practical wisdom — from episteme (systematic knowledge) and techne (craft). Phronesis is the wisdom that guides decision-makers in complex, variable, uncertain domains. The platform names that function precisely: a decision-support intelligence engine for energy infrastructure, AI compute, healthcare, climate physical risk, regulatory environments, supply chains, space economy, and robotics.</p>
+    <p class="lead">Forecasts are probabilistic, not deterministic. Every output carries an issue date, an evaluation window, and canonical-quantile estimates (p10, p50, p90). The substrate maintains an audit trail every customer can inspect.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     Substrate differentiation — three architectural commitments
+     ============================================================ -->
+<section style="background: var(--color-fog);">
+  <div class="container">
+    <span class="eyebrow section-eyebrow">Architecture</span>
+    <h2 class="section-title">Verified correctness as a substrate property.</h2>
+    <p class="section-lead">Three commitments enforced at the code layer, not asserted in marketing copy.</p>
+
+    <div class="diff-grid">
+      <div class="diff-card">
+        <span class="diff-card-num">01</span>
+        <h3>Primary-source citation always</h3>
+        <p>Every forecast traces to a primary source: FERC filings, EDGAR, USPTO, state PUC dockets, DOE grant awards, peer-reviewed research, satellite telemetry, IFR World Robotics annual disclosures. No second-hand citations of secondary citations.</p>
+      </div>
+      <div class="diff-card">
+        <span class="diff-card-num">02</span>
+        <h3>Timestamp discipline</h3>
+        <p>Every forecast carries an issue date and an evaluation window. The forecast ledger is the canonical record of what was known when. Calibration accrues publicly over time. Past performance is observable; no cherry-picking.</p>
+      </div>
+      <div class="diff-card">
+        <span class="diff-card-num">03</span>
+        <h3>API and MCP co-equal</h3>
+        <p>Every endpoint that exists for human-driven REST clients exists at parity for autonomous-agent MCP clients. Idempotency keys are required, not optional. Errors are structured with stable machine-recoverable codes.</p>
+      </div>
+      <div class="diff-card">
+        <span class="diff-card-num">04</span>
+        <h3>Sub-cent meter event precision</h3>
+        <p>Per-call pricing reports inference cost-attestation with Decimal precision. Stripe meter events fire at canonical persistence to the Mnemosyne ledger. No floating-point drift in the billing path.</p>
+      </div>
+      <div class="diff-card">
+        <span class="diff-card-num">05</span>
+        <h3>AP2 mandate at the door</h3>
+        <p>Autonomous agents authenticate via Google Agent Payments Protocol mandates verified at a blocking middleware gate. Mandate signature verification budget is approximately two to five seconds. Agents act within mandate scope; the substrate enforces the boundary.</p>
+      </div>
+      <div class="diff-card">
+        <span class="diff-card-num">06</span>
+        <h3>Per-tenant isolation at the boundary</h3>
+        <p>Cross-tenant data access is architecturally prevented at the boundary publish layer. Customer queries never see other customers' data. Sacred Invariant #8 enforced through the substrate, not through policy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Vertical lineup
+     ============================================================ -->
+<section id="verticals-snapshot">
+  <div class="container">
+    <span class="eyebrow section-eyebrow">Vertical axis</span>
+    <h2 class="section-title">Eight verticals. One substrate.</h2>
+    <p class="section-lead">Roughly seventy percent of the architecture is vertical-agnostic. The per-vertical layer specializes the prompt library and the data plane.</p>
+
+    <ul class="vertical-list">
+      <li class="vertical-item"><span class="vertical-num">V#1</span><span class="vertical-name">Energy Transition</span><span class="vertical-status live">Live</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#2</span><span class="vertical-name">Computing + AI Infrastructure</span><span class="vertical-status live">Live</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#3</span><span class="vertical-name">Healthcare (HIPAA Safe Harbor)</span><span class="vertical-status live">Live</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#4</span><span class="vertical-name">Climate Physical Risk</span><span class="vertical-status pending">Pre-launch</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#5</span><span class="vertical-name">Regulatory</span><span class="vertical-status pending">Pre-launch</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#6</span><span class="vertical-name">Supply-Chain</span><span class="vertical-status pending">Pre-launch</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#7</span><span class="vertical-name">Space + Space Economy</span><span class="vertical-status live">Live</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#8</span><span class="vertical-name">Robotics</span><span class="vertical-status live">Live</span></li>
+    </ul>
+
+    <div style="text-align: center; margin-top: var(--space-8);">
+      <a href="/verticals" class="btn btn-secondary">Read the vertical detail</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CTA band — dual-surface engagement
+     ============================================================ -->
+<section class="cta-band">
+  <div class="container-narrow" style="text-align: center;">
+    <span class="eyebrow" style="color: var(--color-gold);">Engage</span>
+    <h2>Two paths in.</h2>
+    <p class="section-lead" style="color: var(--color-cloud);">If you are an agent acting on behalf of a capital allocator, start at the contract surface. If you are a human, the calibration scorecard is the most useful place to begin.</p>
+
+    <div class="btn-group" style="justify-content: center;">
+      <a href="/spec" class="btn btn-primary">Contract surface</a>
+      <a href="/scorecard" class="btn btn-secondary">Calibration scorecard</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h4>Phronesis</h4>
+        <p>The flagship platform of Sustainable Finance Partners, LLC. Operating from Denver, Colorado.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Platform</h5>
+        <ul class="footer-links">
+          <li><a href="/spec">API spec</a></li>
+          <li><a href="/openapi.json">OpenAPI</a></li>
+          <li><a href="/.well-known/agents.txt">agents.txt</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Verticals</h5>
+        <ul class="footer-links">
+          <li><a href="/verticals">All eight</a></li>
+          <li><a href="/scorecard">Scorecard</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul class="footer-links">
+          <li><a href="https://sustainablefinancepartner.com/terms-of-service">Terms of Service</a></li>
+          <li><a href="https://sustainablefinancepartner.com/privacy-policy">Privacy Policy</a></li>
+          <li><a href="https://sustainablefinancepartner.com/refund-policy">Refund Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Sustainable Finance Partners, LLC. All rights reserved.</p>
+      <p>Phronesis is the flagship product of <a href="https://sustainablefinancepartner.com">Sustainable Finance Partners, LLC</a>.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

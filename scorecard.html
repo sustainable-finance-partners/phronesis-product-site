@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calibration Scorecard — Phronesis</title>
+<meta name="description" content="Public calibration scorecard for the Phronesis platform. Every forecast minted, with issue date, evaluation window, canonical quantiles, and resolution status. Live data fetched from the Hermes contract surface.">
+<link rel="canonical" href="https://phronesisintel.com/scorecard">
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+.phronesis-mark { display:inline-flex; align-items:center; gap:var(--space-2); font-family:var(--font-display); font-weight:700; color:var(--color-deep); letter-spacing:-0.01em; }
+.phronesis-mark .glyph { width:1.5rem; height:1.5rem; border-radius:50%; background:var(--gradient-accent); position:relative; }
+.phronesis-mark .glyph::after { content:''; position:absolute; inset:0.4rem; background:var(--color-deep); border-radius:50%; }
+
+.scorecard-container {
+  background: white;
+  border: 1px solid var(--color-cloud);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.scorecard-status {
+  padding: var(--space-4) var(--space-6);
+  background: var(--color-fog);
+  border-bottom: 1px solid var(--color-cloud);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.scorecard-status .indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-whisper);
+}
+
+.scorecard-status .indicator::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-pulse);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.scorecard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.scorecard-table th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-whisper);
+  font-weight: 500;
+  background: var(--color-fog);
+  border-bottom: 1px solid var(--color-cloud);
+}
+
+.scorecard-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-cloud);
+  vertical-align: top;
+}
+
+.scorecard-table .fc-id {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--color-deep);
+  white-space: nowrap;
+}
+
+.scorecard-table .vertical-tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  padding: 0.125rem 0.5rem;
+  background: rgba(201, 169, 110, 0.12);
+  color: var(--color-gold-text);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  display: inline-block;
+}
+
+.scorecard-table .quantile {
+  font-family: var(--font-mono);
+  color: var(--color-slate);
+}
+
+.scorecard-table .cost {
+  font-family: var(--font-mono);
+  color: var(--color-pulse-text);
+  font-weight: 500;
+}
+
+.scorecard-loading, .scorecard-error {
+  padding: var(--space-12);
+  text-align: center;
+  color: var(--color-whisper);
+}
+
+.scorecard-error {
+  background: rgba(217, 119, 6, 0.05);
+  color: #92400E;
+}
+
+.scorecard-empty {
+  padding: var(--space-12);
+  text-align: center;
+}
+
+.scorecard-empty h3 { color: var(--color-deep); }
+.scorecard-empty p { color: var(--color-whisper); }
+</style>
+</head>
+
+<body>
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <nav class="nav" aria-label="Primary">
+      <a href="/" class="phronesis-mark"><span class="glyph" aria-hidden="true"></span><span>Phronesis</span></a>
+      <ul class="nav-links">
+        <li><a href="/verticals">Verticals</a></li>
+        <li><a href="/scorecard">Scorecard</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/spec">API</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section style="background: var(--gradient-hero); padding: var(--space-16) 0 var(--space-12) 0;">
+  <div class="container-narrow">
+    <span class="eyebrow">Public calibration ledger</span>
+    <h1>Calibration scorecard.</h1>
+    <p class="lead">Every forecast Phronesis has ever minted. Issue date, vertical, archetype, canonical quantiles, inference cost. Resolution status accrues as evaluation windows close. The track record is uncopiable; the substrate is publicly auditable.</p>
+    <p class="text-small" style="margin-top: var(--space-4);">Data fetched live from the Hermes contract surface at <code>phronesis-jrstinehour.replit.app/scorecard.json</code>. Cached at the browser for 5 minutes.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="scorecard-container">
+      <div class="scorecard-status">
+        <span class="indicator"><span id="status-text">Loading scorecard from production</span></span>
+        <span class="text-small" id="last-updated"></span>
+      </div>
+      <div id="scorecard-body">
+        <div class="scorecard-loading">
+          Fetching forecasts from <code>phronesis-jrstinehour.replit.app/scorecard.json</code>...
+        </div>
+      </div>
+    </div>
+
+    <p class="text-small" style="text-align: center; margin-top: var(--space-6); color: var(--color-whisper);">
+      Want the raw JSON? <a href="https://phronesis-jrstinehour.replit.app/scorecard.json">Open the endpoint directly</a> or call it via the <a href="/spec">contract surface</a>.
+    </p>
+  </div>
+</section>
+
+<section style="background: var(--color-fog);">
+  <div class="container-narrow">
+    <span class="eyebrow">How calibration works</span>
+    <h2 style="font-size: var(--text-3xl);">A track record that compounds.</h2>
+    <p class="lead">Every forecast carries an issue date and an evaluation window. When the window closes — a quarterly disclosure, an annual report, an actual outcome — the ground-truth value is published next to the forecast on this page. Calibration accrues over time.</p>
+    <p class="lead">A forecast claiming a 70% probability that BTC will cross $X by Q3 isn't right or wrong on its own; it's part of a population. If we say 70% across 100 such forecasts and 70 of them resolve in the predicted direction, the substrate is calibrated. If 30 of them do, the substrate is overconfident. If 90 of them do, it's underconfident. Every customer can see this number for every vertical, every archetype, every issue period.</p>
+    <p class="lead">This is what verified-correctness means. Not an assertion in a marketing deck. A computable property of the published forecast ledger.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h4>Phronesis</h4>
+        <p>The flagship platform of Sustainable Finance Partners, LLC. Operating from Denver, Colorado.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Platform</h5>
+        <ul class="footer-links">
+          <li><a href="/spec">API spec</a></li>
+          <li><a href="/openapi.json">OpenAPI</a></li>
+          <li><a href="/.well-known/agents.txt">agents.txt</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Verticals</h5>
+        <ul class="footer-links">
+          <li><a href="/verticals">All eight</a></li>
+          <li><a href="/scorecard">Scorecard</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul class="footer-links">
+          <li><a href="https://sustainablefinancepartner.com/terms-of-service">Terms of Service</a></li>
+          <li><a href="https://sustainablefinancepartner.com/privacy-policy">Privacy Policy</a></li>
+          <li><a href="https://sustainablefinancepartner.com/refund-policy">Refund Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Sustainable Finance Partners, LLC. All rights reserved.</p>
+      <p>Phronesis is the flagship product of <a href="https://sustainablefinancepartner.com">Sustainable Finance Partners, LLC</a>.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Live calibration scorecard fetch from Hermes contract surface
+(function() {
+  const SCORECARD_URL = 'https://phronesis-jrstinehour.replit.app/scorecard.json';
+  const body = document.getElementById('scorecard-body');
+  const statusText = document.getElementById('status-text');
+  const lastUpdated = document.getElementById('last-updated');
+
+  function renderError(msg) {
+    body.innerHTML = '<div class="scorecard-error"><strong>Could not fetch scorecard.</strong><br>' + msg + '<br><br>Try the <a href="' + SCORECARD_URL + '">endpoint directly</a>.</div>';
+    statusText.textContent = 'Connection error';
+  }
+
+  function renderForecasts(data) {
+    const forecasts = (data && (data.forecasts || data.items || (Array.isArray(data) ? data : []))) || [];
+
+    if (!forecasts.length) {
+      body.innerHTML = '<div class="scorecard-empty"><h3>Scorecard accruing.</h3><p>The contract surface is reachable; no forecasts have been published to the public scorecard view yet, or the response shape is different than expected. <a href="' + SCORECARD_URL + '">Open the raw endpoint</a> to inspect.</p></div>';
+      statusText.textContent = 'Connected — no items in current view';
+      return;
+    }
+
+    let html = '<table class="scorecard-table"><thead><tr>';
+    html += '<th>FC-ID</th>';
+    html += '<th>Vertical</th>';
+    html += '<th>Archetype</th>';
+    html += '<th>Subject</th>';
+    html += '<th>p10 / p50 / p90</th>';
+    html += '<th>Issued</th>';
+    html += '<th>Cost</th>';
+    html += '</tr></thead><tbody>';
+
+    for (const fc of forecasts.slice(0, 50)) {
+      const fcId = fc.fc_id || fc.id || fc.forecast_id || '—';
+      const vertical = fc.vertical || fc.vertical_id || '—';
+      const archetype = fc.archetype || fc.archetype_id || '—';
+      const subject = fc.subject || fc.title || fc.description || '—';
+      const p10 = fc.p10 != null ? fc.p10 : (fc.quantiles && fc.quantiles.p10);
+      const p50 = fc.p50 != null ? fc.p50 : (fc.quantiles && fc.quantiles.p50);
+      const p90 = fc.p90 != null ? fc.p90 : (fc.quantiles && fc.quantiles.p90);
+      const issued = fc.issued_at || fc.issue_date || fc.created_at || '—';
+      const cost = fc.cost_usd != null ? '$' + Number(fc.cost_usd).toFixed(4) : (fc.cost || '—');
+
+      html += '<tr>';
+      html += '<td><span class="fc-id">' + escapeHtml(String(fcId)) + '</span></td>';
+      html += '<td><span class="vertical-tag">' + escapeHtml(String(vertical)) + '</span></td>';
+      html += '<td>' + escapeHtml(String(archetype)) + '</td>';
+      html += '<td>' + escapeHtml(String(subject).slice(0, 80)) + '</td>';
+      html += '<td><span class="quantile">' + (p10 != null ? p10 : '—') + ' / ' + (p50 != null ? p50 : '—') + ' / ' + (p90 != null ? p90 : '—') + '</span></td>';
+      html += '<td>' + escapeHtml(String(issued).slice(0, 10)) + '</td>';
+      html += '<td><span class="cost">' + escapeHtml(String(cost)) + '</span></td>';
+      html += '</tr>';
+    }
+    html += '</tbody></table>';
+
+    body.innerHTML = html;
+    statusText.textContent = 'Live — ' + forecasts.length + ' forecast' + (forecasts.length === 1 ? '' : 's') + ' on canonical ledger';
+    lastUpdated.textContent = 'Updated ' + new Date().toLocaleTimeString();
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function(c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+    });
+  }
+
+  fetch(SCORECARD_URL, { headers: { 'Accept': 'application/json' } })
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status + ' from ' + SCORECARD_URL);
+      return r.json();
+    })
+    .then(renderForecasts)
+    .catch(function(e) { renderError(e.message); });
+})();
+</script>
+
+</body>
+</html>

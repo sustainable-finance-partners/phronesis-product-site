@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing — Phronesis</title>
+<meta name="description" content="Phronesis pricing. Per-call inference cost-attestation × 33x markup. Subscription tiers T1-T4 (Starter, Professional, Team, Enterprise). Stripe meter event settlement at canonical persistence.">
+<link rel="canonical" href="https://phronesisintel.com/pricing">
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+.phronesis-mark { display:inline-flex; align-items:center; gap:var(--space-2); font-family:var(--font-display); font-weight:700; color:var(--color-deep); letter-spacing:-0.01em; }
+.phronesis-mark .glyph { width:1.5rem; height:1.5rem; border-radius:50%; background:var(--gradient-accent); position:relative; }
+.phronesis-mark .glyph::after { content:''; position:absolute; inset:0.4rem; background:var(--color-deep); border-radius:50%; }
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  margin: var(--space-8) 0;
+}
+@media (min-width: 768px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .pricing-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.tier-card {
+  background: white;
+  border: 1px solid var(--color-cloud);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+}
+
+.tier-card.featured {
+  border-color: var(--color-deep);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+.tier-card.featured::before {
+  content: 'Recommended';
+  position: absolute;
+  top: -0.75rem;
+  left: var(--space-6);
+  background: var(--color-deep);
+  color: white;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.tier-name {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-deep);
+  margin-bottom: var(--space-2);
+}
+
+.tier-id {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-gold-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+}
+
+.tier-price {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  color: var(--color-deep);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-1);
+}
+
+.tier-price .currency { font-size: var(--text-lg); vertical-align: top; }
+.tier-price .period { font-size: var(--text-sm); color: var(--color-whisper); font-weight: 400; }
+.tier-price .placeholder { color: var(--color-faint); font-size: var(--text-2xl); }
+
+.tier-target {
+  font-size: var(--text-sm);
+  color: var(--color-whisper);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-cloud);
+}
+
+.tier-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-6) 0;
+  font-size: var(--text-sm);
+  flex: 1;
+}
+
+.tier-features li {
+  padding: var(--space-2) 0;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--color-slate);
+}
+
+.tier-features li::before {
+  content: '→';
+  color: var(--color-gold-text);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.cost-breakdown {
+  background: var(--color-fog);
+  border: 1px solid var(--color-cloud);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin: var(--space-6) 0;
+}
+
+.cost-breakdown table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.cost-breakdown td, .cost-breakdown th {
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--color-cloud);
+}
+.cost-breakdown td:last-child, .cost-breakdown th:last-child { text-align: right; }
+
+.cost-breakdown th {
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-whisper);
+  font-weight: 500;
+}
+
+.placeholder-banner {
+  background: rgba(201, 169, 110, 0.1);
+  border-left: 3px solid var(--color-gold);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-sm);
+  margin: var(--space-6) 0;
+  font-size: var(--text-sm);
+  color: var(--color-slate);
+}
+</style>
+</head>
+
+<body>
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <nav class="nav" aria-label="Primary">
+      <a href="/" class="phronesis-mark"><span class="glyph" aria-hidden="true"></span><span>Phronesis</span></a>
+      <ul class="nav-links">
+        <li><a href="/verticals">Verticals</a></li>
+        <li><a href="/scorecard">Scorecard</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/spec">API</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section style="background: var(--gradient-hero); padding: var(--space-16) 0 var(--space-8) 0;">
+  <div class="container-narrow">
+    <span class="eyebrow">Pricing</span>
+    <h1>Cost-attested. Per-call. Tiered for scale.</h1>
+    <p class="lead">Per-call charges report the actual inference cost (currently $0.0084 to $0.0151 per forecast at the Anthropic Haiku-4-5 substrate) multiplied by a published markup. Subscription tiers T1 through T4 layer flat-rate access on top of the per-call substrate.</p>
+    <div class="placeholder-banner">
+      <strong>Pricing Strategy v1 in ratification queue.</strong> Subscription tier dollar values, included usage allowances, and overage rates are placeholders pending Pricing Strategy v1 ratification. Per-call cost-attestation rates and markup multiplier are canonical and live. Machine-readable pricing manifest at <a href="/pricing.json">/pricing.json</a>.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <span class="eyebrow section-eyebrow">Subscription tiers</span>
+    <h2 class="section-title" style="font-size: var(--text-3xl);">Four tiers, one substrate.</h2>
+
+    <div class="pricing-grid">
+      <div class="tier-card">
+        <span class="tier-id">T1</span>
+        <h3 class="tier-name">Starter</h3>
+        <p class="tier-price"><span class="placeholder">$—</span> <span class="period">/ month</span></p>
+        <p class="tier-target">Individual developer or small team building a first integration.</p>
+        <ul class="tier-features">
+          <li>Per-call usage at standard rate</li>
+          <li>Five vertical access (V#1, V#2, V#3, V#7, V#8 live)</li>
+          <li>Calibration scorecard read-access</li>
+          <li>Standard rate-limit (per-API-key budget)</li>
+          <li>Email support</li>
+        </ul>
+        <a href="/spec" class="btn btn-secondary">View spec</a>
+      </div>
+
+      <div class="tier-card featured">
+        <span class="tier-id">T2</span>
+        <h3 class="tier-name">Professional</h3>
+        <p class="tier-price"><span class="placeholder">$—</span> <span class="period">/ month</span></p>
+        <p class="tier-target">Professional capital allocator, corporate strategy team, or research desk needing multi-vertical access.</p>
+        <ul class="tier-features">
+          <li>Included monthly forecast allowance</li>
+          <li>Overage at standard per-call rate</li>
+          <li>Eight vertical access (incl. pre-launch)</li>
+          <li>Priority rate-limit</li>
+          <li>Calibration scorecard + per-tenant view</li>
+          <li>Quarterly methodology review session</li>
+        </ul>
+        <a href="/spec" class="btn btn-primary">Talk to us</a>
+      </div>
+
+      <div class="tier-card">
+        <span class="tier-id">T3</span>
+        <h3 class="tier-name">Team</h3>
+        <p class="tier-price"><span class="placeholder">$—</span> <span class="period">/ month</span></p>
+        <p class="tier-target">Investment team or research desk with multiple seats and shared workspace.</p>
+        <ul class="tier-features">
+          <li>Larger included allowance (multi-seat)</li>
+          <li>Overage at discounted per-call rate</li>
+          <li>SSO + role-based access control</li>
+          <li>Per-tenant Mnemosyne namespace</li>
+          <li>Direct Slack support channel</li>
+          <li>Cross-vertical bundle pricing</li>
+        </ul>
+        <a href="/spec" class="btn btn-secondary">Talk to us</a>
+      </div>
+
+      <div class="tier-card">
+        <span class="tier-id">T4</span>
+        <h3 class="tier-name">Enterprise</h3>
+        <p class="tier-price"><span class="placeholder">Custom</span></p>
+        <p class="tier-target">Enterprise customers operating under a Master Service Agreement with negotiated terms.</p>
+        <ul class="tier-features">
+          <li>Negotiated allowance and rates</li>
+          <li>Custom MSA supersedes published terms</li>
+          <li>Dedicated capacity planning</li>
+          <li>Bespoke vertical configuration</li>
+          <li>Direct line to founders</li>
+          <li>SLA negotiable</li>
+        </ul>
+        <a href="/spec" class="btn btn-secondary">Talk to us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background: var(--color-fog);">
+  <div class="container-narrow">
+    <span class="eyebrow">Per-call cost attestation</span>
+    <h2 style="font-size: var(--text-3xl);">Every call reports its own cost.</h2>
+    <p class="lead">Phronesis is one of the few inference-driven platforms that publishes per-call inference cost openly. Here's what a forecast actually costs to mint, by vertical, on the current substrate.</p>
+
+    <div class="cost-breakdown">
+      <table>
+        <thead>
+          <tr><th>Vertical</th><th>First-mint inference cost (USD)</th><th>Notional retail at 33x markup</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>V#3 Healthcare (H1)</td><td>$0.0084</td><td>$0.277</td></tr>
+          <tr><td>V#2 Computing (I1)</td><td>$0.0133</td><td>$0.439</td></tr>
+          <tr><td>V#7 Space (C1)</td><td>$0.0149</td><td>$0.492</td></tr>
+          <tr><td>V#8 Robotics (R1)</td><td>$0.0151</td><td>$0.498</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="lead">Inference cost varies by template depth (more sophisticated archetypes pull more context per call). Markup multiplier is published at /pricing.json and subject to change with thirty days notice per the Terms of Service. Stripe processing fees and Stripe Climate contributions (1% of revenue) are factored separately.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container-narrow">
+    <span class="eyebrow">Settlement mechanics</span>
+    <h2 style="font-size: var(--text-3xl);">Stripe meter event at canonical persistence.</h2>
+    <p class="lead">A forecast is billed at the moment it's persisted to the canonical Mnemosyne ledger — not at the moment of the API call, not at end-of-month batch. The meter event fires sub-cent precision via Decimal lift; no floating-point drift in the billing path.</p>
+    <p class="lead">For autonomous-agent customers using AP2 mandates, the charge settles via Stripe Shared Payment Token (SPT) bound to the Cart Mandate at issuance. The three-layer trust stack — AP2 authorization → Plutus orchestration → Stripe SPT execution — is the invariant; the agent never needs a customer-managed payment method, the platform never needs to hold card data.</p>
+    <p class="lead">For human subscribers, standard Stripe Billing handles the subscription tier; per-call usage above included allowance is metered at month end.</p>
+
+    <div class="btn-group" style="margin-top: var(--space-8);">
+      <a href="/spec" class="btn btn-primary">Read the contract surface</a>
+      <a href="/pricing.json" class="btn btn-secondary">Machine-readable pricing</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h4>Phronesis</h4>
+        <p>The flagship platform of Sustainable Finance Partners, LLC. Operating from Denver, Colorado.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Platform</h5>
+        <ul class="footer-links">
+          <li><a href="/spec">API spec</a></li>
+          <li><a href="/openapi.json">OpenAPI</a></li>
+          <li><a href="/.well-known/agents.txt">agents.txt</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Verticals</h5>
+        <ul class="footer-links">
+          <li><a href="/verticals">All eight</a></li>
+          <li><a href="/scorecard">Scorecard</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul class="footer-links">
+          <li><a href="https://sustainablefinancepartner.com/terms-of-service">Terms of Service</a></li>
+          <li><a href="https://sustainablefinancepartner.com/privacy-policy">Privacy Policy</a></li>
+          <li><a href="https://sustainablefinancepartner.com/refund-policy">Refund Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Sustainable Finance Partners, LLC. All rights reserved.</p>
+      <p>Phronesis is the flagship product of <a href="https://sustainablefinancepartner.com">Sustainable Finance Partners, LLC</a>.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

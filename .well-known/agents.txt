@@ -1,0 +1,62 @@
+# agents.txt — Phronesis agent discovery manifest
+# Authority: Sustainable Finance Partners, LLC (operator)
+# Spec: https://phronesisintel.com/spec
+# Last updated: 2026-04-30
+
+User-Agent: *
+
+# --- Surfaces ---
+Contact: jrstinehour@gmail.com
+Spec: https://phronesisintel.com/spec
+OpenAPI: https://phronesisintel.com/openapi.json
+Pricing: https://phronesisintel.com/pricing.json
+ACP: https://phronesisintel.com/.well-known/agentic-commerce.json
+Scorecard: https://phronesisintel.com/scorecard
+Verticals: https://phronesisintel.com/verticals
+
+# --- Endpoints ---
+MCP: https://phronesis-jrstinehour.replit.app/mcp
+REST: https://phronesis-jrstinehour.replit.app
+Scorecard-JSON: https://phronesis-jrstinehour.replit.app/scorecard.json
+
+# --- Authentication ---
+# Path A (autonomous agents):  AP2 mandate (Google Agent Payments Protocol)
+#                              Intent Mandate + Cart Mandate as Verifiable Credentials
+# Path B (agents-for-humans):  Stripe SPT (Shared Payment Token) bound to AP2 Cart Mandate
+# Path C (humans):             Bearer JWT, T1-T4 subscription tiers
+Auth-Methods: AP2, Stripe-SPT, Bearer-JWT
+
+# --- Discipline ---
+# Idempotency-Key header REQUIRED on all mutating endpoints.
+# Errors are structured with stable machine-recoverable codes (16-code enum).
+# REST and MCP are co-equal at every endpoint per Sacred Invariant #5.
+# Per-tenant isolation enforced at boundary publish layer per Sacred Invariant #8.
+Idempotency: required
+Error-Format: structured-json
+
+# --- Pricing model ---
+# Per-call: inference cost-attestation × markup multiplier (currently 33x)
+# Cost range: $0.0084 - $0.0151 per forecast (Anthropic Haiku-4-5)
+# Subscription tiers: T1 Starter, T2 Professional, T3 Team, T4 Enterprise
+# Settlement: Stripe meter events at canonical persistence to Mnemosyne ledger
+Pricing-Model: per-call+subscription
+
+# --- Verticals (8 total; 5 live on production) ---
+Vertical: V1=Energy LIVE
+Vertical: V2=Computing+AI-Infrastructure LIVE
+Vertical: V3=Healthcare LIVE (HIPAA Safe Harbor)
+Vertical: V4=Climate-Physical-Risk pre-launch
+Vertical: V5=Regulatory pre-launch
+Vertical: V6=Supply-Chain pre-launch
+Vertical: V7=Space LIVE
+Vertical: V8=Robotics LIVE
+
+# --- Substrate properties ---
+# Verified-correctness substrate. Forecasts persisted to canonical Mnemosyne ledger.
+# Public calibration scorecard. Audit trail every forecast.
+# Three-layer trust stack: AP2 authorization → Plutus orchestration → Stripe SPT execution.
+
+# --- Sister surfaces ---
+# Corporate parent: https://sustainablefinancepartner.com (Sustainable Finance Partners, LLC)
+# Agent-native:     https://phronesisintel.xyz (Phase 2 Month 4-6)
+# Developer:        https://phronesisintel.dev  (Phase 2 Month 4-6)

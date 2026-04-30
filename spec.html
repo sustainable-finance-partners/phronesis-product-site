@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Contract Surface — Phronesis</title>
+<meta name="description" content="Phronesis Hermes contract surface. REST and MCP co-equal. Idempotency required. Sub-cent meter-event precision. AP2 mandate compatible. OpenAPI 3.1.">
+<meta name="robots" content="index, follow">
+
+<link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 spec">
+<link rel="api-catalog" href="/.well-known/agents.txt">
+
+<meta name="agent-mcp-endpoint" content="https://phronesis-jrstinehour.replit.app/mcp">
+<meta name="agent-rest-endpoint" content="https://phronesis-jrstinehour.replit.app">
+<meta name="agent-pricing" content="/pricing">
+<meta name="agent-acp" content="/.well-known/agentic-commerce.json">
+
+<link rel="canonical" href="https://phronesisintel.com/spec">
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+.phronesis-mark { display:inline-flex; align-items:center; gap:var(--space-2); font-family:var(--font-display); font-weight:700; color:var(--color-deep); letter-spacing:-0.01em; }
+.phronesis-mark .glyph { width:1.5rem; height:1.5rem; border-radius:50%; background:var(--gradient-accent); position:relative; }
+.phronesis-mark .glyph::after { content:''; position:absolute; inset:0.4rem; background:var(--color-deep); border-radius:50%; }
+</style>
+</head>
+
+<body>
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <nav class="nav" aria-label="Primary">
+      <a href="/" class="phronesis-mark"><span class="glyph" aria-hidden="true"></span><span>Phronesis</span></a>
+      <ul class="nav-links">
+        <li><a href="/verticals">Verticals</a></li>
+        <li><a href="/scorecard">Scorecard</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/spec">API</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<header class="legal-header">
+  <div class="container-narrow">
+    <span class="eyebrow">Hermes Contract Surface</span>
+    <h1>API spec.</h1>
+    <p class="lead">REST and MCP co-equal at every endpoint. Idempotency-key required, not optional. Errors are structured and machine-recoverable. Sub-cent meter-event precision. AP2 mandate compatible.</p>
+
+    <div class="legal-meta">
+      <div><strong>Base URL</strong>https://phronesis-jrstinehour.replit.app</div>
+      <div><strong>MCP Endpoint</strong>https://phronesis-jrstinehour.replit.app/mcp</div>
+      <div><strong>OpenAPI</strong><a href="/openapi.json">/openapi.json</a></div>
+      <div><strong>Auth</strong>Bearer JWT (human) or AP2 mandate (agent)</div>
+    </div>
+
+    <div class="legal-banner">
+      <strong>Markdown-first.</strong> This page is the canonical contract documentation. The OpenAPI spec is generated from the same source. Both are kept in lockstep per Sacred Invariant #5 (MCP+REST co-equal access at every layer).
+    </div>
+  </div>
+</header>
+
+<article class="legal-content">
+
+<h2>Quick start</h2>
+<p>Three minutes from zero to your first minted forecast (assuming you've already obtained a JWT or AP2 mandate from your principal):</p>
+
+<pre><code>curl -X POST https://phronesis-jrstinehour.replit.app/forecast/mint \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $PHRONESIS_JWT" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -d '{
+    "vertical": "V1",
+    "archetype": "E1",
+    "subject": "ERCOT_summer_capacity_factor_2027",
+    "horizon": "2027-Q3"
+  }'</code></pre>
+
+<p>The response includes the canonical FC-ID, the canonical-quantile estimates, the issue timestamp, and the cost-attestation in dollars-and-cents. Every value persisted to the Mnemosyne ledger; every value visible on the public scorecard.</p>
+
+<h2>Endpoints</h2>
+
+<div class="endpoint-list">
+  <div class="endpoint">
+    <span class="endpoint-method post">POST</span>
+    <span class="endpoint-path">/forecast/mint</span>
+    <span class="endpoint-desc">Mint a probabilistic forecast. Idempotency-Key header required.</span>
+  </div>
+  <div class="endpoint">
+    <span class="endpoint-method get">GET</span>
+    <span class="endpoint-path">/forecast/{fc_id}</span>
+    <span class="endpoint-desc">Retrieve a previously-minted forecast by canonical FC-ID.</span>
+  </div>
+  <div class="endpoint">
+    <span class="endpoint-method get">GET</span>
+    <span class="endpoint-path">/scorecard.json</span>
+    <span class="endpoint-desc">Public calibration scorecard. All forecasts, all verticals, all-time.</span>
+  </div>
+  <div class="endpoint">
+    <span class="endpoint-method post">POST</span>
+    <span class="endpoint-path">/billing/charge</span>
+    <span class="endpoint-desc">Settle a per-call charge against an authorized AP2 mandate via Stripe meter event.</span>
+  </div>
+  <div class="endpoint">
+    <span class="endpoint-method get">GET</span>
+    <span class="endpoint-path">/health</span>
+    <span class="endpoint-desc">Service health probe (auth-gated). 200 OK with substrate version, 401 if unauthenticated.</span>
+  </div>
+</div>
+
+<h2>Authentication</h2>
+
+<h3>Path A — Direct API (autonomous agents)</h3>
+<p>Autonomous agents authenticate by presenting an AP2 (Google Agent Payments Protocol) mandate at the Hermes contract-middleware authorization gate. The mandate must include both an Intent Mandate and a Cart Mandate Verifiable Credential signed by the principal. Mandate signature verification budget is approximately two to five seconds at the blocking gate.</p>
+
+<pre><code>POST /forecast/mint HTTP/1.1
+Host: phronesis-jrstinehour.replit.app
+Content-Type: application/json
+Idempotency-Key: 01HXYZA1B2C3D4E5F6G7H8J9K0
+Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
+
+{
+  "vertical": "V1",
+  "archetype": "E1",
+  "subject": "ERCOT_summer_capacity_factor_2027",
+  "horizon": "2027-Q3"
+}</code></pre>
+
+<h3>Path B — Agentic commerce (agents acting for humans)</h3>
+<p>Agents acting on behalf of human principals via the Stripe Agentic Commerce Suite (ACS) checkout flow present a Stripe Shared Payment Token (SPT) bound to an AP2 Cart Mandate at issuance time. The SPT replaces the AP2-direct authorization for the per-call settlement.</p>
+
+<h3>Path C — Direct human SaaS (T1-T4 subscribers)</h3>
+<p>Human subscribers authenticate via Bearer JWT issued at login. Subscription tier (T1 Starter, T2 Professional, T3 Team, T4 Enterprise) determines included usage allowances and overage rates. See <a href="/pricing">/pricing</a>.</p>
+
+<h2>Idempotency</h2>
+<p>Every mutating endpoint requires the <code>Idempotency-Key</code> header. Keys are persisted to the Mnemosyne idempotency archive for a minimum of seventy-two hours. Repeat requests with the same key return the original response without side effects, regardless of whether the original was successful.</p>
+
+<p>Recommended key shape: ULID or UUIDv7. Maximum length: 256 characters. Keys must be unique per principal-tenant; collisions across tenants do not interfere due to per-tenant isolation at the boundary publish layer.</p>
+
+<h2>Error semantics</h2>
+<p>Errors are structured with stable machine-recoverable codes. Sixteen-code enumeration covers the canonical failure modes:</p>
+
+<pre><code>{
+  "error": {
+    "code": "MANDATE_INVALID_SIGNATURE",
+    "message": "AP2 mandate signature verification failed",
+    "category": "auth",
+    "retryable": false,
+    "documentation_url": "https://phronesisintel.com/spec#errors",
+    "request_id": "req_01HXYZA1B2C3D4E5F6G7H8J9K0"
+  }
+}</code></pre>
+
+<p>Code categories: <code>auth</code> (mandate or JWT failure) · <code>validation</code> (request shape error) · <code>rate_limit</code> (per-tenant or per-mandate limit hit) · <code>circuit</code> (downstream circuit-breaker tripped) · <code>substrate</code> (canonical-correctness violation) · <code>billing</code> (Plutus charge failure) · <code>not_found</code> · <code>internal</code>. Retryable errors include <code>rate_limit</code> and <code>circuit</code>; all others are non-retryable.</p>
+
+<h2>Meter events and pricing</h2>
+<p>Forecast minting fires a Stripe meter event at the moment of canonical persistence to the Mnemosyne ledger. Meter event amounts are reported with sub-cent precision (Decimal lift, no float). Cost-attestation per call is published at <a href="/pricing.json">/pricing.json</a> and includes the inference cost component plus the markup multiplier.</p>
+
+<h2>MCP server</h2>
+<p>The MCP server exposes tools that are one-to-one with REST endpoints. Tool names map to endpoint paths; tool parameters map to request bodies. Tool outputs match REST response shapes exactly. Use either surface; neither is privileged.</p>
+
+<pre><code>// MCP tool list (representative)
+{
+  "tools": [
+    { "name": "forecast_mint", "description": "Mint a probabilistic forecast" },
+    { "name": "forecast_get",  "description": "Retrieve forecast by FC-ID" },
+    { "name": "scorecard_get", "description": "Read calibration scorecard" },
+    { "name": "billing_charge","description": "Settle per-call meter event" }
+  ]
+}</code></pre>
+
+<h2>Verticals and archetypes</h2>
+<p>Eight verticals; five live on production; archetype taxonomy is per-vertical. See the <a href="/verticals">verticals page</a> for archetype detail. Canonical taxonomy is reflected in the OpenAPI spec.</p>
+
+<h2>Discovery surfaces</h2>
+<p>For agent crawlers: <a href="/.well-known/agents.txt">agents.txt</a> · <a href="/.well-known/agentic-commerce.json">agentic-commerce.json</a> · <a href="/openapi.json">openapi.json</a> · <a href="/pricing.json">pricing.json</a> · <a href="/robots.txt">robots.txt</a></p>
+
+<h2>Versioning</h2>
+<p>The Hermes contract surface uses semantic versioning at the contract layer. Breaking changes go to a new major version with a six-month deprecation window for the prior major. Non-breaking additions (new endpoints, new optional fields) are added in minor versions and announced via the changelog.</p>
+
+<h2>SLA and limits</h2>
+<p>Production runtime is dedicated 24/7 (Reserved VM). Per-tenant rate limits and per-mandate burst limits documented at /spec#rate-limits (in development). Service credits available for 24+ hour continuous outage per the Refund Policy.</p>
+
+<h2>Support</h2>
+<p>Issues, integration questions, contract clarifications: write to the support email published on the <a href="https://sustainablefinancepartner.com">Sustainable Finance Partners</a> Contact page. Bug reports against the contract surface are triaged at the Iris ring (Phronesis customer relations substrate); critical contract violations are escalated immediately per Sacred Invariant #9 boundary-as-only-publish.</p>
+
+</article>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h4>Phronesis</h4>
+        <p>The flagship platform of Sustainable Finance Partners, LLC. Operating from Denver, Colorado.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Platform</h5>
+        <ul class="footer-links">
+          <li><a href="/spec">API spec</a></li>
+          <li><a href="/openapi.json">OpenAPI</a></li>
+          <li><a href="/.well-known/agents.txt">agents.txt</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Verticals</h5>
+        <ul class="footer-links">
+          <li><a href="/verticals">All eight</a></li>
+          <li><a href="/scorecard">Scorecard</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul class="footer-links">
+          <li><a href="https://sustainablefinancepartner.com/terms-of-service">Terms of Service</a></li>
+          <li><a href="https://sustainablefinancepartner.com/privacy-policy">Privacy Policy</a></li>
+          <li><a href="https://sustainablefinancepartner.com/refund-policy">Refund Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Sustainable Finance Partners, LLC. All rights reserved.</p>
+      <p>Phronesis is the flagship product of <a href="https://sustainablefinancepartner.com">Sustainable Finance Partners, LLC</a>.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

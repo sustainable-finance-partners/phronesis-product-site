@@ -1,0 +1,98 @@
+{
+  "$schema": "https://schemas.agentic-commerce.org/v1/manifest.json",
+  "spec_version": "1.0",
+  "manifest_version": "2026-04-30",
+  "operator": {
+    "legal_name": "Sustainable Finance Partners, LLC",
+    "trade_name": "Phronesis",
+    "jurisdiction": "Colorado, United States",
+    "address": "1944 Hudson Street, Denver, CO 80220",
+    "contact_email": "jrstinehour@gmail.com",
+    "corporate_website": "https://sustainablefinancepartner.com",
+    "product_website": "https://phronesisintel.com"
+  },
+  "service": {
+    "name": "Phronesis Forecasting Platform",
+    "description": "Verified-correctness probabilistic forecasting substrate. Eight verticals; five live on production. Forecasts persisted to canonical Mnemosyne ledger with public calibration scorecard.",
+    "category": "data-services/forecasting",
+    "verticals_live": ["energy", "computing-ai-infrastructure", "healthcare", "space", "robotics"],
+    "verticals_pre_launch": ["climate-physical-risk", "regulatory", "supply-chain"]
+  },
+  "endpoints": {
+    "mcp": "https://phronesis-jrstinehour.replit.app/mcp",
+    "rest_base": "https://phronesis-jrstinehour.replit.app",
+    "openapi": "https://phronesisintel.com/openapi.json",
+    "spec_documentation": "https://phronesisintel.com/spec",
+    "calibration_scorecard": "https://phronesis-jrstinehour.replit.app/scorecard.json",
+    "pricing_machine_readable": "https://phronesisintel.com/pricing.json"
+  },
+  "authentication": {
+    "supported_methods": ["ap2_mandate", "stripe_spt", "bearer_jwt"],
+    "agent_paths": {
+      "path_a_autonomous_agent": {
+        "description": "Direct API access via AP2 mandate authorization (Google Agent Payments Protocol)",
+        "mandate_types_required": ["intent_mandate", "cart_mandate"],
+        "mandate_format": "verifiable_credential_signed_by_principal",
+        "authorization_budget_seconds": 5
+      },
+      "path_b_agent_for_human": {
+        "description": "Stripe Agentic Commerce Suite checkout flow with SPT bound to AP2 Cart Mandate at issuance",
+        "spt_required": true,
+        "ap2_cart_mandate_at_spt_issuance": true
+      }
+    },
+    "human_paths": {
+      "path_c_human_saas": {
+        "description": "Direct human subscription with Bearer JWT auth",
+        "subscription_tiers": ["T1_starter", "T2_professional", "T3_team", "T4_enterprise"]
+      }
+    }
+  },
+  "commerce": {
+    "supported_settlement": ["stripe_meter_events"],
+    "stripe_acs_native": true,
+    "currency": "USD",
+    "tax_handling": "stripe_tax_complete_tier",
+    "climate_contribution_pct": 1.0,
+    "pricing_model": "per_call_plus_subscription",
+    "per_call_pricing": {
+      "inference_cost_range_usd": [0.0084, 0.0151],
+      "markup_multiplier": 33.0,
+      "settlement": "stripe_meter_event_at_canonical_persistence"
+    },
+    "refund_policy_url": "https://sustainablefinancepartner.com/refund-policy"
+  },
+  "discipline": {
+    "idempotency": "required_on_all_mutations",
+    "idempotency_archive_minimum_hours": 72,
+    "error_format": "structured_json_with_stable_codes",
+    "per_tenant_isolation": "boundary_publish_layer",
+    "audit_trail": "canonical_mnemosyne_ledger_immutable",
+    "verified_correctness_substrate": true
+  },
+  "trust_stack": {
+    "layer_1_authorization": "ap2_mandate_verification",
+    "layer_2_orchestration": "phronesis_plutus_ring",
+    "layer_3_settlement": "stripe_spt_execution",
+    "sacred_invariants": {
+      "5": "mcp_rest_co_equal_at_every_layer",
+      "7": "attribution_timestamp_confidence_audit_per_forecast",
+      "8": "per_tenant_isolation_at_boundary_publish",
+      "9": "boundary_as_only_publish",
+      "10": "prompt_versioning_is_code"
+    }
+  },
+  "legal": {
+    "terms_of_service_url": "https://sustainablefinancepartner.com/terms-of-service",
+    "privacy_policy_url": "https://sustainablefinancepartner.com/privacy-policy",
+    "refund_policy_url": "https://sustainablefinancepartner.com/refund-policy",
+    "governing_law": "Colorado",
+    "dispute_resolution": "AAA_arbitration_Denver"
+  },
+  "agent_directives": {
+    "rate_limits_per_mandate": "documented_at_/spec",
+    "structured_errors": "16_code_enum_at_/spec#errors",
+    "preferred_caching": "scorecard_15min_pricing_24hr",
+    "deprecation_window_months": 6
+  }
+}

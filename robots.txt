@@ -1,0 +1,51 @@
+# robots.txt for phronesisintel.com (Phronesis product site)
+# Last updated: 2026-04-30
+
+# Standard search engine crawlers — full access
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# LLM training and agent-discovery crawlers — explicit allowlist
+# Phronesis is built for agent-customer-first; agent crawlability is intentional.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Default — full access
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://phronesisintel.com/sitemap.xml
+
+# Agent discovery
+# The agents.txt file at /.well-known/agents.txt is the canonical agent manifest.
+# Machine-readable pricing at /pricing.json
+# OpenAPI spec at /openapi.json
+# Markdown contract docs at /spec
