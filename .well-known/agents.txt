@@ -36,7 +36,7 @@ Error-Format: structured-json
 
 # --- Pricing model ---
 # Per-call: inference cost-attestation × markup multiplier (currently 33x)
-# Cost range: $0.0084 - $0.0151 per forecast (Anthropic Haiku-4-5)
+# Cost range: $0.0084 - $0.0151 per forecast (Standard Compute tier)
 # Subscription tiers: T1 Starter, T2 Professional, T3 Team, T4 Enterprise
 # Settlement: Stripe meter events at canonical persistence to Mnemosyne ledger
 Pricing-Model: per-call+subscription
