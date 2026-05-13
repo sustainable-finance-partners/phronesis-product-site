@@ -1,0 +1,108 @@
+name: Algorithm Protection Gate
+
+# Sprint 5.22 PR #FUL-CRITICAL — site-wide algorithm-substrate non-exposure
+# enforcement at customer-facing surfaces.
+#
+# Per Algorithm_Protection_v1 §6.X NEW (R-3 RATIFIED Pass 2026-05-12):
+#   "Customer-facing surfaces MUST NOT name (a) underlying model vendor;
+#   (b) underlying model tier or family; (c) Pythia prompt template structure;
+#   (d) Themis rule cluster IDs as routing decisions; (e) per-vertical
+#   inference ring composition; (f) cost-substrate routing logic. Compute
+#   pricing tiers (Standard / Deep / Strategic) are the canonical customer-
+#   facing abstraction."
+#
+# Themis #115.3 Pythia-prompt-template-protection (BINDING)
+# Themis #117.2 Answer-substrate-protection (R-2 RATIFIED Pass 2026-05-12)
+# Themis #117.12 sales-conversation-scope-bounding (BINDING per R-2)
+# Pattern-32 27th-instance NEW class — LIVE-PRODUCT-SURFACE-vs-RATIFIED-
+#   CANONICAL-DESIGN divergence remediation gate
+# Lesson #28-EXTENSION BINDING-CANDIDATE — algorithm-substrate non-exposure
+#   at customer-facing surface depth co-equal to Lesson #28-COO-vendor
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  algo-protection-gate:
+    name: Banned-language regex gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Banned-language scan (marketing copy must scrub)
+        id: scan
+        shell: bash
+        run: |
+          set -o pipefail
+
+          # Allow-listed file paths (legal substrate + crawler directives per §2.2 + §2.3)
+          ALLOWLIST_REGEX='^(privacy-policy\.html|terms-of-service\.html|refund-policy\.html|robots\.txt)$'
+
+          # Banned-language patterns (case-insensitive). Match (a) model-vendor +
+          # tier/family names; (b) explicit model-id strings; (c) pricing.json
+          # algorithm-exposure keys.
+          BANNED_NAMES='\b(anthropic|haiku|claude(?!bot)|gpt(?!bot)|opus|sonnet|gemini|openai|kimi|qwen|deepseek)\b'
+          BANNED_MODEL_IDS='\b(claude-[a-z0-9.-]+|haiku-[0-9.]+|opus-[0-9.]+|sonnet-[0-9.]+|gpt-[a-z0-9.-]+)\b'
+          BANNED_JSON_KEYS='"(model_provider|inference_model|model_tier|model_family|model_name)"\s*:\s*"[^"]+"'
+
+          violations=0
+          violation_log=$(mktemp)
+
+          # Scan candidate files (HTML + JSON + TXT + MD), excluding legal allow-list.
+          while IFS= read -r -d '' file; do
+            basename=$(basename "$file")
+            # Allow-listed legal-substrate files: skip
+            if [[ "$basename" =~ $ALLOWLIST_REGEX ]]; then
+              continue
+            fi
+            # Allow-listed crawler directive: skip robots.txt explicitly (also caught above)
+            # Now scan for banned-language patterns.
+            matched=0
+            if grep -E -i -n -H "$BANNED_NAMES" "$file" >> "$violation_log" 2>/dev/null; then
+              matched=1
+            fi
+            if grep -E -i -n -H "$BANNED_MODEL_IDS" "$file" >> "$violation_log" 2>/dev/null; then
+              matched=1
+            fi
+            if grep -E -n -H "$BANNED_JSON_KEYS" "$file" >> "$violation_log" 2>/dev/null; then
+              matched=1
+            fi
+            if [[ $matched -eq 1 ]]; then
+              violations=$((violations + 1))
+            fi
+          done < <(find . -type f \( -name '*.html' -o -name '*.json' -o -name '*.txt' -o -name '*.md' \) -not -path './.git/*' -not -path './node_modules/*' -not -path './.github/*' -print0)
+
+          if [[ -s "$violation_log" ]]; then
+            echo "::error::Algorithm Protection Gate FAILED — banned-language found in customer-facing copy"
+            echo ""
+            echo "Violations:"
+            cat "$violation_log"
+            echo ""
+            echo "Canonical refs:"
+            echo "  - Algorithm_Protection_v1 §6.X NEW (R-3 RATIFIED Pass 2026-05-12)"
+            echo "  - Themis #115.3 Pythia-prompt-template-protection (BINDING)"
+            echo "  - Themis #117.2 Answer-substrate-protection (R-2 RATIFIED Pass 2026-05-12)"
+            echo "  - Themis #117.12 sales-conversation-scope-bounding (BINDING per R-2)"
+            echo "  - Pattern-32 27th-instance LIVE-PRODUCT-SURFACE-vs-RATIFIED-CANONICAL-DESIGN class"
+            echo "  - Lesson #28-EXTENSION BINDING-CANDIDATE algorithm-substrate non-exposure"
+            echo ""
+            echo "Remediation:"
+            echo "  - Replace underlying-vendor + model-tier mentions with 'Standard Compute tier' / 'Deep Compute tier' / 'Strategic Compute tier' canonical customer-facing abstraction"
+            echo "  - Legal substrate (privacy-policy.html, terms-of-service.html, refund-policy.html) is allow-listed for GDPR Article 28 + CCPA subprocessor disclosure"
+            echo "  - Crawler directives (robots.txt User-agent: GPTBot/ClaudeBot/anthropic-ai) are allow-listed per robots.txt spec"
+            echo ""
+            echo "Manual override path:"
+            echo "  - PR label 'algo-protection-gate-override' (requires owner approval per §15.6.11 v2 substantial-close-gov-equivalent)"
+            exit 1
+          fi
+
+          echo "✅ Algorithm Protection Gate PASSED — zero banned-language matches outside legal-substrate + crawler-directive allow-list"
+          echo "scrub_count=0" >> "$GITHUB_OUTPUT"
