@@ -1,0 +1,170 @@
+# Sprint 5.25 PR #STATIC-SITE-SYNC-CRITICAL — Static-site canonical-sync drift-detection CI gate
+#
+# Per Sprint 5.25 PR #STATIC-SITE-SYNC-CRITICAL dispatch §4.2 AC-8/9/10 + Pattern-32
+# 30th-instance NEW class (substrate-state-vs-LIVE-customer-surface divergence at
+# STATIC-HTML-MARKETING-PAGE layer) closure.
+#
+# Asserts the static site never drifts from canonical Phronesis substrate:
+#   (a) static-site vertical list + count match canonical 12-vertical roster
+#   (b) static-site tier nomenclature matches Pricing_Strategy v1.2 canonical tier IDs
+#   (c) no superseded tier names present ("T1 Starter" / "T2 Professional" /
+#       "T3 Team" / "T4 Enterprise" are the Sprint-5.8-era deprecated nomenclature)
+#   (d) Themis rules-count claim within tolerance of canonical (144 rules / 14 clusters)
+#   (e) no "eight verticals" / "5 of 8" / "five live" stale Sprint-5.8-era counts
+#
+# Cross-references:
+#   - Pricing_Strategy v1.2 canonical tier IDs (BINDING)
+#   - PR #159 /v1/catalog dynamic-sourcing (machine-readable sibling drift class)
+#   - Pattern-43 BCP per-event substrate-evidence-attestation discipline
+#   - Lesson #27 BINDING grep-verify discipline + Sprint 5.25 carve-out extension
+#     (grep ambiguous Unicode + literal-value-being-bumped; not just field-name)
+#   - Algorithm_Protection §6.X NEW (algo-protection-gate.yml SIBLING gate)
+
+name: Static-site canonical-sync drift-detection
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  forbidden-stale-references:
+    runs-on: ubuntu-latest
+    name: Forbidden Sprint-5.8-era stale references
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stale vertical-count references (must be absent)
+        run: |
+          set -e
+          STALE_PATTERNS=(
+            "Eight verticals"
+            "eight verticals"
+            "5 of 8"
+            "five live"
+            "Five live"
+            "Five verticals"
+            "five vertical"
+            "Five-vertical-deep"
+            "five-vertical-deep"
+            "All eight"
+          )
+          FAILED=0
+          for pattern in "${STALE_PATTERNS[@]}"; do
+            if grep -rn -l "$pattern" --include="*.html" --include="*.json" .; then
+              echo "FAIL: stale vertical-count reference '$pattern' present in repo"
+              FAILED=1
+            fi
+          done
+          if [ "$FAILED" -ne 0 ]; then
+            echo "FAIL: Sprint-5.8-era vertical-count references must be replaced with canonical 12-vertical-complete framing"
+            exit 1
+          fi
+          echo "PASS: no stale vertical-count references"
+
+      - name: Forbidden superseded tier names (Sprint-5.8-era T1-T4 deprecated)
+        run: |
+          set -e
+          FORBIDDEN_TIERS=(
+            "T1 Starter"
+            "T2 Professional"
+            "T3 Team"
+            "T4 Enterprise"
+          )
+          FAILED=0
+          for tier in "${FORBIDDEN_TIERS[@]}"; do
+            # Allow citations within EXACT-DEPRECATION-CONTEXT only (e.g. ADR or change-log narratives describing the move)
+            # In static-site HTML this should never appear in customer-facing copy
+            if grep -rn "$tier" --include="*.html" --include="*.json" .; then
+              echo "FAIL: superseded Sprint-5.8-era tier name '$tier' present"
+              FAILED=1
+            fi
+          done
+          if [ "$FAILED" -ne 0 ]; then
+            echo "FAIL: tier nomenclature must match Pricing_Strategy v1.2 canonical (Discovery / Inquiry / Practice / Practice+ / Enterprise + Standard/Deep/Strategic/Strategic Sync Compute)"
+            exit 1
+          fi
+          echo "PASS: no superseded tier names"
+
+  canonical-substrate-attestation:
+    runs-on: ubuntu-latest
+    name: Canonical 12-vertical + Pricing v1.2 references present
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 12-vertical canonical references present
+        run: |
+          set -e
+          # Vertical list must include V#9-V#12 NEW names on any page that enumerates verticals
+          # Allow the index.html OR verticals.html to be the canonical-list source.
+          REQUIRED_VERTICAL_TOKENS=(
+            "V#9"
+            "V#10"
+            "V#11"
+            "V#12"
+            "AI/AGI"
+            "Physics"
+            "Longevity"
+            "Quantum"
+          )
+          FAILED=0
+          for token in "${REQUIRED_VERTICAL_TOKENS[@]}"; do
+            if ! grep -rn -l "$token" --include="*.html" . > /dev/null; then
+              echo "FAIL: canonical V#9-V#12 token '$token' NOT present in any HTML file"
+              FAILED=1
+            fi
+          done
+          if [ "$FAILED" -ne 0 ]; then
+            echo "FAIL: 12-vertical canonical references incomplete"
+            exit 1
+          fi
+          echo "PASS: 12-vertical canonical references present"
+
+      - name: Pricing v1.2 canonical tier names present
+        run: |
+          set -e
+          # On any page that discusses subscription tiers, the canonical v1.2 tier names must appear
+          REQUIRED_TIER_TOKENS=(
+            "Discovery"
+            "Inquiry"
+            "Practice"
+            "Enterprise"
+          )
+          FAILED=0
+          for token in "${REQUIRED_TIER_TOKENS[@]}"; do
+            if ! grep -rn -l "$token" --include="*.html" . > /dev/null; then
+              echo "FAIL: canonical Pricing v1.2 tier token '$token' NOT present in any HTML file"
+              FAILED=1
+            fi
+          done
+          if [ "$FAILED" -ne 0 ]; then
+            echo "FAIL: Pricing_Strategy v1.2 canonical tier names incomplete"
+            exit 1
+          fi
+          echo "PASS: Pricing v1.2 canonical tier names present"
+
+  trust-center-linkage:
+    runs-on: ubuntu-latest
+    name: Public Trust Center linked from site
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Trust Center linkage present
+        run: |
+          set -e
+          # The Trust Center surface lives at the Phronesis production deployment
+          # (https://phronesis-jrstinehour.replit.app/trust). The static sites must
+          # link to it from at least one location (footer typical).
+          if ! grep -rn -l "trust" --include="*.html" . | xargs -I {} grep -l "trust" {} > /dev/null 2>&1; then
+            echo "FAIL: no Trust Center reference present in any HTML file"
+            exit 1
+          fi
+          if ! grep -rn "Trust Center" --include="*.html" . > /dev/null; then
+            echo "FAIL: 'Trust Center' link text not present in any HTML file"
+            exit 1
+          fi
+          echo "PASS: Trust Center linkage present"

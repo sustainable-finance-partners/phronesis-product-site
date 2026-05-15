@@ -137,8 +137,8 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
 <h3>Path B — Agentic commerce (agents acting for humans)</h3>
 <p>Agents acting on behalf of human principals via the Stripe Agentic Commerce Suite (ACS) checkout flow present a Stripe Shared Payment Token (SPT) bound to an AP2 Cart Mandate at issuance time. The SPT replaces the AP2-direct authorization for the per-call settlement.</p>
 
-<h3>Path C — Direct human SaaS (T1-T4 subscribers)</h3>
-<p>Human subscribers authenticate via Bearer JWT issued at login. Subscription tier (T1 Starter, T2 Professional, T3 Team, T4 Enterprise) determines included usage allowances and overage rates. See <a href="/pricing">/pricing</a>.</p>
+<h3>Path C — Direct human SaaS (Discovery / Inquiry / Practice / Practice+ / Enterprise subscribers)</h3>
+<p>Human subscribers authenticate via Bearer JWT issued at login. Subscription tier per Pricing_Strategy v1.2 canonical (Discovery Free / Inquiry $49 / Practice $499 / Practice+ $2,499 / Enterprise negotiated) determines included usage allowances and overage rates. Compute depth tiers (Standard / Deep / Strategic / Strategic Sync) handle per-inquiry depth-classification per Themis #117.6. See <a href="/pricing">/pricing</a>.</p>
 
 <h2>Idempotency</h2>
 <p>Every mutating endpoint requires the <code>Idempotency-Key</code> header. Keys are persisted to the Mnemosyne idempotency archive for a minimum of seventy-two hours. Repeat requests with the same key return the original response without side effects, regardless of whether the original was successful.</p>
@@ -178,7 +178,7 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
 }</code></pre>
 
 <h2>Verticals and archetypes</h2>
-<p>Eight verticals; five live on production; archetype taxonomy is per-vertical. See the <a href="/verticals">verticals page</a> for archetype detail. Canonical taxonomy is reflected in the OpenAPI spec.</p>
+<p>Twelve verticals; all twelve LIVE on production per 12-VERTICAL-COMPLETE substrate milestone; archetype taxonomy is per-vertical. See the <a href="/verticals">verticals page</a> for archetype detail. Themis canonical-rule catalog v1.10 carries 144 rules across 14 clusters (12 vertical clusters + 2 cross-cutting clusters #117 Agent-Surface-Discipline + #118 Data-Handling-Discipline). Canonical taxonomy is reflected in the OpenAPI spec.</p>
 
 <h2>Discovery surfaces</h2>
 <p>For agent crawlers: <a href="/.well-known/agents.txt">agents.txt</a> · <a href="/.well-known/agentic-commerce.json">agentic-commerce.json</a> · <a href="/openapi.json">openapi.json</a> · <a href="/pricing.json">pricing.json</a> · <a href="/robots.txt">robots.txt</a></p>
@@ -215,7 +215,8 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
       <div class="footer-col">
         <h5>Verticals</h5>
         <ul class="footer-links">
-          <li><a href="/verticals">All eight</a></li>
+          <li><a href="/verticals">All twelve</a></li>
+          <li><a href="https://phronesis-jrstinehour.replit.app/trust">Trust Center</a></li>
           <li><a href="/scorecard">Scorecard</a></li>
         </ul>
       </div>
