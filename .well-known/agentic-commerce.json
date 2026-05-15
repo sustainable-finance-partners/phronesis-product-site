@@ -12,10 +12,10 @@
   },
   "service": {
     "name": "Phronesis Forecasting Platform",
-    "description": "Verified-correctness probabilistic forecasting substrate. Eight verticals; five live on production. Forecasts persisted to canonical Mnemosyne ledger with public calibration scorecard.",
+    "description": "Verified-correctness probabilistic forecasting substrate. Twelve verticals; all twelve live on production per 12-VERTICAL-COMPLETE substrate milestone. Forecasts persisted to canonical Mnemosyne ledger with public calibration scorecard.",
     "category": "data-services/forecasting",
-    "verticals_live": ["energy", "computing-ai-infrastructure", "healthcare", "space", "robotics"],
-    "verticals_pre_launch": ["climate-physical-risk", "regulatory", "supply-chain"]
+    "verticals_live": ["energy", "computing-ai-infrastructure", "healthcare", "climate-physical-risk", "regulatory", "supply-chain", "space", "robotics", "ai-agi-compute", "physics-materials-discovery", "longevity-human-health", "quantum-computing"],
+    "verticals_pre_launch": []
   },
   "endpoints": {
     "mcp": "https://phronesis-jrstinehour.replit.app/mcp",
@@ -43,7 +43,7 @@
     "human_paths": {
       "path_c_human_saas": {
         "description": "Direct human subscription with Bearer JWT auth",
-        "subscription_tiers": ["T1_starter", "T2_professional", "T3_team", "T4_enterprise"]
+        "subscription_tiers": ["tier-1-discovery", "tier-2-inquiry", "tier-3-practice", "tier-4-practice-plus", "tier-5-enterprise", "tier-6-outcome-conditional"]
       }
     }
   },
