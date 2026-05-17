@@ -1,0 +1,40 @@
+# Phronesis
+
+> Verified-correctness forecasting for the energy transition. Phronesis mints probabilistic forecasts across twelve verticals — every forecast is primary-source-cited, time-stamped, persisted to a canonical ledger, governed by per-vertical Themis rule clusters, and rendered publicly on a calibration scorecard. API-forward, agentic-commerce-native, twelve-vertical-complete on production.
+
+Phronesis is built for AI agents as much as humans. The transports are co-equal: an MCP server and a REST API, both passing through the same governance gate. Agents discover, evaluate, buy, and verify Phronesis forecasts programmatically.
+
+## Endpoints
+
+- [API base](https://phronesis-jrstinehour.replit.app): REST surface — production base URL.
+- [MCP server](https://phronesis-jrstinehour.replit.app/mcp): co-equal Model Context Protocol transport.
+- [Catalog](https://phronesis-jrstinehour.replit.app/v1/catalog): the 12-vertical inventory + per-vertical archetypes (public).
+- [Pricing](https://phronesis-jrstinehour.replit.app/v1/pricing): tier surface — tiers 1–6 incl. depth tiers + outcome-conditional (public).
+- [Decision API](https://phronesis-jrstinehour.replit.app/v1/decision/forecast): POST a structured forecast request, receive a canonical decision-forecast (point forecast + p10/p50/p90 uncertainty band + assumptions + alternatives + sensitivity + counterfactuals + sources + cost attestation + audit trail). JWT-gated.
+- [Substrate completeness](https://phronesis-jrstinehour.replit.app/v1/substrate/completeness): the 12-vertical-deep substrate-completeness manifest (public).
+
+## Verification
+
+- [Calibration leaderboard](https://phronesis-jrstinehour.replit.app/calibration/leaderboard): per-vertical empirical accuracy, scored against held-out ground truth (public).
+- [Scorecard](https://phronesis-jrstinehour.replit.app/scorecard.json): the 12-vertical accuracy scorecard baseline (public).
+- [Trust Receipt](https://phronesis-jrstinehour.replit.app/v1/trust/receipt/): per-forecast verifiability artifact — append a forecast id; returns the Themis rules applied + cost attestation + audit-trail id (public).
+
+## Verticals
+
+The twelve verticals (each ring-active and Themis-governed): V#1 Energy, V#2 Compute & AI Infrastructure, V#3 Healthcare, V#4 Climate, V#5 Regulatory, V#6 Supply-Chain, V#7 Space, V#8 Robotics, V#9 AI/AGI, V#10 Physics & Materials Discovery, V#11 Longevity & Human Health, V#12 Quantum Computing. See the [catalog](https://phronesis-jrstinehour.replit.app/v1/catalog) for live per-vertical archetypes.
+
+## Agent discovery
+
+- [agent-discovery.json](https://phronesis-jrstinehour.replit.app/.well-known/agent-discovery.json): service identity + capability summary.
+- [cost-attestation.json](https://phronesis-jrstinehour.replit.app/.well-known/cost-attestation.json): per-call cost-attestation discipline.
+- [performance.json](https://phronesis-jrstinehour.replit.app/.well-known/performance.json) · [authority.json](https://phronesis-jrstinehour.replit.app/.well-known/authority.json) · [citations.json](https://phronesis-jrstinehour.replit.app/.well-known/citations.json) · [documentation.json](https://phronesis-jrstinehour.replit.app/.well-known/documentation.json) · [evaluation-bench.json](https://phronesis-jrstinehour.replit.app/.well-known/evaluation-bench.json): the 8 marketing-to-agents discovery vectors.
+
+## Skills
+
+- [Skills setup](https://phronesisintel.com/skills/setup.md): curl-able setup guide for wiring Phronesis into Claude Code, Cursor, Codex, or the Vercel Skills CLI.
+- Phronesis Skills repo: `sustainable-finance-partners/skills` — install via `/plugin marketplace add sustainable-finance-partners/skills` (Claude Code) or `npx skills add sustainable-finance-partners/skills` (Vercel CLI).
+
+## Optional
+
+- [API contract spec](https://phronesisintel.com/spec): the Hermes contract-v1 response shapes.
+- [OpenAPI](https://phronesis-jrstinehour.replit.app/openapi.json): OpenAPI 3.1 spec.
