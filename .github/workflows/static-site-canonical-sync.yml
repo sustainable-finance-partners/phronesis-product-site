@@ -168,3 +168,172 @@ jobs:
             exit 1
           fi
           echo "PASS: Trust Center linkage present"
+
+  vertical-count-parity:
+    # Per CC_4_7_POSITIONING_RECUT_AND_SITES_FIX_DISPATCH_20260525.md (Ledger
+    # §15.10.92) D2.AC-2 + task #317 (PR #VERTICAL-AXIS-SYNC). The §15.10.91
+    # audit found vertical-count drift between the "What Phronesis is" prose
+    # (8 verticals listed) and the rest of the page (12). This job is the
+    # standing drift-detection: assert all four canonical surfaces enumerate
+    # the same 12 applied verticals + V#0 meta-vertical.
+    runs-on: ubuntu-latest
+    name: Vertical-count parity across canonical surfaces
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: V#0 meta-vertical present on every canonical surface
+        run: |
+          set -e
+          # V#0 AI Industrial Mobilization & Situational Awareness is the
+          # meta-vertical. It must be named on index.html + verticals.html +
+          # agents.txt + agentic-commerce.json (the agent-discoverable
+          # canonical-surface set).
+          FAILED=0
+          for file in index.html verticals.html .well-known/agents.txt .well-known/agentic-commerce.json; do
+            if [ ! -f "$file" ]; then
+              echo "FAIL: required canonical file missing: $file"
+              FAILED=1
+              continue
+            fi
+            # Accept either "V#0" (HTML/text form) or "v0-ai-industrial-mobilization"
+            # (JSON slug form) or "V0=AI-Industrial-Mobilization" (agents.txt form).
+            if ! grep -E "V#0|v0-ai-industrial-mobilization|V0=AI-Industrial-Mobilization" "$file" > /dev/null; then
+              echo "FAIL: $file does not name V#0 meta-vertical"
+              FAILED=1
+            fi
+          done
+          if [ "$FAILED" -ne 0 ]; then
+            echo "FAIL: V#0 meta-vertical missing from one or more canonical surfaces"
+            exit 1
+          fi
+          echo "PASS: V#0 meta-vertical present on every canonical surface"
+
+      - name: All twelve applied verticals enumerated on every canonical surface
+        run: |
+          set -e
+          # The 12 applied verticals (V#1 .. V#12). Every canonical surface
+          # that enumerates verticals must list all 12. Different surfaces
+          # use different forms — match each surface's canonical form:
+          #   - HTML: "V#1", "V#2", ... "V#12"
+          #   - agents.txt: "V1=", "V2=", ... "V12="
+          #   - agentic-commerce.json: the slug forms inside verticals_live array
+          FAILED=0
+          for n in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            # Check HTML surfaces — must reference V#N
+            for html_file in index.html verticals.html; do
+              if ! grep -E "V#${n}\b" "$html_file" > /dev/null; then
+                echo "FAIL: $html_file does not reference V#${n}"
+                FAILED=1
+              fi
+            done
+            # Check agents.txt — must have V<n>= entry
+            if ! grep -E "^Vertical:[[:space:]]+V${n}=" .well-known/agents.txt > /dev/null; then
+              echo "FAIL: agents.txt does not contain 'Vertical: V${n}=' entry"
+              FAILED=1
+            fi
+          done
+          if [ "$FAILED" -ne 0 ]; then
+            echo "FAIL: vertical-count parity broken — one or more canonical surfaces missing V#1..V#12"
+            exit 1
+          fi
+          echo "PASS: all twelve applied verticals (V#1..V#12) enumerated on every canonical surface"
+
+      - name: agentic-commerce.json verticals_live array has exactly 12 entries
+        run: |
+          set -e
+          # Use python to count the JSON array length so we don't depend on
+          # ad-hoc grep heuristics for the slug list.
+          python3 -c "
+          import json, sys
+          with open('.well-known/agentic-commerce.json') as f:
+              data = json.load(f)
+          live = data.get('service', {}).get('verticals_live', [])
+          if len(live) != 12:
+              print(f'FAIL: verticals_live has {len(live)} entries, expected 12')
+              sys.exit(1)
+          print(f'PASS: verticals_live has exactly {len(live)} entries')
+          "
+
+      - name: agentic-commerce.json names meta_vertical
+        run: |
+          set -e
+          python3 -c "
+          import json, sys
+          with open('.well-known/agentic-commerce.json') as f:
+              data = json.load(f)
+          mv = data.get('service', {}).get('meta_vertical')
+          if not mv or 'v0' not in mv.lower():
+              print(f'FAIL: agentic-commerce.json service.meta_vertical missing or not V#0 (got {mv!r})')
+              sys.exit(1)
+          print(f'PASS: meta_vertical is {mv!r}')
+          "
+
+      - name: No stale "8 verticals" prose drift on index.html
+        run: |
+          set -e
+          # The original §15.10.91 finding: index.html "What Phronesis is"
+          # prose listed only 8 verticals while everything else said 12.
+          # Forbid the specific stale phrasings.
+          STALE_PHRASES=(
+            "energy infrastructure, AI compute, healthcare, climate physical risk, regulatory environments, supply chains, space economy, and robotics"
+            "across eight verticals"
+            "across 8 verticals"
+            "eight verticals live"
+            "8 verticals live"
+          )
+          FAILED=0
+          for phrase in "${STALE_PHRASES[@]}"; do
+            if grep -F "$phrase" index.html > /dev/null; then
+              echo "FAIL: stale 8-vertical prose drift found on index.html: '$phrase'"
+              FAILED=1
+            fi
+          done
+          if [ "$FAILED" -ne 0 ]; then
+            echo "FAIL: stale 8-vertical prose drift on index.html"
+            exit 1
+          fi
+          echo "PASS: no stale 8-vertical prose drift on index.html"
+
+  internal-taxonomy-leak-check:
+    # Per CC_4_7_POSITIONING_RECUT_AND_SITES_FIX_DISPATCH_20260525.md D3.AC-3
+    # (Ledger §15.10.92) — customer-facing copy must not leak internal
+    # taxonomy (Sacred Invariant numbers, Pattern numbers, Themis rule IDs,
+    # R-numbers from the Ratification Ledger). The Decision_Assurance_Layer
+    # §2.5 brand-discipline principle: capability named plainly, no internal
+    # numbering jargon in customer copy.
+    runs-on: ubuntu-latest
+    name: No internal taxonomy leaks on public surfaces
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Forbidden internal-taxonomy markers on customer-facing HTML
+        run: |
+          set -e
+          FORBIDDEN_LEAKS=(
+            "Sacred Invariant"
+            "sacred_invariants"
+            "Pattern-32"
+            "Pattern-43"
+            "Pattern-50"
+            "Pattern-65"
+            "THEMIS-DA-"
+            "Themis-DA-"
+          )
+          FAILED=0
+          for leak in "${FORBIDDEN_LEAKS[@]}"; do
+            # Only flag *.html and *.txt + the agent-discoverable JSON.
+            # ADR / changelog narratives in repo docs are out of scope.
+            if grep -rn "$leak" --include="*.html" --include="*.txt" --include="*.json" . 2>&1 | grep -v "^./.github/" > /dev/null; then
+              MATCHES=$(grep -rn "$leak" --include="*.html" --include="*.txt" --include="*.json" . 2>&1 | grep -v "^./.github/" || true)
+              echo "FAIL: internal-taxonomy leak '$leak' found on customer-facing surface:"
+              echo "$MATCHES"
+              FAILED=1
+            fi
+          done
+          if [ "$FAILED" -ne 0 ]; then
+            echo "FAIL: internal-taxonomy leaks present on customer-facing surfaces — see Decision_Assurance_Layer §2.5 brand discipline"
+            exit 1
+          fi
+          echo "PASS: no internal-taxonomy leaks on customer-facing surfaces"

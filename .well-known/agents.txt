@@ -1,9 +1,18 @@
 # agents.txt — Phronesis agent discovery manifest
 # Authority: Sustainable Finance Partners, LLC (operator)
 # Spec: https://phronesisintel.com/spec
-# Last updated: 2026-04-30
+# Last updated: 2026-05-25
 
 User-Agent: *
+
+# --- What Phronesis is ---
+# Phronesis is the agentic economy's decision-assurance layer: a neutral
+# substrate where agents and enterprises verify intent, price uncertainty,
+# evaluate counterparties, coordinate transactions, and insure outcomes
+# before acting. Forecasting is the entry primitive, not the product.
+# The atomic product is the Decision Asset — a 10-field machine-readable,
+# auditable decision packet that agents can cite, reuse, dispute, and
+# settle against. Market Memory is the moat.
 
 # --- Surfaces ---
 Contact: jrstinehour@gmail.com
@@ -12,49 +21,79 @@ OpenAPI: https://phronesisintel.com/openapi.json
 Pricing: https://phronesisintel.com/pricing.json
 ACP: https://phronesisintel.com/.well-known/agentic-commerce.json
 Scorecard: https://phronesisintel.com/scorecard
+Bench: https://phronesis-jrstinehour.replit.app/bench
 Verticals: https://phronesisintel.com/verticals
 
 # --- Endpoints ---
 MCP: https://phronesis-jrstinehour.replit.app/mcp
 REST: https://phronesis-jrstinehour.replit.app
 Scorecard-JSON: https://phronesis-jrstinehour.replit.app/scorecard.json
+Bench-JSON: https://phronesis-jrstinehour.replit.app/.well-known/bench.json
 
 # --- Authentication ---
 # Path A (autonomous agents):  AP2 mandate (Google Agent Payments Protocol)
 #                              Intent Mandate + Cart Mandate as Verifiable Credentials
 # Path B (agents-for-humans):  Stripe SPT (Shared Payment Token) bound to AP2 Cart Mandate
-# Path C (humans):             Bearer JWT, T1-T4 subscription tiers
+# Path C (humans):             Bearer JWT, subscription tiers
 Auth-Methods: AP2, Stripe-SPT, Bearer-JWT
 
-# --- Discipline ---
+# --- Substrate discipline (enforced at the code layer) ---
 # Idempotency-Key header REQUIRED on all mutating endpoints.
 # Errors are structured with stable machine-recoverable codes (16-code enum).
-# REST and MCP are co-equal at every endpoint per Sacred Invariant #5.
-# Per-tenant isolation enforced at boundary publish layer per Sacred Invariant #8.
+# MCP and REST are co-equal at every endpoint — neither transport is the
+# "real" API; both pass through the same boundary publish gate.
+# Per-tenant isolation is enforced by the code path itself, not by
+# configuration or policy — cross-tenant data access is architecturally
+# prevented at the boundary publish layer.
 Idempotency: required
 Error-Format: structured-json
 
 # --- Pricing model ---
 # Per-call: inference cost-attestation × markup multiplier (currently 33x)
-# Cost range: $0.0084 - $0.0151 per forecast (Standard Compute tier)
-# Subscription tiers: T1 Starter, T2 Professional, T3 Team, T4 Enterprise
+# Cost range: $0.0084 - $0.0151 per Decision Asset mint (Standard Compute tier)
+# Subscription tiers: Discovery (free), Inquiry ($49), Practice ($499),
+#                     Practice+ ($2,499), Enterprise
 # Settlement: Stripe meter events at canonical persistence to Mnemosyne ledger
 Pricing-Model: per-call+subscription
 
-# --- Verticals (8 total; 5 live on production) ---
-Vertical: V1=Energy LIVE
-Vertical: V2=Computing+AI-Infrastructure LIVE
+# --- Verticals (twelve applied + V#0 meta-vertical) ---
+# All twelve applied verticals are LIVE on production. V#0 sits above
+# them as the meta-vertical (cross-cutting AI Industrial Mobilization &
+# Situational Awareness view that watches the agentic-economy build-out
+# across every applied vertical at once).
+Vertical: V0=AI-Industrial-Mobilization-Situational-Awareness meta-vertical LIVE
+Vertical: V1=Energy-Transition LIVE
+Vertical: V2=Computing-AI-Infrastructure LIVE
 Vertical: V3=Healthcare LIVE (HIPAA Safe Harbor)
-Vertical: V4=Climate-Physical-Risk pre-launch
-Vertical: V5=Regulatory pre-launch
-Vertical: V6=Supply-Chain pre-launch
-Vertical: V7=Space LIVE
+Vertical: V4=Climate-Physical-Risk LIVE
+Vertical: V5=Regulatory LIVE
+Vertical: V6=Supply-Chain LIVE
+Vertical: V7=Space-Space-Economy LIVE
 Vertical: V8=Robotics LIVE
+Vertical: V9=AI-AGI-Compute LIVE
+Vertical: V10=Physics-Materials-Discovery LIVE
+Vertical: V11=Longevity-Human-Health LIVE
+Vertical: V12=Quantum-Computing LIVE
+
+# --- Architecture (six primitives) ---
+# Phronesis substrate is a matrix of six foundational primitives × twelve
+# applied verticals × eight agent roles. The primitives are the durable
+# horizontal infrastructure; verticals are the applied markets.
+Primitive: P1=Identity-and-Mandate LIVE
+Primitive: P2=Reputation-and-Track-Record LIVE (Counterparty Passport)
+Primitive: P3=Forecast-and-Evidence LIVE (Decision Asset substrate)
+Primitive: P4=Coordination-and-Negotiation planned
+Primitive: P5=Insurance-and-Outcome planned
+Primitive: P6=Market-State-Telemetry LIVE
 
 # --- Substrate properties ---
-# Verified-correctness substrate. Forecasts persisted to canonical Mnemosyne ledger.
-# Public calibration scorecard. Audit trail every forecast.
-# Three-layer trust stack: AP2 authorization → Plutus orchestration → Stripe SPT execution.
+# Decision Assets persisted to canonical Mnemosyne ledger (Market Memory).
+# Public calibration scorecard. Audit trail on every Decision Asset.
+# Proof of Decision: every Decision Asset's audit_receipt is publicly
+# verifiable — agents, regulators, and counterparties can independently
+# confirm any Decision Asset's content and provenance.
+# Three-layer trust stack: AP2 authorization → Plutus orchestration →
+# Stripe SPT execution.
 
 # --- Sister surfaces ---
 # Corporate parent: https://sustainablefinancepartner.com (Sustainable Finance Partners, LLC)

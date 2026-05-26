@@ -11,11 +11,15 @@
     "product_website": "https://phronesisintel.com"
   },
   "service": {
-    "name": "Phronesis Forecasting Platform",
-    "description": "Verified-correctness probabilistic forecasting substrate. Twelve verticals; all twelve live on production per 12-VERTICAL-COMPLETE substrate milestone. Forecasts persisted to canonical Mnemosyne ledger with public calibration scorecard.",
-    "category": "data-services/forecasting",
+    "name": "Phronesis Decision-Assurance Layer",
+    "description": "The agentic economy's decision-assurance layer. A neutral substrate where agents and enterprises verify intent, price uncertainty, evaluate counterparties, coordinate transactions, and insure outcomes before acting. The atomic product is the Decision Asset — a 10-field machine-readable, auditable decision packet (forecast distribution + evidence graph + methodology hash + calibration grade + baseline comparison + mandate scope + counterparty passport + action boundary + settlement hook + audit receipt). Forecasting is the entry primitive, not the product. Six foundational primitives (identity & mandate, reputation & track record, forecast & evidence, coordination & negotiation, insurance & outcome, market-state telemetry) × twelve applied verticals, with V#0 AI Industrial Mobilization & Situational Awareness as the meta-vertical. Market Memory is the moat. Decision Assets persisted to canonical Mnemosyne ledger with public calibration scorecard.",
+    "category": "agentic-commerce/decision-assurance",
+    "atomic_product": "decision_asset",
+    "meta_vertical": "v0-ai-industrial-mobilization-situational-awareness",
     "verticals_live": ["energy", "computing-ai-infrastructure", "healthcare", "climate-physical-risk", "regulatory", "supply-chain", "space", "robotics", "ai-agi-compute", "physics-materials-discovery", "longevity-human-health", "quantum-computing"],
-    "verticals_pre_launch": []
+    "verticals_pre_launch": [],
+    "primitives_live": ["p1-identity-and-mandate", "p2-reputation-and-track-record", "p3-forecast-and-evidence", "p6-market-state-telemetry"],
+    "primitives_planned": ["p4-coordination-and-negotiation", "p5-insurance-and-outcome"]
   },
   "endpoints": {
     "mcp": "https://phronesis-jrstinehour.replit.app/mcp",
@@ -65,20 +69,22 @@
     "idempotency": "required_on_all_mutations",
     "idempotency_archive_minimum_hours": 72,
     "error_format": "structured_json_with_stable_codes",
-    "per_tenant_isolation": "boundary_publish_layer",
+    "per_tenant_isolation": "enforced_at_boundary_publish_layer",
     "audit_trail": "canonical_mnemosyne_ledger_immutable",
-    "verified_correctness_substrate": true
+    "decision_asset_substrate": true,
+    "primary_source_citation_required": true,
+    "timestamp_discipline": true
   },
   "trust_stack": {
     "layer_1_authorization": "ap2_mandate_verification",
     "layer_2_orchestration": "phronesis_plutus_ring",
     "layer_3_settlement": "stripe_spt_execution",
-    "sacred_invariants": {
-      "5": "mcp_rest_co_equal_at_every_layer",
-      "7": "attribution_timestamp_confidence_audit_per_forecast",
-      "8": "per_tenant_isolation_at_boundary_publish",
-      "9": "boundary_as_only_publish",
-      "10": "prompt_versioning_is_code"
+    "substrate_guarantees": {
+      "mcp_rest_co_equal": "every_endpoint_reachable_on_both_transports_through_the_same_boundary_publish_gate",
+      "attribution_timestamp_confidence_audit": "every_decision_asset_carries_all_four_orthogonal_concerns",
+      "per_tenant_isolation": "cross_tenant_data_access_architecturally_prevented_at_the_boundary",
+      "single_publish_surface": "every_endpoint_passes_through_one_boundary_publish_gate",
+      "prompt_versioning_is_code": "prompt_changes_go_through_pr_review_not_runtime_config"
     }
   },
   "legal": {
