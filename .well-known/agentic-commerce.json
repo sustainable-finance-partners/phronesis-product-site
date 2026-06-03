@@ -12,14 +12,14 @@
   },
   "service": {
     "name": "Phronesis Decision-Assurance Layer",
-    "description": "The agentic economy's decision-assurance layer. A neutral substrate where agents and enterprises verify intent, price uncertainty, evaluate counterparties, coordinate transactions, and insure outcomes before acting. The atomic product is the Decision Asset — a 10-field machine-readable, auditable decision packet (forecast distribution + evidence graph + methodology hash + calibration grade + baseline comparison + mandate scope + counterparty passport + action boundary + settlement hook + audit receipt). Forecasting is the entry primitive, not the product. Six foundational primitives (identity & mandate, reputation & track record, forecast & evidence, coordination & negotiation, insurance & outcome, market-state telemetry) × twelve applied verticals, with V#0 AI Industrial Mobilization & Situational Awareness as the meta-vertical. Market Memory is the moat. Decision Assets persisted to canonical Mnemosyne ledger with public calibration scorecard.",
+    "description": "The agentic economy's decision-assurance layer. A neutral substrate where agents and enterprises verify intent, price uncertainty, evaluate counterparties, coordinate transactions, and settle on outcome-conditional terms before acting. The atomic product is the Decision Asset — a 10-field machine-readable, auditable decision packet (forecast distribution + evidence graph + methodology hash + calibration grade + baseline comparison + mandate scope + counterparty passport + action boundary + settlement hook + audit receipt). Forecasting is the entry primitive, not the product. Six foundational primitives (identity & mandate, reputation & track record, forecast & evidence, coordination & negotiation, outcome-conditional settlement, market-state telemetry) × twelve applied verticals, with V#0 AI Industrial Mobilization & Situational Awareness as the meta-vertical. Market Memory is the moat. Decision Assets persisted to canonical Mnemosyne ledger with public calibration scorecard.",
     "category": "agentic-commerce/decision-assurance",
     "atomic_product": "decision_asset",
     "meta_vertical": "v0-ai-industrial-mobilization-situational-awareness",
     "verticals_live": ["energy", "computing-ai-infrastructure", "healthcare", "climate-physical-risk", "regulatory", "supply-chain", "space", "robotics", "ai-agi-compute", "physics-materials-discovery", "longevity-human-health", "quantum-computing"],
     "verticals_pre_launch": [],
     "primitives_live": ["p1-identity-and-mandate", "p2-reputation-and-track-record", "p3-forecast-and-evidence", "p6-market-state-telemetry"],
-    "primitives_planned": ["p4-coordination-and-negotiation", "p5-insurance-and-outcome"]
+    "primitives_planned": ["p4-coordination-and-negotiation", "p5-outcome-conditional"]
   },
   "endpoints": {
     "mcp": "https://phronesis-jrstinehour.replit.app/mcp",
