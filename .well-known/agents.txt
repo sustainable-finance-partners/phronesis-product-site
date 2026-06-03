@@ -8,8 +8,8 @@ User-Agent: *
 # --- What Phronesis is ---
 # Phronesis is the agentic economy's decision-assurance layer: a neutral
 # substrate where agents and enterprises verify intent, price uncertainty,
-# evaluate counterparties, coordinate transactions, and insure outcomes
-# before acting. Forecasting is the entry primitive, not the product.
+# evaluate counterparties, coordinate transactions, and settle on
+# outcome-conditional terms before acting. Forecasting is the entry primitive, not the product.
 # The atomic product is the Decision Asset — a 10-field machine-readable,
 # auditable decision packet that agents can cite, reuse, dispute, and
 # settle against. Market Memory is the moat.
@@ -80,10 +80,10 @@ Vertical: V12=Quantum-Computing LIVE
 # applied verticals × eight agent roles. The primitives are the durable
 # horizontal infrastructure; verticals are the applied markets.
 Primitive: P1=Identity-and-Mandate LIVE
-Primitive: P2=Reputation-and-Track-Record LIVE (Counterparty Passport)
+Primitive: P2=Reputation-and-Track-Record MVP (Counterparty Passport — UNRATED until observation substrate ships)
 Primitive: P3=Forecast-and-Evidence LIVE (Decision Asset substrate)
 Primitive: P4=Coordination-and-Negotiation planned
-Primitive: P5=Insurance-and-Outcome planned
+Primitive: P5=Outcome-Conditional planned
 Primitive: P6=Market-State-Telemetry LIVE
 
 # --- Substrate properties ---
