@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Phronesis — The agentic economy's decision-assurance layer</title>
-<meta name="description" content="Phronesis is the agentic economy's decision-assurance layer: a neutral substrate where agents and enterprises verify intent, price uncertainty, evaluate counterparties, coordinate transactions, and insure outcomes before acting. The atomic product is the Decision Asset — a machine-readable, auditable decision packet. Six primitives × twelve applied verticals, with V#0 AI Industrial Mobilization & Situational Awareness as the meta-vertical. Market Memory is the moat. MCP + REST co-equal. Agentic-commerce-native. Calibration scorecard public from day one.">
+<meta name="description" content="Phronesis is the agentic economy's decision-assurance layer: the neutral substrate an agent calls before it acts, to turn intent, evidence, and a calibrated forecast into an auditable Decision Asset it can cite, reuse, dispute, and settle against. It sits downstream of the identity and payment rails and consumes them; on whether the judgment holds up, it renders an auditable action boundary and scores that record when reality resolves. Six primitives × twelve applied verticals, V#0 the meta-vertical. Market Memory is the moat. MCP + REST co-equal. Calibration scorecard public from day one.">
 
 <link rel="alternate" type="text/markdown" href="/spec" title="Phronesis API Contract Spec">
 <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 spec">
@@ -18,7 +18,7 @@
 <meta name="agent-bench" content="https://phronesis-jrstinehour.replit.app/bench">
 
 <meta property="og:title" content="Phronesis — The agentic economy's decision-assurance layer">
-<meta property="og:description" content="A neutral substrate where agents verify intent, price uncertainty, evaluate counterparties, coordinate transactions, and insure outcomes before acting. The Decision Asset is the atomic product. Market Memory is the moat. MCP + REST co-equal.">
+<meta property="og:description" content="The neutral substrate an agent calls before it acts: it consumes the identity and payment rails and renders an auditable action boundary on whether the judgment holds up. The Decision Asset is the atomic product. Market Memory is the moat. MCP + REST co-equal.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://phronesisintel.com/">
 <meta name="twitter:card" content="summary_large_image">
@@ -31,7 +31,7 @@
   "alternateName": "Phronesis Decision-Assurance Layer",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web, MCP, REST API",
-  "description": "The agentic economy's decision-assurance layer. Agents and enterprises verify intent, price uncertainty, evaluate counterparties, coordinate transactions, and insure outcomes before acting. The atomic product is the Decision Asset — a 10-field machine-readable, auditable decision packet. Six foundational primitives (identity & mandate, reputation & track record, forecast & evidence, coordination & negotiation, insurance & outcome, market-state telemetry) × twelve applied verticals, with V#0 AI Industrial Mobilization & Situational Awareness as the meta-vertical. Market Memory is the compounding moat.",
+  "description": "The agentic economy's decision-assurance layer. The neutral substrate an agent calls before it acts, to turn intent, evidence, and a calibrated forecast into an auditable Decision Asset it can cite, reuse, dispute, and settle against. It consumes the identity and payment rails and renders an auditable action boundary on whether the judgment holds up, scoring that record when reality resolves. Six foundational primitives (mandate intake & boundary, counterparty track record, forecast & evidence, coordination & negotiation, outcome-conditional settlement, market-state telemetry) × twelve applied verticals, with V#0 AI Industrial Mobilization & Situational Awareness as the meta-vertical. Market Memory is the compounding moat.",
   "url": "https://phronesisintel.com",
   "publisher": {
     "@type": "Organization",
@@ -55,14 +55,14 @@
   "@type": "Service",
   "name": "Phronesis Decision-Assurance Layer",
   "provider": { "@type": "Organization", "name": "Sustainable Finance Partners, LLC" },
-  "serviceType": "Decision-assurance substrate for agentic commerce — verifies intent, prices uncertainty, evaluates counterparties, coordinates transactions, and insures outcomes via the Decision Asset atomic product",
+  "serviceType": "Decision-assurance substrate for agentic commerce — the layer an agent calls before it acts: consumes intent, identity, and payment rails and renders an auditable action boundary via the Decision Asset atomic product",
   "areaServed": "Worldwide",
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
     "name": "Phronesis Verticals",
     "itemListElement": [
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Energy", "description": "Energy transition Decision Assets. LIVE." }},
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Computing + AI Infrastructure", "description": "Phronesis Grid-Compute Decision Assets — the §18 NOW proving market. LIVE." }},
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Computing + AI Infrastructure", "description": "Phronesis Grid-Compute Decision Assets — the NOW proving market. LIVE." }},
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Healthcare", "description": "HIPAA Safe Harbor disease incidence + population health Decision Assets. LIVE." }},
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Space", "description": "Launch cadence, IPO probability, orbital infrastructure Decision Assets. LIVE." }},
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Robotics", "description": "Humanoid + autonomous-system deployment Decision Assets. LIVE." }}
@@ -130,6 +130,22 @@
   margin-bottom: var(--space-4);
 }
 
+.brand-line {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  color: var(--color-deep);
+  font-style: italic;
+  margin: var(--space-4) 0 var(--space-6) 0;
+  line-height: 1.4;
+}
+.honest-scope {
+  font-size: var(--text-sm);
+  color: var(--color-whisper);
+  margin-top: var(--space-6);
+  max-width: 60ch;
+}
+
 .metric-bar {
   display: grid;
   grid-template-columns: 1fr;
@@ -148,7 +164,7 @@
 }
 .metric-value {
   font-family: var(--font-display);
-  font-size: var(--text-3xl);
+  font-size: var(--text-2xl);
   font-weight: 700;
   color: var(--color-deep);
   letter-spacing: -0.025em;
@@ -163,6 +179,35 @@
   margin-top: var(--space-1);
   display: block;
 }
+
+/* §THE STACK — the missing middle, three stacked bands (middle emphasized) */
+.stack-bands {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-8);
+  max-width: 40rem;
+}
+.stack-band {
+  border: 1px solid var(--color-cloud);
+  border-radius: var(--radius-md);
+  padding: var(--space-5) var(--space-6);
+  background: white;
+}
+.stack-band .band-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-whisper);
+}
+.stack-band .band-name { font-weight: 600; color: var(--color-deep); }
+.stack-band.is-phronesis {
+  border-color: var(--color-gold);
+  background: rgba(201, 169, 110, 0.10);
+  box-shadow: 0 1px 0 var(--color-gold);
+}
+.stack-band.is-phronesis .band-name { color: var(--color-gold-text); }
 
 .diff-grid {
   display: grid;
@@ -383,14 +428,16 @@
 <main id="main">
 
 <!-- ============================================================
-     Hero — Phronesis is the decision-assurance layer (D1)
+     Hero — decision-assurance layer (recut v2 §HERO)
      ============================================================ -->
 <section class="hero-product">
   <div class="container">
     <div class="hero-content">
       <span class="tagline-mark">Decision-assurance layer</span>
-      <h1>Decisions you can audit.<br>Receipts you can settle against.</h1>
-      <p class="hero-tagline">Phronesis is the agentic economy's decision-assurance layer: a neutral substrate where agents and enterprises verify intent, price uncertainty, evaluate counterparties, coordinate transactions, and insure outcomes before acting. <strong>Forecasting is the entry primitive, not the product.</strong> The scarce resource in the agentic economy is trusted autonomous judgment — Phronesis is the layer agents call before they act. MCP + REST co-equal at every endpoint. AP2 mandate verified at the door.</p>
+      <h1>Decisions you can audit —<br>before the agent acts.</h1>
+      <p class="brand-line">Payments let agents act. Identity tells us who they act for. Phronesis tells us whether the action is defensible.</p>
+      <p class="hero-tagline">Phronesis is the agentic economy's decision-assurance layer — the neutral substrate an agent calls <strong>before</strong> it acts, to turn intent, evidence, and a calibrated forecast into an <strong>auditable Decision Asset</strong> it can cite, reuse, dispute, and settle against. It sits downstream of the identity and payment rails and <strong>consumes them</strong>; on the one thing they can't speak to — whether the judgment holds up — it <strong>renders an auditable action boundary, and scores that record when reality resolves.</strong> The scarce resource in the agentic economy is trusted autonomous judgment. MCP + REST co-equal at every endpoint. AP2 mandate consumed at the door.</p>
+      <p class="honest-scope">We don't certify an action is correct. We issue an auditable action boundary from evidence maturity, calibration history, mandate context, and decision materiality.</p>
 
       <div class="btn-group" style="margin-top: var(--space-8);">
         <a href="/spec" class="btn btn-primary">View API spec</a>
@@ -399,16 +446,16 @@
 
       <div class="metric-bar">
         <div class="metric">
-          <span class="metric-value">12 of 12</span>
-          <span class="metric-label">Verticals live</span>
+          <span class="metric-value">In production</span>
+          <span class="metric-label">Market Memory v1</span>
         </div>
         <div class="metric">
-          <span class="metric-value">$0.0084–0.0151</span>
-          <span class="metric-label">Inference cost / mint</span>
+          <span class="metric-value">20</span>
+          <span class="metric-label">Decision Assets on the ledger</span>
         </div>
         <div class="metric">
-          <span class="metric-value">24/7</span>
-          <span class="metric-label">Production uptime</span>
+          <span class="metric-value">~Jan 2027</span>
+          <span class="metric-label">First calibration signal</span>
         </div>
         <div class="metric">
           <span class="metric-value">MCP + REST</span>
@@ -420,156 +467,196 @@
 </section>
 
 <!-- ============================================================
-     Market Memory v1 LIVE milestone strip (D4)
+     §THE STACK — the missing middle (recut v2)
      ============================================================ -->
-<section class="milestone-strip" aria-label="Market Memory v1 LIVE milestone">
-  <div class="container">
-    <div class="milestone-row">
-      <span class="milestone-date">Live · 2026-05-25</span>
-      <div>
-        <h3>Market Memory v1 in production</h3>
-        <p>20 Decision Assets on the production calibration ledger — each pre-registered against a falsifiable resolution rule. First substantive calibration signal opens around January 2027 as the earliest Tier-A short-horizon questions resolve.</p>
-      </div>
-      <a href="/scorecard" class="btn btn-secondary">Open scorecard</a>
+<section style="padding: var(--space-16) 0;">
+  <div class="container-narrow">
+    <span class="eyebrow">The missing middle</span>
+    <h2 style="font-size: var(--text-3xl);">The layer the other two assume but can't supply.</h2>
+    <p class="lead" style="margin-top: var(--space-4);">The internet is splitting into two layers everyone is racing to build. <strong>Open agentic commerce</strong> lets agents discover, compose, pay, and settle. <strong>A new identity layer</strong> tells the network <em>who</em> an agent acts for. Between them sits the layer neither provides: <strong>whether the action was defensible.</strong> Payments don't know if the decision was good. Identity doesn't either. Phronesis is the middle — the decision-assurance layer the other two assume but can't supply.</p>
+    <div class="stack-bands" aria-label="The agentic stack: commerce, decision-assurance, identity">
+      <div class="stack-band"><span class="band-label">Layer</span><div class="band-name">Open agentic commerce — discover · compose · pay · settle</div></div>
+      <div class="stack-band is-phronesis"><span class="band-label">The missing middle</span><div class="band-name">Decision-assurance — Phronesis: was the action defensible?</div></div>
+      <div class="stack-band"><span class="band-label">Layer</span><div class="band-name">Identity — who the agent acts for</div></div>
     </div>
   </div>
 </section>
 
 <!-- ============================================================
-     What Phronesis is — decision-assurance-layer frame (D1)
+     §WHERE WE PROVE IT FIRST — motion concentration + archetypes
      ============================================================ -->
-<section style="padding: var(--space-16) 0;">
+<section style="background: var(--color-fog);">
   <div class="container-narrow">
-    <span class="eyebrow">What Phronesis is</span>
-    <h2 style="font-size: var(--text-3xl);">The neutral assurance substrate that agentic markets need before machines can be trusted with real decisions.</h2>
-    <p class="lead" style="margin-top: var(--space-4);">Forecasting is the entry primitive, not the product. Frontier models are rapidly internalizing forecast generation; that is a supply-side improvement, not a substitute. The defensible layer is what no single model call contains: neutrality (a forecaster cannot score itself), persistent memory (a resolved-outcome ledger that compounds on wall-clock time), accountability (auditable, legally-defensible decision packets), and the standard (whoever defines how decision quality is scored). Phronesis is that layer.</p>
-    <p class="lead">The brand name is deliberate. Aristotle distinguished <em>phronesis</em> — practical wisdom — from <em>episteme</em> (systematic knowledge) and <em>techne</em> (craft). Phronesis is the wisdom that guides judgment in domains where rules cannot be mechanically applied. The platform names that function precisely.</p>
-
-    <h3 style="font-size: var(--text-2xl); margin-top: var(--space-12);">The atomic product: the Decision Asset.</h3>
-    <p class="lead" style="margin-top: var(--space-3);">A Decision Asset is a machine-readable, auditable decision packet that an agent or enterprise can cite, reuse, dispute, and settle against. Ten fields, one packet:</p>
-    <ul style="margin-top: var(--space-4); padding-left: var(--space-6);">
-      <li><strong>forecast_distribution</strong> — probability + horizon + scenario branches (not just yes/no)</li>
-      <li><strong>evidence_graph</strong> — primary-source chain + recency + source weight + contradiction flags</li>
-      <li><strong>methodology_hash</strong> — version-pinning + reproducibility anchor</li>
-      <li><strong>calibration_grade</strong> — calibration class + per-class historical performance</li>
-      <li><strong>baseline_comparison</strong> — Phronesis vs naive vs market vs expert vs LLM-agent baselines</li>
-      <li><strong>mandate_scope</strong> — what the requesting agent is authorized to do (AP2 mandate metadata)</li>
-      <li><strong>counterparty_passport</strong> — trust profile of any agent, seller, API, or data source involved</li>
-      <li><strong>action_boundary</strong> — what executes automatically vs what requires human ratification</li>
-      <li><strong>settlement_hook</strong> — what future event resolves this Decision Asset</li>
-      <li><strong>audit_receipt</strong> — content-addressed, immutable provenance anchor — the basis for <em>Proof of Decision</em></li>
-    </ul>
-    <p class="lead" style="margin-top: var(--space-6);">Every mint is content-addressed, persisted to the Mnemosyne ledger, and rendered publicly on the calibration scorecard from the moment it issues. Proof of Decision is the publicly-verifiable form of the audit receipt — agents, regulators, and counterparties can independently confirm any Decision Asset's content and provenance.</p>
-
-    <p class="lead" style="margin-top: var(--space-6);"><a href="/spec">Full 10-field schema in the API contract.</a></p>
+    <span class="eyebrow section-eyebrow">Where we prove it first</span>
+    <h2 class="section-title">One motion. Every domain. Proven first where the stakes are sharpest.</h2>
+    <p class="section-lead">We don't narrow the layer — the economy isn't narrowing, it's converging. Every domain the AI build-out reshapes runs on the same thing: decisions made faster than anyone can check them. So we expand across the whole universe of agentic commerce and concentrate on one motion — the agent, in any domain, calling Phronesis before it acts. The record then accumulates not just across domains but across recurring decision archetypes — deadline-risk, counterparty-risk, capacity-constraint, regulatory-timing — so calibration earned in one market transfers to the next. A single-vertical tool can't do that. <strong>Done through one motion, the breadth becomes the moat.</strong> We're proving it first where the need is sharpest: the power-and-compute decisions straining the grid as AI scales — not a cage, the place we show what the layer does.</p>
   </div>
 </section>
 
 <!-- ============================================================
-     Six primitives architecture — the new canonical Architecture
-     section that supersedes the prior six-commitments framing
-     (per the Decision_Assurance_Layer §6 canonical).
+     §THE FIRST SKU — Power-to-Compute Decision Monitor (named)
+     ============================================================ -->
+<section style="padding: var(--space-16) 0;">
+  <div class="container-narrow">
+    <span class="eyebrow">The first SKU</span>
+    <h2 style="font-size: var(--text-3xl);">Power-to-Compute Decision Monitor.</h2>
+    <p class="lead" style="margin-top: var(--space-4);">Where we prove it first has a name. The <strong>Power-to-Compute Decision Monitor</strong> is agent-callable over MCP + REST (with a human Monitor view), issuing Decision Assets on the decisions straining the grid as AI scales: project-energization probability, interconnection-delay probability, evidence maturity, an action boundary, a <strong>Decision Receipt</strong>, and a material-change alert. The agent calls it before it commits; the human reads the Monitor.</p>
+    <p class="lead" style="font-size: var(--text-sm); color: var(--color-whisper);">Claim-state: the Monitor is the first commercial surface of the live platform; calibration performance is live-dormant until the corpus resolves.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     §WHAT PHRONESIS IS — neutral assurance substrate (recut v2)
+     ============================================================ -->
+<section style="background: var(--color-fog);">
+  <div class="container-narrow">
+    <span class="eyebrow">What Phronesis is</span>
+    <h2 style="font-size: var(--text-3xl);">The neutral assurance substrate agentic markets need before machines can be trusted with real decisions.</h2>
+    <p class="lead" style="margin-top: var(--space-4);">Forecasting is the entry primitive, not the product. Frontier models are rapidly internalizing forecast generation — a supply-side improvement, not a substitute. The defensible layer is what no single model call contains: <strong>neutrality</strong> (a forecaster cannot score itself), <strong>persistent memory</strong> (a resolved-outcome ledger that compounds on wall-clock time), <strong>accountability</strong> (auditable, legally-defensible decision packets), and <strong>the standard</strong> (whoever defines how decision quality is scored). Phronesis is that layer.</p>
+    <p class="lead">The brand name is deliberate. Aristotle distinguished <em>phronesis</em> — practical wisdom — from <em>episteme</em> (systematic knowledge) and <em>techne</em> (craft): the wisdom that guides judgment where rules can't be mechanically applied. The platform names that function precisely.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     §THE DECISION ASSET — fields reconciled + Decision Receipt
+     ============================================================ -->
+<section style="padding: var(--space-16) 0;">
+  <div class="container-narrow">
+    <span class="eyebrow">The atomic product</span>
+    <h2 style="font-size: var(--text-3xl);">The atomic product: the Decision Asset.</h2>
+    <p class="lead" style="margin-top: var(--space-4);">An auditable decision packet an agent or enterprise can cite, reuse, dispute, and settle against. <strong>For an agent, the full ten-field packet. For a human, a Decision Receipt — a six-line card — backed by the full Asset.</strong> Ten fields:</p>
+    <ul style="margin-top: var(--space-4); padding-left: var(--space-6);">
+      <li><strong>forecast_distribution</strong> · <strong>evidence_graph</strong> · <strong>methodology_hash</strong></li>
+      <li><strong>calibration_record</strong> — calibration class + per-class historical performance <em>(honest-empty until the sample resolves; not a letter grade)</em></li>
+      <li><strong>baseline_comparison</strong></li>
+      <li><strong>principal_context + mandate_scope</strong> — the requesting agent's identity + AP2 mandate as presented, and what they authorize — <strong>consumed as input, never trusted for authorization</strong> <em>(authorization is JWT-derived)</em></li>
+      <li><strong>identity_assurance</strong> — an I0–I5 grade of the <em>input's</em> identity-assurance, beside evidence_maturity E0–E5 <em>(grades the input, not the party)</em></li>
+      <li><strong>counterparty_passport</strong> — a counterparty trust profile <em>(MVP — returns UNRATED until enough observations accrue)</em></li>
+      <li><strong>action_boundary</strong> — what executes automatically vs what requires human ratification <em>(the assurance conclusion — an action boundary, not a verdict on correctness)</em></li>
+      <li><strong>settlement_hook</strong> · <strong>audit_receipt</strong> — content-addressed provenance, the basis for <em>Proof of Decision</em></li>
+    </ul>
+    <p class="lead" style="margin-top: var(--space-6);">Every mint is content-addressed, persisted to the Mnemosyne ledger, and rendered on the public scorecard from issue. <strong>Proof of Decision</strong> is the publicly-verifiable form of the audit receipt. Consume-don't-produce: identity + mandate are inputs; the assurance — Proof of Decision, Proof of Outcome — is what Phronesis produces.</p>
+    <p class="lead" style="margin-top: var(--space-6);"><a href="/spec">Full ten-field schema in the API contract.</a></p>
+  </div>
+</section>
+
+<!-- ============================================================
+     §ARCHITECTURE — six primitives, platform-behind (recut v2)
      ============================================================ -->
 <section style="background: var(--color-fog);">
   <div class="container">
     <span class="eyebrow section-eyebrow">Architecture</span>
-    <h2 class="section-title">Six primitives. N applied verticals. One substrate.</h2>
-    <p class="section-lead">The architecture is a matrix: six foundational horizontal primitives, applied across twelve vertical markets, with V#0 AI Industrial Mobilization &amp; Situational Awareness as the meta-vertical. "Six primitives, many markets" — not "twenty unrelated verticals."</p>
+    <h2 class="section-title">Six primitives. N applied verticals. One substrate — behind one motion.</h2>
+    <p class="section-lead">The architecture is a matrix: six foundational horizontal primitives, applied across twelve vertical markets, with V#0 AI Industrial Mobilization &amp; Situational Awareness as the meta-vertical.</p>
 
     <div class="primitives-grid">
       <div class="primitive-card">
         <span class="p-prefix">P1</span>
-        <h3>Identity &amp; Mandate</h3>
-        <p>Verifies agent identity, authority, scope, budget, and permitted action class. AP2 mandate verified at a blocking middleware gate; the substrate enforces the boundary.</p>
+        <h3>Mandate Intake &amp; Boundary</h3>
+        <p>Consumes the agent's presented identity + AP2 mandate as <strong>input</strong>, authenticates the bearer token, and enforces authority, scope, budget, and action-class at a blocking gate. Authorization is JWT-derived — it never trusts client-supplied identity.</p>
       </div>
       <div class="primitive-card">
         <span class="p-prefix">P2</span>
-        <h3>Reputation &amp; Track Record</h3>
-        <p>Scores agents, MCP servers, sellers, APIs, and data providers against outcomes. The Counterparty Passport surfaces the live trust profile; every interaction compounds the substrate.</p>
+        <h3>Counterparty Track Record (MVP)</h3>
+        <p>Scores counterparties against resolved outcomes; the Counterparty Passport returns UNRATED until enough observations accrue. Every interaction compounds the substrate.</p>
       </div>
       <div class="primitive-card">
         <span class="p-prefix">P3</span>
         <h3>Forecast &amp; Evidence</h3>
-        <p>Calibrated, cited, scored probability assets. This is the Decision Asset substrate — every mint primary-source-cited, time-stamped, and rendered on the public scorecard.</p>
+        <p>The Decision Asset substrate — every mint primary-source-cited, time-stamped, and rendered on the public scorecard.</p>
       </div>
       <div class="primitive-card planned">
         <span class="p-prefix">P4</span>
         <h3>Coordination &amp; Negotiation</h3>
-        <p>Multi-agent coordination primitives — auction, bid, match, route, coalition formation. Concrete first surface: the Power-to-Compute RFQ workflow.</p>
+        <p>Multi-agent auction, bid, match, route. Concrete first surface: the Power-to-Compute RFQ workflow.</p>
       </div>
       <div class="primitive-card planned">
         <span class="p-prefix">P5</span>
-        <h3>Insurance &amp; Outcome</h3>
-        <p>Prices residual risk, guarantees, outcome-conditional terms. Outcome-conditional pricing tier; integrates with the Mandate Risk Score pre-transaction control point.</p>
+        <h3>Outcome-Conditional</h3>
+        <p>Contingent engagement: the fee scales with forecast accuracy via escrow + scored settlement; integrates with the pre-transaction Mandate Risk control point.</p>
       </div>
       <div class="primitive-card">
         <span class="p-prefix">P6</span>
         <h3>Market-State Telemetry</h3>
-        <p>Live activity across endpoints, rails, models, marketplaces, counterparties. The agentic-marketplace microstructure feed — the substrate that lets agents route on present-tense market truth.</p>
+        <p>Present-tense market truth agents route on — the agentic-marketplace microstructure feed.</p>
       </div>
     </div>
 
-    <p class="section-lead" style="margin-top: var(--space-8); font-size: var(--text-sm); color: var(--color-whisper);">P1, P2, P3, P6 are LIVE on production today. P4 and P5 are planned — named here per public roadmap discipline, not over-promised as shipped.</p>
+    <p class="section-lead" style="margin-top: var(--space-8); font-size: var(--text-sm); color: var(--color-whisper);">P1, P2, P3, P6 live on production today (P2 honest-empty — UNRATED until the observation substrate ships). P4 and P5 are planned — named per public-roadmap discipline, not over-promised as shipped.</p>
   </div>
 </section>
 
 <!-- ============================================================
-     Substrate commitments — the four enforce-at-code disciplines (D3 reword)
+     §SUBSTRATE DISCIPLINE — enforced at the code layer (recut v2)
      ============================================================ -->
 <section style="padding: var(--space-16) 0;">
   <div class="container">
     <span class="eyebrow section-eyebrow">Substrate discipline</span>
-    <h2 class="section-title">Four commitments enforced at the code layer.</h2>
-    <p class="section-lead">Not asserted in marketing copy. Verified by the codebase.</p>
+    <h2 class="section-title">Enforced at the code layer. Not asserted in marketing copy.</h2>
+    <p class="section-lead">Verified by the codebase.</p>
 
     <div class="diff-grid">
       <div class="diff-card">
         <span class="diff-card-num">01</span>
         <h3>Primary-source citation always</h3>
-        <p>Every Decision Asset's <code>evidence_graph</code> traces to primary sources: FERC filings, EDGAR, USPTO, state PUC dockets, DOE grant awards, peer-reviewed research, satellite telemetry, IFR World Robotics disclosures. No second-hand citations of secondary citations.</p>
+        <p>Every Decision Asset's <code>evidence_graph</code> traces to primary sources — FERC filings, EDGAR, USPTO, state PUC dockets, DOE awards, peer-reviewed research, satellite telemetry. No second-hand citations of secondary citations.</p>
       </div>
       <div class="diff-card">
         <span class="diff-card-num">02</span>
         <h3>Timestamp discipline</h3>
-        <p>Every Decision Asset carries an issue date and an evaluation window. The Mnemosyne ledger is the canonical record of what was known when. Calibration accrues publicly over time. Past performance is observable; no cherry-picking.</p>
+        <p>The Mnemosyne ledger is the canonical record of what was known when. Calibration accrues publicly over time; no cherry-picking.</p>
       </div>
       <div class="diff-card">
         <span class="diff-card-num">03</span>
         <h3>MCP and REST co-equal</h3>
-        <p>Every endpoint that exists for human-driven REST clients exists at parity for autonomous-agent MCP clients. Idempotency keys required, not optional. Errors structured with stable machine-recoverable codes.</p>
+        <p>Every endpoint exists at parity for human REST clients and autonomous-agent MCP clients. Idempotency keys required, not optional; errors structured with stable machine-recoverable codes.</p>
       </div>
       <div class="diff-card">
         <span class="diff-card-num">04</span>
-        <h3>Sub-cent meter event precision</h3>
-        <p>Per-call pricing reports inference cost-attestation with Decimal precision. Stripe meter events fire at canonical persistence to the Mnemosyne ledger. No floating-point drift in the billing path.</p>
+        <h3>Sub-cent meter precision</h3>
+        <p>Per-call pricing reports inference cost-attestation with Decimal precision. Stripe meter events fire at canonical persistence. No floating-point drift in the billing path.</p>
       </div>
       <div class="diff-card">
         <span class="diff-card-num">05</span>
-        <h3>AP2 mandate at the door</h3>
-        <p>Autonomous agents authenticate via Google Agent Payments Protocol mandates verified at a blocking middleware gate. Mandate signature verification budget is approximately two to five seconds. Agents act within mandate scope; the substrate enforces the boundary.</p>
+        <h3>Mandate consumed at the door, authorization JWT-derived</h3>
+        <p>Autonomous agents present an AP2 mandate at a blocking gate. The substrate <strong>consumes</strong> client-supplied identity as input but <strong>never trusts it for authorization</strong> — the authoritative principal is JWT-derived.</p>
       </div>
       <div class="diff-card">
         <span class="diff-card-num">06</span>
         <h3>Per-tenant isolation at the substrate</h3>
-        <p>Cross-tenant data access is architecturally prevented at the boundary publish layer. Customer queries never see other customers' data. The isolation is enforced by the code path itself, not by configuration or policy.</p>
+        <p>Cross-tenant data access is architecturally prevented at the boundary publish layer — enforced by the code path itself, not by configuration or policy.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ============================================================
-     Twelve verticals + V#0 meta-vertical (D2 sync)
+     §THE BENCH — meaningful before resolution (recut v2 NEW)
      ============================================================ -->
-<section id="verticals-snapshot" style="background: var(--color-fog);">
+<section style="background: var(--color-fog);">
+  <div class="container-narrow">
+    <span class="eyebrow">The Decision Quality Bench</span>
+    <h2 style="font-size: var(--text-3xl);">A measuring stick that means something before a single forecast resolves.</h2>
+    <p class="lead" style="margin-top: var(--space-4);">The Decision Quality Bench is honest-empty on <em>calibration</em> until outcomes resolve — but it is <strong>not empty.</strong> Measurable today: <strong>P-ID</strong> (identifiability — no duplicate-merge), <strong>P-IMM</strong> (immutability — supersession discipline), <strong>P-EVD</strong> (evidence maturity), <strong>P-BASE</strong> (baseline presence + a proper resolution rule). Activating as outcomes resolve (first signal ~<strong>Jan 2027</strong>): <strong>P-CAL</strong> (calibration), <strong>P-ACT</strong> (action-boundary correctness), <strong>P-BBL</strong> (baseline-beating). Where a number isn't earned, we show a blank we can defend.</p>
+    <div style="text-align: center; margin-top: var(--space-6);">
+      <a href="/scorecard" class="btn btn-secondary">Open the Bench</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §VERTICAL AXIS — platform-behind (recut v2)
+     ============================================================ -->
+<section id="verticals-snapshot" style="padding: var(--space-16) 0;">
   <div class="container">
     <span class="eyebrow section-eyebrow">Vertical axis</span>
-    <h2 class="section-title">Twelve verticals. One meta-vertical. One substrate.</h2>
-    <p class="section-lead">Twelve applied verticals on production today — energy, computing &amp; AI infrastructure, healthcare, climate physical risk, regulatory, supply chains, space, robotics, AI/AGI, physics &amp; materials discovery, longevity &amp; human health, and quantum computing. V#0 sits above them as the meta-vertical: AI Industrial Mobilization &amp; Situational Awareness — the cross-cutting view that watches the agentic-economy build-out across every applied vertical at once. Roughly seventy percent of the architecture is vertical-agnostic; the per-vertical layer specializes the prompt library and the data plane.</p>
+    <h2 class="section-title">Twelve verticals on one substrate — the breadth that becomes the moat.</h2>
+    <p class="section-lead">Twelve applied verticals stood up on the shared substrate — energy; computing &amp; AI infrastructure; healthcare; climate; regulatory; supply chains; space; robotics; AI/AGI; physics &amp; materials; longevity; quantum — with V#0 the meta-vertical above them. Roughly seventy percent of the architecture is vertical-agnostic; the per-vertical layer specializes the prompt library and the data plane. The calibration substance concentrates where decisions resolve first — today, grid-compute. The breadth isn't twelve products; it's one motion accumulating a cross-archetype record no single-vertical tool can match.</p>
 
     <ul class="vertical-list">
       <li class="vertical-item"><span class="vertical-num">V#0</span><span class="vertical-name">AI Industrial Mobilization &amp; Situational Awareness <em>(meta-vertical)</em></span><span class="vertical-status live">Live</span></li>
       <li class="vertical-item"><span class="vertical-num">V#1</span><span class="vertical-name">Energy Transition</span><span class="vertical-status live">Live</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#2</span><span class="vertical-name">Computing + AI Infrastructure</span><span class="vertical-status live">Live</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#2</span><span class="vertical-name">Computing + AI Infrastructure <em>(proving first)</em></span><span class="vertical-status live">Live</span></li>
       <li class="vertical-item"><span class="vertical-num">V#3</span><span class="vertical-name">Healthcare (HIPAA Safe Harbor)</span><span class="vertical-status live">Live</span></li>
       <li class="vertical-item"><span class="vertical-num">V#4</span><span class="vertical-name">Climate Physical Risk</span><span class="vertical-status live">Live</span></li>
       <li class="vertical-item"><span class="vertical-num">V#5</span><span class="vertical-name">Regulatory</span><span class="vertical-status live">Live</span></li>
@@ -589,25 +676,25 @@
 </section>
 
 <!-- ============================================================
-     The moat — Market Memory (D1 + dispatch AC-D1-5)
+     §THE MOAT — Market Memory, re-weighted (recut v2)
      ============================================================ -->
 <section style="padding: var(--space-16) 0;">
   <div class="container-narrow">
     <span class="eyebrow">The moat</span>
     <h2 style="font-size: var(--text-3xl);">Market Memory — the calibration ledger that compounds on wall-clock time.</h2>
-    <p class="lead" style="margin-top: var(--space-4);">The long-term moat is not the model, not the API, not the UI — it is the resolved-outcome ledger. Every Decision Asset that resolves adds a row to a track record that no competitor can shortcut. Calibration history compounds per vertical, per horizon class, per methodology version. Counterparty Passport history compounds across every cross-agent interaction. Dispute and adjudication history compounds with every resolution. Cross-vertical priors strengthen adjacent verticals via the shared substrate.</p>
-    <p class="lead">Phronesis Market Memory is the durable asset. The substrate-investment we make today is not consumed at delivery; it compounds toward the moat the agentic economy will need in 2030 and beyond.</p>
+    <p class="lead" style="margin-top: var(--space-4);">Three moats, weighted honestly. <strong>The durable one is the resolved-outcome corpus:</strong> every Decision Asset that resolves adds a row no competitor can shortcut — calibration per archetype, per horizon, per methodology; Counterparty Passport history; dispute history; cross-archetype priors. It deepens on wall-clock time and cannot be back-dated — not by a competitor, not by a better-funded incumbent, not even by the more powerful models coming.</p>
+    <p class="lead">The <strong>agent-native rail</strong> is the timing asymmetry that fills that corpus first — we bet on agent-native distribution now, while incumbents are human sales-orgs; the two compound. And <strong>neutrality is structural, not asserted:</strong> methodology-locked, corrections by supersession only, a public scorecard, and a policy that no customer can buy a favorable action boundary.</p>
   </div>
 </section>
 
 <!-- ============================================================
-     CTA band — dual-surface engagement
+     §ENGAGE — dual-surface (recut v2)
      ============================================================ -->
 <section class="cta-band">
   <div class="container-narrow" style="text-align: center;">
     <span class="eyebrow" style="color: var(--color-gold);">Engage</span>
     <h2>Two paths in.</h2>
-    <p class="section-lead" style="color: var(--color-cloud);">If you are an agent acting on behalf of a capital allocator, start at the contract surface. If you are a human, the Decision Quality Bench is the most useful place to begin.</p>
+    <p class="section-lead" style="color: var(--color-cloud);">If you're an agent acting on behalf of a capital allocator, start at the contract surface. If you're a human, the Decision Quality Bench is the most useful place to begin.</p>
 
     <div class="btn-group" style="justify-content: center;">
       <a href="/spec" class="btn btn-primary">Contract surface</a>

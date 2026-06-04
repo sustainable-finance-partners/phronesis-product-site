@@ -1,0 +1,26 @@
+{
+  "surface": "evals",
+  "updated": "2026-06-02",
+  "bench": "Decision Quality Bench",
+  "discipline": "honest-empty and published at exact status — where a number is not earned, a defensible blank is shown; never a fabricated metric",
+  "scorecard": "https://phronesis-jrstinehour.replit.app/scorecard.json",
+  "calibration_ledger": {
+    "decision_assets": 20,
+    "each_pre_registered_against": "a falsifiable resolution rule",
+    "first_calibration_signal": "~2027-01"
+  },
+  "modules": {
+    "measurable_now": [
+      { "id": "P-ID", "name": "Identifiability", "status": "measurable", "definition": "no duplicate-merge — every Decision Asset is uniquely identifiable" },
+      { "id": "P-IMM", "name": "Immutability / supersession", "status": "measurable", "definition": "corrections by supersession only; the ledger is append-only" },
+      { "id": "P-EVD", "name": "Evidence maturity", "status": "measurable", "definition": "the E0–E5 grade of the evidence graph" },
+      { "id": "P-BASE", "name": "Baseline presence + resolution rule", "status": "measurable", "definition": "a paired baseline is frozen at mint and a proper resolution rule is set" }
+    ],
+    "resolution_activated": [
+      { "id": "P-CAL", "name": "Calibration", "status": "honest_empty", "activates": "as outcomes resolve", "first_signal": "~2027-01" },
+      { "id": "P-ACT", "name": "Action-boundary correctness", "status": "honest_empty", "activates": "as outcomes resolve", "first_signal": "~2027-01" },
+      { "id": "P-BBL", "name": "Baseline-beating", "status": "honest_empty", "activates": "as outcomes resolve", "first_signal": "~2027-01" }
+    ]
+  },
+  "note": "the Bench means something before a single forecast resolves: the measurable-now modules are live; the calibration modules are honest-empty until the corpus resolves"
+}

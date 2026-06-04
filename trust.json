@@ -1,0 +1,34 @@
+{
+  "surface": "trust",
+  "updated": "2026-06-02",
+  "operator": {
+    "legal_name": "Sustainable Finance Partners, LLC",
+    "trade_name": "Phronesis",
+    "product_website": "https://phronesisintel.com"
+  },
+  "neutrality": {
+    "methodology_locked": true,
+    "corrections": "supersession_only",
+    "public_scorecard": "https://phronesis-jrstinehour.replit.app/scorecard.json",
+    "auditor_independence": "a neutral third party that assures any model or agent — not a payment network or model lab grading work it also profits from; a forecaster cannot score itself",
+    "conflict_of_interest_policy": "Phronesis does not transact, bind, or take the action it assures — it issues an auditable action boundary; the calling agent or human retains the action",
+    "customer_influence_policy": "no customer can buy a favorable action boundary"
+  },
+  "integrity_floor": {
+    "no_fabrication": "where a number is not earned, a defensible blank is shown — never a fabricated metric",
+    "primary_source_citation_required": true,
+    "timestamp_discipline": "the Mnemosyne ledger is the canonical record of what was known when",
+    "untrusted_principal_context": "client-supplied identity and mandate are consumed as input and never trusted for authorization — the authoritative principal is JWT-derived"
+  },
+  "live_invariants": [
+    "MCP and REST co-equal at every endpoint, through one boundary publish gate",
+    "every Decision Asset carries attribution, timestamp, confidence, and audit",
+    "per-tenant isolation architecturally prevented at the boundary publish layer",
+    "prompt versioning is a reviewed code change, not runtime config"
+  ],
+  "proof_of_decision": "every audit_receipt is publicly verifiable — agents, regulators, and counterparties can independently confirm any Decision Asset's content and provenance",
+  "external_review": {
+    "red_team": "standing adversarial review of any consequential capability before it is wired",
+    "appeals": "supersession + dispute path on any published Decision Asset"
+  }
+}
