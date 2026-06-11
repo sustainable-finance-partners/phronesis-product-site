@@ -1,40 +1,44 @@
 # Phronesis
 
-> Verified-correctness forecasting for the energy transition. Phronesis mints probabilistic forecasts across twelve verticals — every forecast is primary-source-cited, time-stamped, persisted to a canonical ledger, governed by per-vertical Themis rule clusters, and rendered publicly on a calibration scorecard. API-forward, agentic-commerce-native, twelve-vertical-complete on production.
+> The decision-assurance layer for the agentic economy: the neutral substrate an AI agent
+> calls before it acts, to turn intent, evidence, and a calibrated forecast into an auditable
+> Decision Asset it can cite, reuse, dispute, and settle against. Phronesis sits downstream of
+> the identity and payment rails and consumes them; it certifies the one thing they can't —
+> whether the action was defensible. The atomic product is the Decision Asset. Market Memory —
+> the resolved-outcome calibration ledger — is the moat. MCP + REST co-equal at every endpoint.
+> Calibration is honest-empty until outcomes resolve (first signal ~Jan 2027). Pre-revenue.
 
-Phronesis is built for AI agents as much as humans. The transports are co-equal: an MCP server and a REST API, both passing through the same governance gate. Agents discover, evaluate, buy, and verify Phronesis forecasts programmatically.
+Phronesis is built for AI agents as much as humans. The transports are co-equal: an MCP server
+and a REST API, both passing through the same deny-by-default action gate. Agents discover,
+evaluate, call, and verify Phronesis Decision Assets programmatically. Phronesis never acts —
+it returns an action boundary and an auditable record; the agent and its principal keep the
+decision.
+
+## One motion, proven first where the stakes are sharpest
+One motion — the agent calls Phronesis before a consequential action. Proven first on the
+Power-to-Compute Decision Monitor (the energy × compute decisions straining the grid as AI
+scales). The platform stands twelve applied verticals on one shared substrate, but the
+calibration substance concentrates where decisions resolve first — today, grid-compute. The
+breadth is not twelve finished products; it is one motion accumulating a cross-archetype
+record (deadline-risk, counterparty-risk, capacity-constraint, regulatory-timing) no
+single-vertical tool can match.
 
 ## Endpoints
-
 - [API base](https://phronesis-jrstinehour.replit.app): REST surface — production base URL.
 - [MCP server](https://phronesis-jrstinehour.replit.app/mcp): co-equal Model Context Protocol transport.
-- [Catalog](https://phronesis-jrstinehour.replit.app/v1/catalog): the 12-vertical inventory + per-vertical archetypes (public).
-- [Pricing](https://phronesis-jrstinehour.replit.app/v1/pricing): tier surface — tiers 1–6 incl. depth tiers + outcome-conditional (public).
-- [Decision API](https://phronesis-jrstinehour.replit.app/v1/decision/forecast): POST a structured forecast request, receive a canonical decision-forecast (point forecast + p10/p50/p90 uncertainty band + assumptions + alternatives + sensitivity + counterfactuals + sources + cost attestation + audit trail). JWT-gated.
-- [Substrate completeness](https://phronesis-jrstinehour.replit.app/v1/substrate/completeness): the 12-vertical-deep substrate-completeness manifest (public).
+- [Catalog](https://phronesis-jrstinehour.replit.app/v1/catalog): the vertical inventory + per-vertical archetypes (public).
+- [Pricing](https://phronesis-jrstinehour.replit.app/v1/pricing): tier surface (public).
+- [Decision API](https://phronesis-jrstinehour.replit.app/v1/decision/forecast): POST a proposed action + context; receive a Decision Asset — forecast distribution, evidence graph, evidence-maturity, an action boundary, and a content-addressed Decision Receipt. JWT-gated.
 
 ## Verification
-
-- [Calibration leaderboard](https://phronesis-jrstinehour.replit.app/calibration/leaderboard): per-vertical empirical accuracy, scored against held-out ground truth (public).
-- [Scorecard](https://phronesis-jrstinehour.replit.app/scorecard.json): the 12-vertical accuracy scorecard baseline (public).
-- [Trust Receipt](https://phronesis-jrstinehour.replit.app/v1/trust/receipt/): per-forecast verifiability artifact — append a forecast id; returns the Themis rules applied + cost attestation + audit-trail id (public).
-
-## Verticals
-
-The twelve verticals (each ring-active and Themis-governed): V#1 Energy, V#2 Compute & AI Infrastructure, V#3 Healthcare, V#4 Climate, V#5 Regulatory, V#6 Supply-Chain, V#7 Space, V#8 Robotics, V#9 AI/AGI, V#10 Physics & Materials Discovery, V#11 Longevity & Human Health, V#12 Quantum Computing. See the [catalog](https://phronesis-jrstinehour.replit.app/v1/catalog) for live per-vertical archetypes.
+- [Decision Quality Bench / Scorecard](https://phronesis-jrstinehour.replit.app/scorecard.json): measurable today — identifiability (P-ID), immutability (P-IMM), evidence-maturity (P-EVD), baseline-presence (P-BASE). Calibration (P-CAL), action-boundary correctness (P-ACT), baseline-beating (P-BBL) activate as outcomes resolve (~Jan 2027). Where a number isn't earned, the Bench shows a blank it can defend — not a manufactured score.
+- [Trust Receipt](https://phronesis-jrstinehour.replit.app/v1/trust/receipt/): per-decision verifiability artifact — the basis for Proof of Decision.
 
 ## Agent discovery
-
 - [agent-discovery.json](https://phronesis-jrstinehour.replit.app/.well-known/agent-discovery.json): service identity + capability summary.
-- [cost-attestation.json](https://phronesis-jrstinehour.replit.app/.well-known/cost-attestation.json): per-call cost-attestation discipline.
-- [performance.json](https://phronesis-jrstinehour.replit.app/.well-known/performance.json) · [authority.json](https://phronesis-jrstinehour.replit.app/.well-known/authority.json) · [citations.json](https://phronesis-jrstinehour.replit.app/.well-known/citations.json) · [documentation.json](https://phronesis-jrstinehour.replit.app/.well-known/documentation.json) · [evaluation-bench.json](https://phronesis-jrstinehour.replit.app/.well-known/evaluation-bench.json): the 8 marketing-to-agents discovery vectors.
+- agents.txt · agentic-commerce.json · the .well-known discovery vectors.
 
-## Skills
-
-- [Skills setup](https://phronesisintel.com/skills/setup.md): curl-able setup guide for wiring Phronesis into Claude Code, Cursor, Codex, or the Vercel Skills CLI.
-- Phronesis Skills repo: `sustainable-finance-partners/skills` — install via `/plugin marketplace add sustainable-finance-partners/skills` (Claude Code) or `npx skills add sustainable-finance-partners/skills` (Vercel CLI).
-
-## Optional
-
-- [API contract spec](https://phronesisintel.com/spec): the Hermes contract-v1 response shapes.
-- [OpenAPI](https://phronesis-jrstinehour.replit.app/openapi.json): OpenAPI 3.1 spec.
+## What's live vs forward (honest)
+- Live: the production platform; the deny-by-default, independently red-teamed action gate; the Decision Asset + Receipt; agent-discoverable surfaces; the public Decision Quality Bench (pre-resolution measures).
+- In flight: the OAuth-consent connector path (flag-gated).
+- Forward (labeled): the calibration record (honest-empty until ~Jan 2027); local/offline assurance nodes.
