@@ -43,8 +43,11 @@ jobs:
         run: |
           set -o pipefail
 
-          # Allow-listed file paths (legal substrate + crawler directives per §2.2 + §2.3)
-          ALLOWLIST_REGEX='^(privacy-policy\.html|terms-of-service\.html|refund-policy\.html|robots\.txt)$'
+          # Allow-listed file paths (legal substrate + crawler directives per §2.2 + §2.3).
+          # privacy.html added 2026-06-11: the Phronesis-domain privacy policy
+          # (recut §6) — same GDPR Article 28 / CCPA subprocessor-disclosure
+          # exemption this list already grants the parent-site legal files.
+          ALLOWLIST_REGEX='^(privacy\.html|privacy-policy\.html|terms-of-service\.html|refund-policy\.html|robots\.txt)$'
 
           # Banned-language patterns (case-insensitive). Match (a) model-vendor +
           # tier/family names; (b) explicit model-id strings; (c) pricing.json

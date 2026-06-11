@@ -43,11 +43,6 @@ single-vertical tool can match.
 - [API contract spec](https://phronesisintel.com/spec): the Hermes contract-v1 response shapes.
 - [OpenAPI](https://phronesis-jrstinehour.replit.app/openapi.json): OpenAPI 3.1 spec.
 
-## Skills
-
-- [Skills setup](https://phronesisintel.com/skills/setup.md): curl-able setup guide for wiring Phronesis into Claude Code, Cursor, Codex, or the Vercel Skills CLI.
-- Phronesis Skills repo: `sustainable-finance-partners/skills` — install via `/plugin marketplace add sustainable-finance-partners/skills` (Claude Code) or `npx skills add sustainable-finance-partners/skills` (Vercel CLI).
-
 ## What's live vs forward (honest)
 - Live: the production platform; the deny-by-default, independently red-teamed action gate; the Decision Asset + Receipt; agent-discoverable surfaces; the public Decision Quality Bench (pre-resolution measures).
 - In flight: the OAuth-consent connector path (flag-gated).
