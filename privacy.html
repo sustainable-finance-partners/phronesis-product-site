@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Phronesis</title>
+<meta name="description" content="Phronesis privacy policy — Sustainable Finance Partners, LLC. What we collect and don't, per-tenant isolation, processors, retention, your GDPR/CCPA rights, essential-only cookies.">
+<link rel="canonical" href="https://phronesisintel.com/privacy">
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+.phronesis-mark { display:inline-flex; align-items:center; gap:var(--space-2); font-family:var(--font-display); font-weight:700; color:var(--color-deep); letter-spacing:-0.01em; }
+.phronesis-mark .glyph { width:1.5rem; height:1.5rem; border-radius:50%; background:var(--gradient-accent); position:relative; }
+.phronesis-mark .glyph::after { content:''; position:absolute; inset:0.4rem; background:var(--color-deep); border-radius:50%; }
+.policy h2 { margin-top:var(--space-8); }
+.policy ul { margin:var(--space-3) 0 var(--space-3) var(--space-5); display:grid; gap:var(--space-2); }
+.policy p { margin:var(--space-3) 0; }
+.effective { font-family:var(--font-mono); font-size:var(--text-sm); color:var(--color-slate, #5b6472); }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <nav class="nav" aria-label="Primary">
+      <a href="/" class="phronesis-mark"><span class="glyph" aria-hidden="true"></span><span>Phronesis</span></a>
+      <ul class="nav-links">
+        <li><a href="/verticals">Verticals</a></li>
+        <li><a href="/scorecard">Scorecard</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/spec">API</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section style="background: var(--gradient-hero); padding: var(--space-16) 0 var(--space-8) 0;">
+  <div class="container-narrow">
+    <span class="eyebrow">Legal</span>
+    <h1>Privacy Policy</h1>
+    <p class="effective"><strong>Effective date:</strong> [stamped at publication]</p>
+  </div>
+</section>
+
+<section style="padding: var(--space-12) 0;">
+  <div class="container-narrow policy">
+
+    <h2>1. Who we are</h2>
+    <p>Phronesis is operated by <strong>Sustainable Finance Partners, LLC</strong>, a United States limited liability company [registered address — owner-supplied at merge]. Phronesis is a decision-assurance platform: it produces auditable Decision Assets and publishes a public decision-quality benchmark. Contact: <strong>support@phronesisintel.com</strong>.</p>
+
+    <h2>2. What this policy covers</h2>
+    <p>The <code>phronesisintel.com</code> surfaces, the public Decision-Assurance Connector (read-only), and the Phronesis platform.</p>
+
+    <h2>3. Data we collect — and don't</h2>
+    <ul>
+      <li><strong>The public connector is read-only and requires no personal data.</strong> Connecting via OAuth establishes that a user or agent is authorized for read-only public access (mapped to a shared "public-read" identity); we do not require or process personal profiles for the read-only public tools (<code>health_check</code>, <code>bench_query</code>).</li>
+      <li><strong>Operational and security logs:</strong> request metadata and action-gate decision events (which tool was called, the tier outcome) — used to operate, secure, and audit the service. Access-controlled.</li>
+      <li><strong>Account / contact data</strong> (only if you contact us or hold an account): the name and email you provide — used to respond and administer the relationship.</li>
+      <li><strong>No special-category or sensitive personal data</strong> is sought through the public connector; no consequential, write, or personal-data tools are exposed by it.</li>
+      <li><strong>We do not sell personal data, and we do not share it for cross-context behavioral advertising.</strong></li>
+    </ul>
+
+    <h2>4. How we use data — and the legal bases</h2>
+    <p>To operate, secure, and improve the service; to respond to inquiries; and — for resolved decision outcomes — to maintain our public calibration record in de-identified or redacted form where applicable. We do not use your data to train third-party models, and we do not sell it. Where GDPR applies, our legal bases are: <strong>performance of a contract</strong> (accounts and paid services); <strong>legitimate interests</strong> (service operation, security, fraud prevention, and the de-identified public calibration record); <strong>legal obligation</strong> (records we are required to keep); and <strong>consent</strong> where we ask for it (e.g., optional communications), which you may withdraw at any time.</p>
+
+    <h2>5. Isolation + security</h2>
+    <p><strong>Per-tenant isolation is architectural</strong> — customer data does not cross tenants, enforced at the code path itself. We apply least-privilege access and data minimization, and encrypt data in transit and at rest.</p>
+
+    <h2>6. Sharing — our service providers</h2>
+    <p>We share data only with the service providers necessary to run the platform, under contract, and as required by law. Current processors: <strong>Replit, Inc.</strong> (cloud hosting and managed database infrastructure) · <strong>Stripe, Inc.</strong> (payment processing, paid tiers) · <strong>Google LLC</strong> (business email and support workspace) · <strong>Anthropic, PBC</strong> (model inference supporting forecast and evidence generation). We will update this list as our providers change. We do not sell personal data to anyone.</p>
+
+    <h2>7. Retention</h2>
+    <p>We retain data no longer than needed for the purposes above or as law requires. Policy defaults: <strong>operational and security logs — 90 days</strong> (rolling), longer only where required for an active security investigation or legal obligation; <strong>account and billing records — the life of the relationship plus the period required by tax and audit law (up to 7 years)</strong>; <strong>support correspondence — 24 months</strong>. <strong>Immutable decision records persist by design</strong> — the public ledger is corrected by supersede-and-reference, never edited in place — and are disclosed as such; personal data within them is handled per §8.</p>
+
+    <h2>8. Your rights</h2>
+    <p>Subject to applicable law (including <strong>GDPR</strong> and <strong>CCPA/CPRA</strong>), you may request: <strong>access</strong> to your personal data · <strong>correction</strong> · <strong>deletion</strong> (honored for personal data; where an immutable decision record must persist, we de-identify rather than destroy the record) · <strong>restriction of</strong> or <strong>objection to</strong> certain processing · <strong>data portability</strong> · <strong>opt-out of sale or sharing</strong> (we do neither) · and you will not be discriminated against for exercising any right. To exercise a right, email <strong>support@phronesisintel.com</strong> from the address associated with your data; we apply reasonable verification before acting and respond within the timelines applicable law requires (30 days under GDPR; 45 days under CCPA, extendable as permitted). You may also lodge a complaint with your supervisory authority or state regulator.</p>
+
+    <h2>9. Cookies / analytics</h2>
+    <p>We run an <strong>essential-only</strong> posture: no advertising cookies, no third-party analytics or tracking scripts on <code>phronesisintel.com</code>. Any state we store in your browser exists solely to make the site function. If this posture ever changes, this policy will be updated first and consent obtained where required.</p>
+
+    <h2>10. Children</h2>
+    <p>The service is not directed to children and does not knowingly collect children's data.</p>
+
+    <h2>11. International transfers</h2>
+    <p>Phronesis is operated from the <strong>United States</strong>, and data is processed in the United States. If you access the service from the EEA, UK, or Switzerland, transfers to our processors are protected by those processors' standard contractual clauses and/or Data Privacy Framework certifications (our processors in §6 maintain these mechanisms); we do not operate EU infrastructure of our own.</p>
+
+    <h2>12. Changes + contact</h2>
+    <p>We will post changes here with an updated effective date. Questions: <strong>support@phronesisintel.com</strong> · Sustainable Finance Partners, LLC.</p>
+
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h4>Phronesis</h4>
+        <p>The agentic economy's decision-assurance layer. Flagship platform of Sustainable Finance Partners, LLC.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Platform</h5>
+        <ul class="footer-links">
+          <li><a href="/spec">API spec</a></li>
+          <li><a href="/openapi.json">OpenAPI</a></li>
+          <li><a href="/.well-known/agents.txt">agents.txt</a></li>
+          <li><a href="/.well-known/agentic-commerce.json">agentic-commerce.json</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Verticals</h5>
+        <ul class="footer-links">
+          <li><a href="/verticals">All twelve + V#0</a></li>
+          <li><a href="/scorecard">Decision Quality Bench</a></li>
+          <li><a href="https://phronesis-jrstinehour.replit.app/trust">Trust Center</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul class="footer-links">
+          <li><a href="https://sustainablefinancepartner.com/terms-of-service">Terms of Service</a></li>
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="https://sustainablefinancepartner.com/refund-policy">Refund Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Sustainable Finance Partners, LLC. All rights reserved.</p>
+      <p>Phronesis is the flagship product of <a href="https://sustainablefinancepartner.com">Sustainable Finance Partners, LLC</a>.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
