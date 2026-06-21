@@ -47,5 +47,5 @@ Sitemap: https://phronesisintel.com/sitemap.xml
 # Agent discovery
 # The agents.txt file at /.well-known/agents.txt is the canonical agent manifest.
 # Machine-readable pricing at /pricing.json
-# OpenAPI spec at /openapi.json
+# OpenAPI spec at https://api.phronesisintel.com/.well-known/openapi.json
 # Markdown contract docs at /spec
