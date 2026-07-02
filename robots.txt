@@ -1,44 +1,42 @@
 # robots.txt for phronesisintel.com (Phronesis product site)
-# Last updated: 2026-04-30
+# Last updated: 2026-07-01
+#
+# Phronesis crawl policy - Search-visible, Agent-callable, Training-protected.
+# Content on these pages may be indexed and referenced. Use for AI model
+# training requires a license: support@phronesisintel.com. Agents: call the
+# platform, don't scrape it - start at /llms.txt and
+# https://api.phronesisintel.com/.well-known/mcp.json.
 
-# Standard search engine crawlers — full access
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: DuckDuckBot
-Allow: /
-
-# LLM training and agent-discovery crawlers — explicit allowlist
-# Phronesis is built for agent-customer-first; agent crawlability is intentional.
+# Purpose-separated training-class crawlers: blocked pending a license.
 User-agent: GPTBot
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: anthropic-ai
-Allow: /
+Disallow: /
 
 User-agent: Google-Extended
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: CCBot
-Allow: /
-
-User-agent: cohere-ai
-Allow: /
+Disallow: /
 
 User-agent: Applebot-Extended
-Allow: /
+Disallow: /
 
-# Default — full access
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+# Search-class and agent-class crawlers: welcome on all public surfaces.
+# Content Signals (contentsignals.org): search indexing yes, AI input
+# (reference/grounding) yes, AI training no.
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
 
 # Sitemaps
