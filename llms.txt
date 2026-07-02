@@ -43,6 +43,11 @@ single-vertical tool can match.
 - [API contract spec](https://phronesisintel.com/spec): the Hermes contract-v1 response shapes.
 - [OpenAPI](https://phronesis-jrstinehour.replit.app/openapi.json): OpenAPI 3.1 spec.
 
+## Access policy (Search-visible · Agent-callable · Training-protected)
+Content on these pages may be indexed and referenced. Use for model training requires a
+license: support@phronesisintel.com. Agents: the platform surfaces above are the intended
+path — call us, don't scrape us.
+
 ## What's live vs forward (honest)
 - Live: the production platform; the deny-by-default, independently red-teamed action gate; the Decision Asset + Receipt; agent-discoverable surfaces; the public Decision Quality Bench (pre-resolution measures).
 - In flight: the OAuth-consent connector path (flag-gated).
