@@ -22,11 +22,11 @@
     "primitives_planned": ["p4-coordination-and-negotiation", "p5-outcome-conditional"]
   },
   "endpoints": {
-    "mcp": "https://phronesis-jrstinehour.replit.app/mcp",
-    "rest_base": "https://phronesis-jrstinehour.replit.app",
+    "mcp": "https://api.phronesisintel.com/mcp",
+    "rest_base": "https://api.phronesisintel.com",
     "openapi": "https://phronesisintel.com/openapi.json",
     "spec_documentation": "https://phronesisintel.com/spec",
-    "calibration_scorecard": "https://phronesis-jrstinehour.replit.app/scorecard.json",
+    "calibration_scorecard": "https://api.phronesisintel.com/scorecard.json",
     "pricing_machine_readable": "https://phronesisintel.com/pricing.json"
   },
   "authentication": {

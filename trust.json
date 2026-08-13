@@ -9,7 +9,7 @@
   "neutrality": {
     "methodology_locked": true,
     "corrections": "supersession_only",
-    "public_scorecard": "https://phronesis-jrstinehour.replit.app/scorecard.json",
+    "public_scorecard": "https://api.phronesisintel.com/scorecard.json",
     "auditor_independence": "a neutral third party that assures any model or agent — not a payment network or model lab grading work it also profits from; a forecaster cannot score itself",
     "conflict_of_interest_policy": "Phronesis does not transact, bind, or take the action it assures — it issues an auditable action boundary; the calling agent or human retains the action",
     "customer_influence_policy": "no customer can buy a favorable action boundary"
