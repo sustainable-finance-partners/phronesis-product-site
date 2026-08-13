@@ -1,0 +1,6 @@
+# Advertised-URL honesty (Ledger 15.10.550): the already-anchored Decision Assets bake
+# immutable phronesisintel.com/audit + /methodology URLs; the app host serves + anchor-verifies
+# them. These bridges make every baked URL resolve. agents.txt: bare-path alias for hygiene.
+/audit/* https://api.phronesisintel.com/audit/:splat 301
+/methodology/:vertical/decision-asset-v1.0 https://api.phronesisintel.com/methodology/:vertical/decision-asset-v1.0 301
+/agents.txt /.well-known/agents.txt 301

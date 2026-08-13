@@ -3,7 +3,7 @@
   "updated": "2026-06-02",
   "bench": "Decision Quality Bench",
   "discipline": "honest-empty and published at exact status — where a number is not earned, a defensible blank is shown; never a fabricated metric",
-  "scorecard": "https://phronesis-jrstinehour.replit.app/scorecard.json",
+  "scorecard": "https://api.phronesisintel.com/scorecard.json",
   "calibration_ledger": {
     "decision_assets": 20,
     "each_pre_registered_against": "a falsifiable resolution rule",

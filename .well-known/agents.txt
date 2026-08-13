@@ -21,14 +21,14 @@ OpenAPI: https://phronesisintel.com/openapi.json
 Pricing: https://phronesisintel.com/pricing.json
 ACP: https://phronesisintel.com/.well-known/agentic-commerce.json
 Scorecard: https://phronesisintel.com/scorecard
-Bench: https://phronesis-jrstinehour.replit.app/bench
+Bench: https://api.phronesisintel.com/bench
 Verticals: https://phronesisintel.com/verticals
 
 # --- Endpoints ---
-MCP: https://phronesis-jrstinehour.replit.app/mcp
-REST: https://phronesis-jrstinehour.replit.app
-Scorecard-JSON: https://phronesis-jrstinehour.replit.app/scorecard.json
-Bench-JSON: https://phronesis-jrstinehour.replit.app/.well-known/bench.json
+MCP: https://api.phronesisintel.com/mcp
+REST: https://api.phronesisintel.com
+Scorecard-JSON: https://api.phronesisintel.com/scorecard.json
+Bench-JSON: https://api.phronesisintel.com/.well-known/bench.json
 
 # --- Authentication ---
 # Path A (autonomous agents):  AP2 mandate (Google Agent Payments Protocol)

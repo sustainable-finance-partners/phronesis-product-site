@@ -157,7 +157,7 @@
     <span class="eyebrow">Public calibration ledger</span>
     <h1>Calibration scorecard.</h1>
     <p class="lead">Every forecast Phronesis has ever minted. Issue date, vertical, archetype, canonical quantiles, inference cost. Resolution status accrues as evaluation windows close. The track record is uncopiable; the substrate is publicly auditable.</p>
-    <p class="text-small" style="margin-top: var(--space-4);">Data fetched live from the Hermes contract surface at <code>phronesis-jrstinehour.replit.app/scorecard.json</code>. Cached at the browser for 5 minutes.</p>
+    <p class="text-small" style="margin-top: var(--space-4);">Data fetched live from the Hermes contract surface at <code>api.phronesisintel.com/scorecard.json</code>. Cached at the browser for 5 minutes.</p>
   </div>
 </section>
 
@@ -170,13 +170,13 @@
       </div>
       <div id="scorecard-body">
         <div class="scorecard-loading">
-          Fetching forecasts from <code>phronesis-jrstinehour.replit.app/scorecard.json</code>...
+          Fetching forecasts from <code>api.phronesisintel.com/scorecard.json</code>...
         </div>
       </div>
     </div>
 
     <p class="text-small" style="text-align: center; margin-top: var(--space-6); color: var(--color-whisper);">
-      Want the raw JSON? <a href="https://phronesis-jrstinehour.replit.app/scorecard.json">Open the endpoint directly</a> or call it via the <a href="/spec">contract surface</a>.
+      Want the raw JSON? <a href="https://api.phronesisintel.com/scorecard.json">Open the endpoint directly</a> or call it via the <a href="/spec">contract surface</a>.
     </p>
   </div>
 </section>
@@ -213,7 +213,7 @@
         <h5>Verticals</h5>
         <ul class="footer-links">
           <li><a href="/verticals">All twelve</a></li>
-          <li><a href="https://phronesis-jrstinehour.replit.app/trust">Trust Center</a></li>
+          <li><a href="https://api.phronesisintel.com/trust">Trust Center</a></li>
           <li><a href="/scorecard">Scorecard</a></li>
         </ul>
       </div>
@@ -236,7 +236,7 @@
 <script>
 // Live calibration scorecard fetch from Hermes contract surface
 (function() {
-  const SCORECARD_URL = 'https://phronesis-jrstinehour.replit.app/scorecard.json';
+  const SCORECARD_URL = 'https://api.phronesisintel.com/scorecard.json';
   const body = document.getElementById('scorecard-body');
   const statusText = document.getElementById('status-text');
   const lastUpdated = document.getElementById('last-updated');

@@ -10,8 +10,8 @@
 <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 spec">
 <link rel="api-catalog" href="/.well-known/agents.txt">
 
-<meta name="agent-mcp-endpoint" content="https://phronesis-jrstinehour.replit.app/mcp">
-<meta name="agent-rest-endpoint" content="https://phronesis-jrstinehour.replit.app">
+<meta name="agent-mcp-endpoint" content="https://api.phronesisintel.com/mcp">
+<meta name="agent-rest-endpoint" content="https://api.phronesisintel.com">
 <meta name="agent-pricing" content="/pricing">
 <meta name="agent-acp" content="/.well-known/agentic-commerce.json">
 
@@ -56,8 +56,8 @@
     <p class="lead">REST and MCP co-equal at every endpoint. Idempotency-key required, not optional. Errors are structured and machine-recoverable. Sub-cent meter-event precision. AP2 mandate compatible.</p>
 
     <div class="legal-meta">
-      <div><strong>Base URL</strong>https://phronesis-jrstinehour.replit.app</div>
-      <div><strong>MCP Endpoint</strong>https://phronesis-jrstinehour.replit.app/mcp</div>
+      <div><strong>Base URL</strong>https://api.phronesisintel.com</div>
+      <div><strong>MCP Endpoint</strong>https://api.phronesisintel.com/mcp</div>
       <div><strong>OpenAPI</strong><a href="/openapi.json">/openapi.json</a></div>
       <div><strong>Auth</strong>Bearer JWT (human) or AP2 mandate (agent)</div>
     </div>
@@ -73,7 +73,7 @@
 <h2>Quick start</h2>
 <p>Three minutes from zero to your first minted forecast (assuming you've already obtained a JWT or AP2 mandate from your principal):</p>
 
-<pre><code>curl -X POST https://phronesis-jrstinehour.replit.app/forecast/mint \
+<pre><code>curl -X POST https://api.phronesisintel.com/forecast/mint \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $PHRONESIS_JWT" \
   -H "Idempotency-Key: $(uuidgen)" \
@@ -122,7 +122,7 @@
 <p>Autonomous agents authenticate by presenting an AP2 (Google Agent Payments Protocol) mandate at the Hermes contract-middleware authorization gate. The mandate must include both an Intent Mandate and a Cart Mandate Verifiable Credential signed by the principal. Mandate signature verification budget is approximately two to five seconds at the blocking gate.</p>
 
 <pre><code>POST /forecast/mint HTTP/1.1
-Host: phronesis-jrstinehour.replit.app
+Host: api.phronesisintel.com
 Content-Type: application/json
 Idempotency-Key: 01HXYZA1B2C3D4E5F6G7H8J9K0
 Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
@@ -216,7 +216,7 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
         <h5>Verticals</h5>
         <ul class="footer-links">
           <li><a href="/verticals">All twelve</a></li>
-          <li><a href="https://phronesis-jrstinehour.replit.app/trust">Trust Center</a></li>
+          <li><a href="https://api.phronesisintel.com/trust">Trust Center</a></li>
           <li><a href="/scorecard">Scorecard</a></li>
         </ul>
       </div>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security — Phronesis</title>
+<meta name="description" content="Security at Phronesis — how to report a vulnerability (security@phronesisintel.com) and how the agent-facing surface is built: least exposure, fail-closed, tamper-evident record.">
+<link rel="canonical" href="https://phronesisintel.com/security">
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+.phronesis-mark { display:inline-flex; align-items:center; gap:var(--space-2); font-family:var(--font-display); font-weight:700; color:var(--color-deep); letter-spacing:-0.01em; }
+.phronesis-mark .glyph { width:1.5rem; height:1.5rem; border-radius:50%; background:var(--gradient-accent); position:relative; }
+.phronesis-mark .glyph::after { content:''; position:absolute; inset:0.4rem; background:var(--color-deep); border-radius:50%; }
+.policy h2 { margin-top:var(--space-8); }
+.policy ul { margin:var(--space-3) 0 var(--space-3) var(--space-5); display:grid; gap:var(--space-2); }
+.policy p { margin:var(--space-3) 0; }
+.effective { font-family:var(--font-mono); font-size:var(--text-sm); color:var(--color-slate, #5b6472); }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <nav class="nav" aria-label="Primary">
+      <a href="/" class="phronesis-mark"><span class="glyph" aria-hidden="true"></span><span>Phronesis</span></a>
+      <ul class="nav-links">
+        <li><a href="/verticals">Verticals</a></li>
+        <li><a href="/scorecard">Scorecard</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/spec">API</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section style="background: var(--gradient-hero); padding: var(--space-16) 0 var(--space-8) 0;">
+  <div class="container-narrow">
+    <span class="eyebrow">Security</span>
+    <h1>Security at Phronesis</h1>
+    <p class="effective"><strong>Effective date:</strong> August 12, 2026</p>
+  </div>
+</section>
+
+<section style="padding: var(--space-12) 0;">
+  <div class="container-narrow policy">
+
+    <p>Phronesis is the decision-assurance layer for AI agents — so our own security posture is part of the product, not a footnote to it. We hold ourselves to the discipline we sell: say only what is true, and make it verifiable.</p>
+
+    <h2>Reporting a vulnerability</h2>
+    <p>Email <strong><a href="mailto:security@phronesisintel.com">security@phronesisintel.com</a></strong>. We acknowledge reports and work them in good faith. Please give us reasonable time to remediate before public disclosure.</p>
+    <p>Machine-readable disclosure policy: <a href="https://api.phronesisintel.com/.well-known/security.txt"><code>security.txt</code></a> (RFC&nbsp;9116).</p>
+
+    <h2>How the surface is built (what's true today)</h2>
+    <ul>
+      <li><strong>Least exposure by design.</strong> Our agent-facing surface answers only read-only queries at its open tier; every consequential action (anything that moves money, binds a commitment, or asserts an identity) is gated and, at open access, refused — not executed.</li>
+      <li><strong>Identity never confers capability.</strong> An agent can register, but registration grants identity only; it can never widen what that agent is allowed to do.</li>
+      <li><strong>Fail-closed.</strong> If our access controls can't be verified, the door refuses rather than opening.</li>
+      <li><strong>A tamper-evident record.</strong> Every decision we publish is cryptographically anchored and independently verifiable — anyone can check what we said and when, and no one, including us, can alter it after the fact.</li>
+    </ul>
+
+    <h2>What we don't claim</h2>
+    <p>We attest; we do not guarantee outcomes, and we do not carry the risk of the actions we assure — liability stays with the principal and the executor. Assurance is a check on the action, not a warranty on the result.</p>
+
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h4>Phronesis</h4>
+        <p>The agentic economy's decision-assurance layer. Flagship platform of Sustainable Finance Partners, LLC.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Platform</h5>
+        <ul class="footer-links">
+          <li><a href="/spec">API spec</a></li>
+          <li><a href="/openapi.json">OpenAPI</a></li>
+          <li><a href="/.well-known/agents.txt">agents.txt</a></li>
+          <li><a href="/.well-known/agentic-commerce.json">agentic-commerce.json</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Verticals</h5>
+        <ul class="footer-links">
+          <li><a href="/verticals">All twelve + V#0</a></li>
+          <li><a href="/scorecard">Decision Quality Bench</a></li>
+          <li><a href="https://api.phronesisintel.com/trust">Trust Center</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul class="footer-links">
+          <li><a href="https://sustainablefinancepartner.com/terms-of-service">Terms of Service</a></li>
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="https://sustainablefinancepartner.com/refund-policy">Refund Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Sustainable Finance Partners, LLC. All rights reserved.</p>
+      <p>Phronesis is the flagship product of <a href="https://sustainablefinancepartner.com">Sustainable Finance Partners, LLC</a>.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -24,24 +24,24 @@ record (deadline-risk, counterparty-risk, capacity-constraint, regulatory-timing
 single-vertical tool can match.
 
 ## Endpoints
-- [API base](https://phronesis-jrstinehour.replit.app): REST surface — production base URL.
-- [MCP server](https://phronesis-jrstinehour.replit.app/mcp): co-equal Model Context Protocol transport.
-- [Catalog](https://phronesis-jrstinehour.replit.app/v1/catalog): the vertical inventory + per-vertical archetypes (public).
-- [Pricing](https://phronesis-jrstinehour.replit.app/v1/pricing): tier surface (public).
-- [Decision API](https://phronesis-jrstinehour.replit.app/v1/decision/forecast): POST a proposed action + context; receive a Decision Asset — forecast distribution, evidence graph, evidence-maturity, an action boundary, and a content-addressed Decision Receipt. JWT-gated.
+- [API base](https://api.phronesisintel.com): REST surface — production base URL.
+- [MCP server](https://api.phronesisintel.com/mcp): co-equal Model Context Protocol transport.
+- [Catalog](https://api.phronesisintel.com/v1/catalog): the vertical inventory + per-vertical archetypes (public).
+- [Pricing](https://api.phronesisintel.com/v1/pricing): tier surface (public).
+- [Decision API](https://api.phronesisintel.com/v1/decision/forecast): POST a proposed action + context; receive a Decision Asset — forecast distribution, evidence graph, evidence-maturity, an action boundary, and a content-addressed Decision Receipt. JWT-gated.
 
 ## Verification
-- [Decision Quality Bench / Scorecard](https://phronesis-jrstinehour.replit.app/scorecard.json): measurable today — identifiability (P-ID), immutability (P-IMM), evidence-maturity (P-EVD), baseline-presence (P-BASE). Calibration (P-CAL), action-boundary correctness (P-ACT), baseline-beating (P-BBL) activate as outcomes resolve (~Jan 2027). Where a number isn't earned, the Bench shows a blank it can defend — not a manufactured score.
-- [Trust Receipt](https://phronesis-jrstinehour.replit.app/v1/trust/receipt/): per-decision verifiability artifact — the basis for Proof of Decision.
+- [Decision Quality Bench / Scorecard](https://api.phronesisintel.com/scorecard.json): measurable today — identifiability (P-ID), immutability (P-IMM), evidence-maturity (P-EVD), baseline-presence (P-BASE). Calibration (P-CAL), action-boundary correctness (P-ACT), baseline-beating (P-BBL) activate as outcomes resolve (~Jan 2027). Where a number isn't earned, the Bench shows a blank it can defend — not a manufactured score.
+- [Trust Receipt](https://api.phronesisintel.com/v1/trust/receipt/): per-decision verifiability artifact — the basis for Proof of Decision.
 
 ## Agent discovery
-- [agent-discovery.json](https://phronesis-jrstinehour.replit.app/.well-known/agent-discovery.json): service identity + capability summary.
+- [agent-discovery.json](https://api.phronesisintel.com/.well-known/agent-discovery.json): service identity + capability summary.
 - agents.txt · agentic-commerce.json · the .well-known discovery vectors.
 
 ## Integration
 
 - [API contract spec](https://phronesisintel.com/spec): the Hermes contract-v1 response shapes.
-- [OpenAPI](https://phronesis-jrstinehour.replit.app/openapi.json): OpenAPI 3.1 spec.
+- [OpenAPI](https://api.phronesisintel.com/.well-known/openapi.json): OpenAPI 3.1 spec.
 
 ## Access policy (Search-visible · Agent-callable · Training-protected)
 Content on these pages may be indexed and referenced. Use for model training requires a
@@ -49,6 +49,5 @@ license: support@phronesisintel.com. Agents: the platform surfaces above are the
 path — call us, don't scrape us.
 
 ## What's live vs forward (honest)
-- Live: the production platform; the deny-by-default, independently red-teamed action gate; the Decision Asset + Receipt; agent-discoverable surfaces; the public Decision Quality Bench (pre-resolution measures).
-- In flight: the OAuth-consent connector path (flag-gated).
+- Live: the production platform; the deny-by-default, independently red-teamed action gate; the Decision Asset + Receipt; agent-discoverable surfaces; the public Decision Quality Bench (pre-resolution measures); the OAuth-consent connector (read-only open tier).
 - Forward (labeled): the calibration record (honest-empty until ~Jan 2027); local/offline assurance nodes.
