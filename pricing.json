@@ -12,8 +12,7 @@
     "unit": "decision_asset_mint",
     "customer_price_range_usd": [0.28, 0.50],
     "inference_cost_attestation_range_usd": [0.0084, 0.0151],
-    "markup_multiplier": 33,
-    "settlement": "stripe_meter_event_at_canonical_persistence",
+      "settlement": "stripe_meter_event_at_canonical_persistence",
     "precision": "decimal_sub_cent"
   },
   "subscription_tiers": [

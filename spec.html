@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>API Contract Surface — Phronesis</title>
-<meta name="description" content="Phronesis Hermes contract surface. REST and MCP co-equal. Idempotency required. Sub-cent meter-event precision. AP2 mandate compatible. OpenAPI 3.1.">
+<meta name="description" content="Phronesis Hermes contract surface. Semantic parity across REST and MCP. Idempotency required. Sub-cent meter-event precision. OpenAPI 3.1.">
 <meta name="robots" content="index, follow">
 
-<link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 spec">
+<link rel="alternate" type="application/json" href="https://api.phronesisintel.com/.well-known/openapi.json" title="OpenAPI 3.1 spec">
 <link rel="api-catalog" href="/.well-known/agents.txt">
 
 <meta name="agent-mcp-endpoint" content="https://api.phronesisintel.com/mcp">
@@ -53,17 +53,17 @@
   <div class="container-narrow">
     <span class="eyebrow">Hermes Contract Surface</span>
     <h1>API spec.</h1>
-    <p class="lead">REST and MCP co-equal at every endpoint. Idempotency-key required, not optional. Errors are structured and machine-recoverable. Sub-cent meter-event precision. AP2 mandate compatible.</p>
+    <p class="lead">Semantic parity across REST and MCP; transport-appropriate projection. Idempotency-key required, not optional. Errors are structured and machine-recoverable. Sub-cent meter-event precision.</p>
 
     <div class="legal-meta">
       <div><strong>Base URL</strong>https://api.phronesisintel.com</div>
       <div><strong>MCP Endpoint</strong>https://api.phronesisintel.com/mcp</div>
-      <div><strong>OpenAPI</strong><a href="/openapi.json">/openapi.json</a></div>
-      <div><strong>Auth</strong>Bearer JWT (human) or AP2 mandate (agent)</div>
+      <div><strong>OpenAPI</strong><a href="https://api.phronesisintel.com/.well-known/openapi.json">/.well-known/openapi.json</a></div>
+      <div><strong>Auth</strong>Bearer JWT (issuer, audience, expiry, tenant validated). AP2 mandate: delegated-authority evidence bound to the authenticated caller; gate acceptance is forward-state.</div>
     </div>
 
     <div class="legal-banner">
-      <strong>Markdown-first.</strong> This page is the canonical contract documentation. The OpenAPI spec is generated from the same source. Both are kept in lockstep — MCP and REST are co-equal at every endpoint; neither transport is the "real" API.
+      <strong>Markdown-first.</strong> This page is the canonical contract documentation. The OpenAPI spec is generated from the same source. Both are kept in lockstep — semantic parity across REST and MCP, with transport-appropriate projection.
     </div>
   </div>
 </header>
@@ -71,18 +71,13 @@
 <article class="legal-content">
 
 <h2>Quick start</h2>
-<p>Three minutes from zero to your first minted forecast (assuming you've already obtained a JWT or AP2 mandate from your principal):</p>
+<p>Three minutes from zero to your first minted forecast (assuming you've obtained a JWT from your principal):</p>
 
-<pre><code>curl -X POST https://api.phronesisintel.com/forecast/mint \
+<pre><code>curl -X POST https://api.phronesisintel.com/v1/decision/forecast \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $PHRONESIS_JWT" \
   -H "Idempotency-Key: $(uuidgen)" \
-  -d '{
-    "vertical": "V1",
-    "archetype": "E1",
-    "subject": "ERCOT_summer_capacity_factor_2027",
-    "horizon": "2027-Q3"
-  }'</code></pre>
+  -d @request.json   # structured-forecast body per the request schema in the canonical OpenAPI spec</code></pre>
 
 <p>The response includes the canonical FC-ID, the canonical-quantile estimates, the issue timestamp, and the cost-attestation in dollars-and-cents. Every value persisted to the Mnemosyne ledger; every value visible on the public scorecard.</p>
 
@@ -91,13 +86,13 @@
 <div class="endpoint-list">
   <div class="endpoint">
     <span class="endpoint-method post">POST</span>
-    <span class="endpoint-path">/forecast/mint</span>
-    <span class="endpoint-desc">Mint a probabilistic forecast. Idempotency-Key header required.</span>
+    <span class="endpoint-path">/v1/decision/forecast</span>
+    <span class="endpoint-desc">Emit a canonical Decision-API forecast output. Idempotency-Key header required. JWT-gated.</span>
   </div>
   <div class="endpoint">
     <span class="endpoint-method get">GET</span>
-    <span class="endpoint-path">/forecast/{fc_id}</span>
-    <span class="endpoint-desc">Retrieve a previously-minted forecast by canonical FC-ID.</span>
+    <span class="endpoint-path">/forecast/{fc_id}/audit</span>
+    <span class="endpoint-desc">Public per-forecast audit surface for a minted forecast (first-party records).</span>
   </div>
   <div class="endpoint">
     <span class="endpoint-method get">GET</span>
@@ -107,7 +102,7 @@
   <div class="endpoint">
     <span class="endpoint-method post">POST</span>
     <span class="endpoint-path">/billing/charge</span>
-    <span class="endpoint-desc">Settle a per-call charge against an authorized AP2 mandate via Stripe meter event.</span>
+    <span class="endpoint-desc">Settle a per-call charge for the authenticated caller via Stripe meter event. AP2 mandate evidence: forward-state.</span>
   </div>
   <div class="endpoint">
     <span class="endpoint-method get">GET</span>
@@ -118,10 +113,17 @@
 
 <h2>Authentication</h2>
 
-<h3>Path A — Direct API (autonomous agents)</h3>
-<p>Autonomous agents authenticate by presenting an AP2 (Google Agent Payments Protocol) mandate at the Hermes contract-middleware authorization gate. The mandate must include both an Intent Mandate and a Cart Mandate Verifiable Credential signed by the principal. Mandate signature verification budget is approximately two to five seconds at the blocking gate.</p>
+<h3>The authority model (normative — the one flow on every surface)</h3>
+<ol>
+  <li><strong>Authenticate the caller</strong> via JWT / workload credential — issuer, audience, expiry, and tenant validated at the gate.</li>
+  <li><strong>Verify an AP2 mandate as delegated-authority evidence</strong> and bind it to that caller, principal, resource, budget, and action class.</li>
+  <li><strong>Authorize in policy code</strong> — the model never grants or widens authority.</li>
+  <li><strong>Store hashes and references</strong>, never reusable bearer material.</li>
+  <li><strong>The receipt states</strong> what was authenticated, what authority was presented, which policy version ran, and what boundary resulted.</li>
+</ol>
+<p><strong>Claim state:</strong> step 1 is live at the gate today. Mandate verification-and-binding at the gate (steps 2 onward for AP2 material) is <strong>FORWARD-STATE</strong> — mandate material is consumed as evidence input today, not accepted as authentication. The example below documents the forward-state wire shape and is not yet accepted:</p>
 
-<pre><code>POST /forecast/mint HTTP/1.1
+<pre><code>POST /v1/decision/forecast HTTP/1.1  (FORWARD-STATE example — not accepted today)
 Host: api.phronesisintel.com
 Content-Type: application/json
 Idempotency-Key: 01HXYZA1B2C3D4E5F6G7H8J9K0
@@ -134,8 +136,8 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
   "horizon": "2027-Q3"
 }</code></pre>
 
-<h3>Path B — Agentic commerce (agents acting for humans)</h3>
-<p>Agents acting on behalf of human principals via the Stripe Agentic Commerce Suite (ACS) checkout flow present a Stripe Shared Payment Token (SPT) bound to an AP2 Cart Mandate at issuance time. The SPT replaces the AP2-direct authorization for the per-call settlement.</p>
+<h3>Agentic commerce (agents acting for humans) — FORWARD-STATE</h3>
+<p>The Stripe Agentic Commerce Suite flow (Shared Payment Token bound to an AP2 Cart Mandate at issuance) is a documented forward-state; per-call settlement today runs against the authenticated caller's tenant via Stripe meter events.</p>
 
 <h3>Path C — Direct human SaaS (Discovery / Inquiry / Practice / Practice+ / Enterprise subscribers)</h3>
 <p>Human subscribers authenticate via Bearer JWT issued at login. Subscription tier per Pricing_Strategy v1.2 canonical (Discovery Free / Inquiry $49 / Practice $499 / Practice+ $2,499 / Enterprise negotiated) determines included usage allowances and overage rates. Compute depth tiers (Standard / Deep / Strategic / Strategic Sync) handle per-inquiry depth-classification per Themis #117.6. See <a href="/pricing">/pricing</a>.</p>
@@ -181,7 +183,7 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
 <p>Twelve verticals; all twelve LIVE on production per 12-VERTICAL-COMPLETE substrate milestone; archetype taxonomy is per-vertical. See the <a href="/verticals">verticals page</a> for archetype detail. Themis canonical-rule catalog v1.10 carries 144 rules across 14 clusters (12 vertical clusters + 2 cross-cutting clusters #117 Agent-Surface-Discipline + #118 Data-Handling-Discipline). Canonical taxonomy is reflected in the OpenAPI spec.</p>
 
 <h2>Discovery surfaces</h2>
-<p>For agent crawlers: <a href="/.well-known/agents.txt">agents.txt</a> · <a href="/.well-known/agentic-commerce.json">agentic-commerce.json</a> · <a href="/openapi.json">openapi.json</a> · <a href="/pricing.json">pricing.json</a> · <a href="/robots.txt">robots.txt</a></p>
+<p>For agent crawlers: <a href="/.well-known/agents.txt">agents.txt</a> · <a href="/.well-known/agentic-commerce.json">agentic-commerce.json</a> · <a href="https://api.phronesisintel.com/.well-known/openapi.json">openapi.json</a> · <a href="/pricing.json">pricing.json</a> · <a href="/robots.txt">robots.txt</a></p>
 
 <h2>Versioning</h2>
 <p>The Hermes contract surface uses semantic versioning at the contract layer. Breaking changes go to a new major version with a six-month deprecation window for the prior major. Non-breaking additions (new endpoints, new optional fields) are added in minor versions and announced via the changelog.</p>
@@ -207,7 +209,7 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
         <h5>Platform</h5>
         <ul class="footer-links">
           <li><a href="/spec">API spec</a></li>
-          <li><a href="/openapi.json">OpenAPI</a></li>
+          <li><a href="https://api.phronesisintel.com/.well-known/openapi.json">OpenAPI</a></li>
           <li><a href="/.well-known/agents.txt">agents.txt</a></li>
           <li><a href="/pricing">Pricing</a></li>
         </ul>
