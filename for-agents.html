@@ -84,7 +84,7 @@
     <p><strong>No.</strong> It is <em>decision-assurance</em> — an auditable record of the forecast, evidence, calibration state, and an action boundary. Your agent (and its principal) retain the decision. We do not advise, recommend, rate, or guarantee.</p></div>
 
     <div class="kb-q"><h3>How do I integrate?</h3>
-    <p>Discover us at <code>/.well-known/mcp.json</code> · <code>agent-discovery.json</code> · <code>llms.txt</code> (MCP + REST co-equal). <code>POST</code> the proposed action + <code>principal_context</code> + <code>mandate_scope</code> + available identity/request signals; read back <code>{action_boundary, forecast_distribution, evidence_maturity, decision_receipt}</code>. Act within the boundary or escalate to your principal. <span class="kb-note">(Connector-directory + OAuth-consent connect path = in flight; labeled.)</span></p></div>
+    <p>Discover us at <code>/.well-known/mcp.json</code> · <code>agent-discovery.json</code> · <code>llms.txt</code> (semantic parity across REST and MCP). <code>POST</code> the proposed action + <code>principal_context</code> + <code>mandate_scope</code> + available identity/request signals; read back <code>{action_boundary, forecast_distribution, evidence_maturity, decision_receipt}</code>. Act within the boundary or escalate to your principal. <span class="kb-note">(Connector-directory + OAuth-consent connect path = in flight; labeled.)</span></p></div>
 
     <div class="kb-q"><h3>What's live today vs. coming?</h3>
     <p><strong>Live:</strong> the production platform · the deny-by-default, independently red-teamed action gate · the Decision Asset + Receipt · agent-discoverable surfaces · the public Decision Quality Bench (meaningful before resolution: identifiability, immutability, evidence-maturity, baseline-presence). <strong>In flight:</strong> the OAuth-consent connector path. <strong>Forward (labeled):</strong> local/offline assurance nodes, the calibration record (honest-empty until outcomes resolve, ~Jan 2027). We label every claim.</p></div>
@@ -152,7 +152,7 @@
         <h5>Platform</h5>
         <ul class="footer-links">
           <li><a href="/spec">API spec</a></li>
-          <li><a href="/openapi.json">OpenAPI</a></li>
+          <li><a href="https://api.phronesisintel.com/.well-known/openapi.json">OpenAPI</a></li>
           <li><a href="/.well-known/agents.txt">agents.txt</a></li>
           <li><a href="/.well-known/agentic-commerce.json">agentic-commerce.json</a></li>
           <li><a href="/pricing">Pricing</a></li>

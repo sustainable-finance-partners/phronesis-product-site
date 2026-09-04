@@ -4,3 +4,5 @@
 /audit/* https://api.phronesisintel.com/audit/:splat 301
 /methodology/:vertical/decision-asset-v1.0 https://api.phronesisintel.com/methodology/:vertical/decision-asset-v1.0 301
 /agents.txt /.well-known/agents.txt 301
+# 15.10.599 1.a: cached links to the old site-local spec path resolve to the canonical spec.
+/openapi.json https://api.phronesisintel.com/.well-known/openapi.json 301

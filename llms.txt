@@ -5,10 +5,10 @@
 > Decision Asset it can cite, reuse, dispute, and settle against. Phronesis sits downstream of
 > the identity and payment rails and consumes them; it certifies the one thing they can't —
 > whether the action was defensible. The atomic product is the Decision Asset. Market Memory —
-> the resolved-outcome calibration ledger — is the moat. MCP + REST co-equal at every endpoint.
+> the resolved-outcome calibration ledger — is the moat. Semantic parity across REST and MCP; transport-appropriate projection.
 > Calibration is honest-empty until outcomes resolve (first signal ~Jan 2027). Pre-revenue.
 
-Phronesis is built for AI agents as much as humans. The transports are co-equal: an MCP server
+Phronesis is built for AI agents as much as humans. The transports carry semantic parity: an MCP server
 and a REST API, both passing through the same deny-by-default action gate. Agents discover,
 evaluate, call, and verify Phronesis Decision Assets programmatically. Phronesis never acts —
 it returns an action boundary and an auditable record; the agent and its principal keep the
@@ -25,7 +25,7 @@ single-vertical tool can match.
 
 ## Endpoints
 - [API base](https://api.phronesisintel.com): REST surface — production base URL.
-- [MCP server](https://api.phronesisintel.com/mcp): co-equal Model Context Protocol transport.
+- [MCP server](https://api.phronesisintel.com/mcp): Model Context Protocol transport with semantic parity to REST.
 - [Catalog](https://api.phronesisintel.com/v1/catalog): the vertical inventory + per-vertical archetypes (public).
 - [Pricing](https://api.phronesisintel.com/v1/pricing): tier surface (public).
 - [Decision API](https://api.phronesisintel.com/v1/decision/forecast): POST a proposed action + context; receive a Decision Asset — forecast distribution, evidence graph, evidence-maturity, an action boundary, and a content-addressed Decision Receipt. JWT-gated.
