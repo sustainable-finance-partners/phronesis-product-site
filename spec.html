@@ -164,20 +164,22 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
 <p>Code categories: <code>auth</code> (mandate or JWT failure) · <code>validation</code> (request shape error) · <code>rate_limit</code> (per-tenant or per-mandate limit hit) · <code>circuit</code> (downstream circuit-breaker tripped) · <code>substrate</code> (canonical-correctness violation) · <code>billing</code> (Plutus charge failure) · <code>not_found</code> · <code>internal</code>. Retryable errors include <code>rate_limit</code> and <code>circuit</code>; all others are non-retryable.</p>
 
 <h2>Meter events and pricing</h2>
-<p>Forecast minting fires a Stripe meter event at the moment of canonical persistence to the Mnemosyne ledger. Meter event amounts are reported with sub-cent precision (Decimal lift, no float). Cost-attestation per call is published at <a href="/pricing.json">/pricing.json</a> and includes the inference cost component plus the markup multiplier.</p>
+<p>Forecast minting fires a Stripe meter event at the moment of canonical persistence to the Mnemosyne ledger. Meter event amounts are reported with sub-cent precision (Decimal lift, no float). The published per-call price and the inference cost-attestation component are both in <a href="/pricing.json">/pricing.json</a>.</p>
 
 <h2>MCP server</h2>
-<p>The MCP server exposes tools that are one-to-one with REST endpoints. Tool names map to endpoint paths; tool parameters map to request bodies. Tool outputs match REST response shapes exactly. Use either surface; neither is privileged.</p>
+<p>The MCP server exposes task-verb tools with semantic parity to the REST surface — transport-appropriate projection, not endpoint mirroring. Tool outputs carry the same canonical records the REST responses carry.</p>
 
-<pre><code>// MCP tool list (representative)
+<pre><code>// MCP tools (from tools/list)
 {
   "tools": [
-    { "name": "forecast_mint", "description": "Mint a probabilistic forecast" },
-    { "name": "forecast_get",  "description": "Retrieve forecast by FC-ID" },
-    { "name": "scorecard_get", "description": "Read calibration scorecard" },
-    { "name": "billing_charge","description": "Settle per-call meter event" }
+    { "name": "forecast_submit",        "description": "Submit a structured forecast for canonical persistence" },
+    { "name": "bench_query",            "description": "Query the Decision Quality Bench" },
+    { "name": "score_action_boundary",  "description": "Assess an action against the boundary matrix" },
+    { "name": "health_check",           "description": "Service health" }
   ]
-}</code></pre>
+}
+// plus operational/governance tools (memory_read, memory_write,
+// killswitch_reset) — also visible in tools/list.</code></pre>
 
 <h2>Verticals and archetypes</h2>
 <p>Twelve verticals; all twelve LIVE on production per 12-VERTICAL-COMPLETE substrate milestone; archetype taxonomy is per-vertical. See the <a href="/verticals">verticals page</a> for archetype detail. Themis canonical-rule catalog v1.10 carries 144 rules across 14 clusters (12 vertical clusters + 2 cross-cutting clusters #117 Agent-Surface-Discipline + #118 Data-Handling-Discipline). Canonical taxonomy is reflected in the OpenAPI spec.</p>

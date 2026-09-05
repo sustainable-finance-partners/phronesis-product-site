@@ -1,6 +1,6 @@
 {
   "surface": "pricing",
-  "updated": "2026-06-02",
+  "updated": "2026-09-04",
   "operator": {
     "legal_name": "Sustainable Finance Partners, LLC",
     "trade_name": "Phronesis",
@@ -10,29 +10,70 @@
   "currency": "USD",
   "per_call": {
     "unit": "decision_asset_mint",
-    "customer_price_range_usd": [0.28, 0.50],
-    "inference_cost_attestation_range_usd": [0.0084, 0.0151],
-      "settlement": "stripe_meter_event_at_canonical_persistence",
+    "customer_price_range_usd": [
+      0.28,
+      0.5
+    ],
+    "inference_cost_attestation_range_usd": [
+      0.0084,
+      0.0151
+    ],
+    "settlement": "stripe_meter_event_at_canonical_persistence",
     "precision": "decimal_sub_cent"
   },
   "subscription_tiers": [
-    { "id": "discovery", "name": "Discovery", "price_usd_month": 0, "claim_state": "live" },
-    { "id": "inquiry", "name": "Inquiry", "price_usd_month": 49, "claim_state": "live" },
-    { "id": "practice", "name": "Practice", "price_usd_month": 499, "claim_state": "live" },
-    { "id": "practice_plus", "name": "Practice+", "price_usd_month": 2499, "claim_state": "live" },
-    { "id": "enterprise", "name": "Enterprise", "price_usd_month": null, "claim_state": "live", "note": "custom — contact for terms" }
+    {
+      "id": "discovery",
+      "name": "Discovery",
+      "price_usd_month": 0,
+      "claim_state": "live"
+    },
+    {
+      "id": "inquiry",
+      "name": "Inquiry",
+      "price_usd_month": 49,
+      "claim_state": "live"
+    },
+    {
+      "id": "practice",
+      "name": "Practice",
+      "price_usd_month": 499,
+      "claim_state": "live"
+    },
+    {
+      "id": "practice_plus",
+      "name": "Practice+",
+      "price_usd_month": 2499,
+      "claim_state": "live"
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "price_usd_month": 9999,
+      "claim_state": "live",
+      "note": "invoiced enterprise agreement"
+    },
+    {
+      "id": "outcome_conditional",
+      "name": "Outcome-Conditional",
+      "price_usd_month": null,
+      "billing_model": "outcome_conditional",
+      "claim_state": "planned",
+      "note": "fee scales with forecast accuracy via escrow; enterprise agreement"
+    }
   ],
-  "compute_depth_tiers": ["Standard", "Deep", "Strategic", "Strategic Sync"],
+  "compute_depth_tiers": [
+    "Standard",
+    "Deep",
+    "Strategic",
+    "Strategic Sync"
+  ],
   "first_commercial_surface": {
     "name": "Power-to-Compute Decision Monitor",
     "claim_state": "live — first commercial surface of the live platform",
     "note": "calibration performance is live-dormant until the corpus resolves (first signal ~2027-01)"
   },
-  "outcome_conditional": {
-    "name": "Outcome-Conditional",
-    "claim_state": "planned",
-    "note": "contingent engagement — the fee scales with forecast accuracy via escrow + scored settlement"
-  },
   "honest_claim_states": true,
-  "discipline": "claim-states are labeled per surface; no SKU is implied that has not shipped"
+  "discipline": "claim-states are labeled per surface; no SKU is implied that has not shipped",
+  "canonical_machine_pricing": "https://api.phronesisintel.com/.well-known/pricing.json"
 }
