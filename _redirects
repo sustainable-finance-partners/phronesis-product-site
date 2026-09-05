@@ -6,3 +6,5 @@
 /agents.txt /.well-known/agents.txt 301
 # 15.10.599 1.a: cached links to the old site-local spec path resolve to the canonical spec.
 /openapi.json https://api.phronesisintel.com/.well-known/openapi.json 301
+# 15.10.610 1.c: ONE privacy URL — the SFP legal host is canonical.
+/privacy https://sustainablefinancepartner.com/privacy-policy 301
