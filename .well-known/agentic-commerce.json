@@ -1,18 +1,19 @@
 {
   "$schema": "https://schemas.agentic-commerce.org/v1/manifest.json",
   "spec_version": "1.0",
-  "manifest_version": "2026-04-30",
+  "manifest_version": "2026-10-02",
   "operator": {
     "legal_name": "Sustainable Finance Partners, LLC",
     "trade_name": "Phronesis",
     "jurisdiction": "Colorado, United States",
-    "contact_email": "jrstinehour@gmail.com",
+    "contact_email": "ops@phronesisintel.com",
+    "legal_contact_email": "legal@phronesisintel.com",
     "corporate_website": "https://sustainablefinancepartner.com",
     "product_website": "https://phronesisintel.com"
   },
   "service": {
     "name": "Phronesis Decision-Assurance Layer",
-    "description": "The agentic economy's decision-assurance layer. A neutral substrate where agents and enterprises verify intent, price uncertainty, evaluate counterparties, coordinate transactions, and settle on outcome-conditional terms before acting. The atomic product is the Decision Asset — a 10-field machine-readable, auditable decision packet (forecast distribution + evidence graph + methodology hash + calibration grade + baseline comparison + mandate scope + counterparty passport + action boundary + settlement hook + audit receipt). Forecasting is the entry primitive, not the product. Six foundational primitives (identity & mandate, reputation & track record, forecast & evidence, coordination & negotiation, outcome-conditional settlement, market-state telemetry) × twelve applied verticals, with V#0 AI Industrial Mobilization & Situational Awareness as the meta-vertical. Market Memory is the moat. Decision Assets persisted to canonical Mnemosyne ledger with public calibration scorecard.",
+    "description": "The agentic economy's decision-assurance layer. A neutral substrate where agents and enterprises verify intent, price uncertainty, evaluate counterparties, coordinate transactions, and settle on outcome-conditional terms before acting. The atomic product is the Decision Asset — a 10-field machine-readable, auditable decision packet (forecast distribution + evidence graph + methodology hash + calibration record (honest-empty until ten resolutions) + baseline comparison + mandate scope + counterparty passport + action boundary + settlement hook + audit receipt). Forecasting is the entry primitive, not the product. Six foundational primitives (identity & mandate, reputation & track record, forecast & evidence, coordination & negotiation, outcome-conditional settlement, market-state telemetry) × twelve applied verticals, with V#0 AI Industrial Mobilization & Situational Awareness as the meta-vertical. Market Memory is the moat. Decision Assets persisted to canonical Mnemosyne ledger with public calibration scorecard.",
     "category": "agentic-commerce/decision-assurance",
     "atomic_product": "decision_asset",
     "meta_vertical": "v0-ai-industrial-mobilization-situational-awareness",
@@ -24,10 +25,10 @@
   "endpoints": {
     "mcp": "https://api.phronesisintel.com/mcp",
     "rest_base": "https://api.phronesisintel.com",
-    "openapi": "https://phronesisintel.com/openapi.json",
+    "openapi": "https://api.phronesisintel.com/.well-known/openapi.json",
     "spec_documentation": "https://phronesisintel.com/spec",
     "calibration_scorecard": "https://api.phronesisintel.com/scorecard.json",
-    "pricing_machine_readable": "https://phronesisintel.com/pricing.json"
+    "pricing_machine_readable": "https://api.phronesisintel.com/.well-known/pricing.json"
   },
   "authentication": {
     "supported_methods": ["ap2_mandate", "stripe_spt", "bearer_jwt"],
@@ -52,15 +53,14 @@
     }
   },
   "commerce": {
-    "supported_settlement": ["stripe_meter_events"],
+    "supported_settlement": ["stripe_meter_events", {"x402": "in preparation; not yet accepted"}],
     "stripe_acs_native": true,
     "currency": "USD",
     "tax_handling": "stripe_tax_complete_tier",
     "climate_contribution_pct": 1.0,
-    "pricing_model": "per_call_plus_subscription",
+    "pricing_model": "decision_asset_lifecycle",
     "per_call_pricing": {
-      "inference_cost_range_usd": [0.0084, 0.0151],
-      "markup_multiplier": 33.0,
+      "agent_schedule_ref": "/.well-known/pricing.json#agent_schedule",
       "settlement": "stripe_meter_event_at_canonical_persistence"
     },
     "refund_policy_url": "https://sustainablefinancepartner.com/refund-policy"

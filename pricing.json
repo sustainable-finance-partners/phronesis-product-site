@@ -1,77 +1,97 @@
 {
   "surface": "pricing",
-  "updated": "2026-09-04",
+  "updated": "2026-10-02",
   "operator": {
     "legal_name": "Sustainable Finance Partners, LLC",
     "trade_name": "Phronesis",
     "product_website": "https://phronesisintel.com"
   },
-  "model": "per_call + subscription",
+  "model": "decision_asset_lifecycle",
   "currency": "USD",
-  "per_call": {
-    "unit": "decision_asset_mint",
-    "customer_price_range_usd": [
-      0.28,
-      0.5
-    ],
-    "inference_cost_attestation_range_usd": [
-      0.0084,
-      0.0151
-    ],
-    "settlement": "stripe_meter_event_at_canonical_persistence",
-    "precision": "decimal_sub_cent"
-  },
-  "subscription_tiers": [
+  "tiers": [
     {
       "id": "discovery",
       "name": "Discovery",
       "price_usd_month": 0,
+      "includes": {
+        "api_reads_per_month": 100
+      },
       "claim_state": "live"
     },
     {
-      "id": "inquiry",
-      "name": "Inquiry",
+      "id": "record",
+      "name": "Record",
       "price_usd_month": 49,
+      "includes": {
+        "mints_standard_per_month": 5
+      },
       "claim_state": "live"
     },
     {
       "id": "practice",
       "name": "Practice",
       "price_usd_month": 499,
+      "includes": {
+        "mints_standard_per_month": 50
+      },
       "claim_state": "live"
     },
     {
-      "id": "practice_plus",
-      "name": "Practice+",
-      "price_usd_month": 2499,
+      "id": "decision_room",
+      "price": "on_inquiry",
+      "structure": "milestone_fee_credited_against_year_one",
       "claim_state": "live"
-    },
-    {
-      "id": "enterprise",
-      "name": "Enterprise",
-      "price_usd_month": 9999,
-      "claim_state": "live",
-      "note": "invoiced enterprise agreement"
     },
     {
       "id": "outcome_conditional",
-      "name": "Outcome-Conditional",
-      "price_usd_month": null,
-      "billing_model": "outcome_conditional",
-      "claim_state": "planned",
-      "note": "fee scales with forecast accuracy via escrow; enterprise agreement"
+      "claim_state": "PLANNED"
     }
   ],
-  "compute_depth_tiers": [
-    "Standard",
-    "Deep",
-    "Strategic",
-    "Strategic Sync"
+  "agent_schedule": [
+    {
+      "request": "read_public_asset_digest_or_index_snapshot",
+      "scheme": "exact",
+      "price_usd": 0
+    },
+    {
+      "request": "read_party_scoped_or_unresolved_asset",
+      "scheme": "exact",
+      "price_usd": 0.05
+    },
+    {
+      "request": "mint_standard",
+      "scheme": "exact",
+      "price_usd": 1.0,
+      "resolution_fee_usd": 0.5
+    },
+    {
+      "request": "mint_deep",
+      "scheme": "upto",
+      "price_usd": 25.0,
+      "resolution_fee_usd": 5.0
+    },
+    {
+      "request": "mint_strategic",
+      "scheme": "upto",
+      "price_usd": 100.0,
+      "resolution_fee_usd": 50.0
+    },
+    {
+      "request": "passport_read_digest",
+      "scheme": "exact",
+      "price_usd": 0.1,
+      "claim_state": "when the Passport is live"
+    },
+    {
+      "request": "passport_read_full",
+      "scheme": "exact",
+      "price_usd": 1.0,
+      "claim_state": "when the Passport is live"
+    }
   ],
-  "first_commercial_surface": {
-    "name": "Power-to-Compute Decision Monitor",
-    "claim_state": "live — first commercial surface of the live platform",
-    "note": "calibration performance is live-dormant until the corpus resolves (first signal ~2027-01)"
+  "agent_payment_rails": {
+    "stripe": "live",
+    "x402": "in preparation; not yet accepted"
   },
   "honest_claim_states": true,
   "discipline": "claim-states are labeled per surface; no SKU is implied that has not shipped",
