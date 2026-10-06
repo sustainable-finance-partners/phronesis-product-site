@@ -1,8 +1,8 @@
 # Phronesis Skills — Setup
 
-A curl-able setup guide for wiring Phronesis forecasting into an agent runtime — Claude Code, Cursor, Codex, or the Vercel Skills CLI. Phronesis exposes co-equal MCP and REST transports; this guide uses the public surfaces (no auth) for discovery and the JWT-gated Decision API for forecasts.
+A curl-able setup guide for wiring Phronesis forecasting into an agent runtime — Claude Code, Cursor, Codex, or the Vercel Skills CLI. Phronesis exposes MCP and REST transports; this guide uses the public surfaces (no auth) for discovery and the JWT-gated Decision API for forecasts.
 
-Production base URL: `https://phronesis-jrstinehour.replit.app`
+Production base URL: `https://api.phronesisintel.com`
 
 ## 1. Install the Skills
 
@@ -23,9 +23,9 @@ This installs one Skill per vertical (`phronesis-energy-forecasting`, `phronesis
 ## 2. Discover the surface (no auth)
 
 ```
-curl -s https://phronesis-jrstinehour.replit.app/v1/catalog
-curl -s https://phronesis-jrstinehour.replit.app/v1/pricing
-curl -s https://phronesis-jrstinehour.replit.app/v1/substrate/completeness
+curl -s https://api.phronesisintel.com/v1/catalog
+curl -s https://api.phronesisintel.com/v1/pricing
+curl -s https://api.phronesisintel.com/v1/substrate/completeness
 ```
 
 `/v1/catalog` lists the 12 verticals and their live archetypes. `/v1/pricing` lists the tier surface. `/v1/substrate/completeness` attests the 12-vertical-deep substrate.
@@ -35,17 +35,15 @@ curl -s https://phronesis-jrstinehour.replit.app/v1/substrate/completeness
 Add the Phronesis MCP server to your agent's MCP configuration:
 
 ```
-https://phronesis-jrstinehour.replit.app/mcp
+https://api.phronesisintel.com/mcp
 ```
-
-The MCP and REST transports are co-equal — either reaches the same governed forecast surface.
 
 ## 4. Request a forecast (JWT-gated)
 
 `POST /v1/decision/forecast` returns a canonical decision-forecast: point forecast + p10/p50/p90 uncertainty band + assumptions + alternatives + sensitivity + counterfactuals + sources + cost attestation + an `audit_trail_id`.
 
 ```
-curl -s -X POST https://phronesis-jrstinehour.replit.app/v1/decision/forecast \
+curl -s -X POST https://api.phronesisintel.com/v1/decision/forecast \
   -H "Authorization: Bearer $PHRONESIS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "point_forecast": {...}, "uncertainty_band": {...}, "assumptions": [...] }'
@@ -56,11 +54,11 @@ A JWT is issued at onboarding — see `/v1/onboarding/disclosure`.
 ## 5. Verify a forecast (no auth)
 
 ```
-curl -s https://phronesis-jrstinehour.replit.app/v1/trust/receipt/<forecast_id>
-curl -s https://phronesis-jrstinehour.replit.app/calibration/leaderboard
+curl -s https://api.phronesisintel.com/v1/trust/receipt/<forecast_id>
+curl -s https://api.phronesisintel.com/calibration/leaderboard
 ```
 
-The Trust Receipt returns the Themis rules applied + cost attestation + audit trail for a forecast. The calibration leaderboard reports per-vertical empirical accuracy scored against held-out ground truth — benchmark before you trust.
+The Trust Receipt returns the cost attestation + audit trail for a forecast. The calibration leaderboard reports per-vertical empirical accuracy scored against held-out ground truth — benchmark before you trust.
 
 ## 6. Setup prompt
 

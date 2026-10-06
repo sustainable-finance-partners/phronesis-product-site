@@ -8,3 +8,4 @@
 /openapi.json https://api.phronesisintel.com/.well-known/openapi.json 301
 # 15.10.610 1.c: ONE privacy URL — the SFP legal host is canonical.
 /privacy https://sustainablefinancepartner.com/privacy-policy 301
+/deploy https://api.phronesisintel.com/deploy 302
