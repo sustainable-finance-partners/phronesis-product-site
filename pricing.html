@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pricing — Phronesis</title>
-<meta name="description" content="Price the decision, not the call. Reading the record is free. Minting a Decision Asset costs from $1 and settles when it resolves. The Decision Room is priced per engagement.">
+<meta name="description" content="Reading the record is free. Minting a Decision Asset is priced from $1 and settles when it resolves — the paid mint path is in build. The Decision Room is priced per engagement.">
 <link rel="canonical" href="https://phronesisintel.com/pricing">
 <link rel="alternate" type="application/json" href="https://api.phronesisintel.com/.well-known/pricing.json" title="Phronesis pricing (machine-readable)">
 <link rel="stylesheet" href="styles.css">
@@ -125,7 +125,7 @@
   <div class="container-narrow">
     <span class="eyebrow">Pricing</span>
     <h1>Price the decision, not the call.</h1>
-    <p class="lead">Reading the record is free. Minting a Decision Asset costs from $1 and settles when it resolves. The Decision Room is priced per engagement. Every number below is also published machine-readably at <a href="https://api.phronesisintel.com/.well-known/pricing.json"><code>/.well-known/pricing.json</code></a>.</p>
+    <p class="lead">Reading the record is free. Minting a Decision Asset is priced from $1 and settles when it resolves — the paid mint path is in build. The Decision Room is priced per engagement. Every number below is also published machine-readably at <a href="https://api.phronesisintel.com/.well-known/pricing.json"><code>/.well-known/pricing.json</code></a>.</p>
   </div>
 </section>
 
@@ -144,7 +144,7 @@
         <h3 class="tier-name">Record</h3>
         <p class="tier-price">$49 <span class="period">/ month</span></p>
         <p class="tier-target">Researchers, analysts, small agent platforms.</p>
-        <p class="tier-body">API + MCP access to the full record (unlimited reads), resolution alerts, index snapshots with digests, 5 Standard mints a month.</p>
+        <p class="tier-body">API + MCP access to the full record (unlimited reads), resolution alerts (when live), index snapshots with digests (when the record index is live), 5 Standard mints a month when the mint path is live.</p>
         <a href="https://api.phronesisintel.com/api/v1/subscribe?tier=tier-2-inquiry" class="btn btn-primary">Subscribe</a>
       </div>
 
@@ -152,7 +152,7 @@
         <h3 class="tier-name">Practice</h3>
         <p class="tier-price">$499 <span class="period">/ month</span></p>
         <p class="tier-target">Advisory firms, allocators, agent platforms in production.</p>
-        <p class="tier-body">Everything in Record plus 50 Standard mints a month, all archetypes, 99% uptime target, Deep and Strategic mints metered at the agent schedule. Passport reads included when the Passport is live.</p>
+        <p class="tier-body">Everything in Record plus all archetypes and a 99% uptime target. 50 Standard mints a month, with Deep and Strategic mints metered at the agent schedule, when the mint path is live. Passport reads included when the Passport is live.</p>
         <a href="https://api.phronesisintel.com/api/v1/subscribe?tier=tier-3-practice" class="btn btn-primary">Subscribe</a>
       </div>
 
@@ -179,17 +179,18 @@
     <div class="agent-schedule">
       <table>
         <thead>
-          <tr><th>Request</th><th>Price</th></tr>
+          <tr><th>Request</th><th>Price</th><th>Status</th></tr>
         </thead>
         <tbody>
-          <tr><td>Reading a public Decision Asset, its digest, or an index snapshot</td><td>free</td></tr>
-          <tr><td>Reading a party-scoped or unresolved asset</td><td>$0.05</td></tr>
-          <tr><td>Minting a Standard Decision Asset (scheduled series, statistical method, baseline fixed at mint)</td><td>$1.00, plus $0.50 when it resolves</td></tr>
-          <tr><td>Minting a Deep asset (model-assisted; inputs and payload archived)</td><td>up to $25, plus $5 at resolution</td></tr>
-          <tr><td>Minting a Strategic asset</td><td>up to $100, plus $50 at resolution</td></tr>
-          <tr><td>Passport read (digest / full)</td><td>$0.10 / $1.00 — when the Passport is live</td></tr>
+          <tr><td>Reading a public Decision Asset, its digest, or an index snapshot</td><td>free</td><td>live</td></tr>
+          <tr><td>Reading a party-scoped or unresolved asset</td><td>$0.05</td><td>in build</td></tr>
+          <tr><td>Minting a Standard Decision Asset (scheduled series, statistical method, baseline fixed at mint)</td><td>$1.00, plus $0.50 when it resolves</td><td>in build</td></tr>
+          <tr><td>Minting a Deep asset (model-assisted; inputs and payload archived)</td><td>up to $25, plus $5 at resolution</td><td>in build</td></tr>
+          <tr><td>Minting a Strategic asset</td><td>up to $100, plus $50 at resolution</td><td>in build</td></tr>
+          <tr><td>Passport read (digest / full)</td><td>$0.10 / $1.00 — when the Passport is live</td><td>when the Passport is live</td></tr>
         </tbody>
       </table>
+      <p>Rows marked <em>in build</em> are priced now and purchasable when their path is live.</p>
     </div>
   </div>
 </section>
@@ -197,10 +198,10 @@
 <section>
   <div class="container-narrow">
     <span class="eyebrow">Rails</span>
-    <p class="lead">Humans pay by card, ACH, SEPA or wire through Stripe. Agents acting for a human pay through Stripe's agent checkout. Agent-native payment over x402 (USDC on Base) is <strong>in preparation; not yet accepted</strong> — and every priced request will offer it alongside Stripe when it is live. Phronesis holds no customer keys; receipts settle to an operator account.</p>
+    <p class="lead">Humans pay by card through Stripe. Agents acting for a human will pay through Stripe's agent checkout when per-request purchases are live. Agent-native payment over x402 (USDC on Base) is <strong>in preparation; not yet accepted</strong> — and every priced request will offer it alongside Stripe when it is live. Phronesis holds no customer keys; receipts settle to an operator account.</p>
 
     <span class="eyebrow" style="margin-top: var(--space-8); display: block;">Re-reads and retries</span>
-    <p class="lead">A purchase buys a <em>version</em> of a Decision Asset, identified by its digest. Re-reading what you bought is free until the asset is superseded, and the record tells you why it was. If your agent retries a purchase with the same <code>purchase_id</code> within 72 hours, nothing is charged twice.</p>
+    <p class="lead"><strong>When per-request purchases are live (in build):</strong> A purchase buys a <em>version</em> of a Decision Asset, identified by its digest. Re-reading what you bought is free until the asset is superseded, and the record tells you why it was. If your agent retries a purchase with the same <code>purchase_id</code> within 72 hours, nothing is charged twice.</p>
   </div>
 </section>
 
@@ -209,7 +210,7 @@
     <span class="eyebrow">Frequently asked questions</span>
     <div class="faq-item">
       <h4>What exactly am I paying for?</h4>
-      <p>A Decision Asset — a forecast with its evidence, a frozen resolution rule, and a public score when reality resolves. You pay to mint it and a smaller amount when it resolves; reading is free or cents.</p>
+      <p>A Decision Asset — a forecast with its evidence, a frozen resolution rule, and a public score when reality resolves. When the mint path is live (in build), you pay to mint it and a smaller amount when it resolves; reading is free or cents.</p>
     </div>
     <div class="faq-item">
       <h4>Can I switch tiers mid-month?</h4>
@@ -221,7 +222,7 @@
     </div>
     <div class="faq-item">
       <h4>What payment methods?</h4>
-      <p>Stripe (cards, ACH, SEPA, wire). Agent-native x402 payment: in preparation; not yet accepted.</p>
+      <p>Stripe (cards). Agent-native x402 payment: in preparation; not yet accepted.</p>
     </div>
     <div class="faq-item">
       <h4>What is the Discovery rate limit?</h4>

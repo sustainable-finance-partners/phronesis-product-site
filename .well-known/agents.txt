@@ -33,7 +33,7 @@ Bench-JSON: https://api.phronesisintel.com/.well-known/bench.json
 # --- Authentication ---
 # Path A (autonomous agents):  Agents authenticate with an Authority Credential; an AP2 mandate, where presented, is recorded as evidence of delegated authority (Terms §4.3).
 #                              Intent Mandate + Cart Mandate as Verifiable Credentials
-# Path B (agents-for-humans):  Stripe SPT (Shared Payment Token) bound to AP2 Cart Mandate
+# Path B (agents-for-humans):  Stripe SPT (Shared Payment Token) bound to AP2 Cart Mandate (in build)
 # Path C (humans):             Bearer JWT, subscription tiers
 Auth-Methods: AP2, Stripe-SPT, Bearer-JWT
 
@@ -47,8 +47,9 @@ Idempotency: required
 Error-Format: structured-json
 
 # --- Pricing model ---
-# Reading the record is free. Minting a Decision Asset costs from $1 and
-# settles when it resolves. The Decision Room is priced per engagement.
+# Reading the record is free. Minting a Decision Asset is priced from $1 and
+# settles when it resolves — the paid mint path is in build. The Decision
+# Room is priced per engagement.
 # Tiers: Discovery (free), Record ($49), Practice ($499),
 #        Decision Room (on inquiry), Outcome-Conditional (PLANNED).
 # Agent schedule (per request): /.well-known/pricing.json#agent_schedule

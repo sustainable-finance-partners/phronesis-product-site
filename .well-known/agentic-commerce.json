@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.agentic-commerce.org/v1/manifest.json",
   "spec_version": "1.0",
-  "manifest_version": "2026-10-02",
+  "manifest_version": "2026-10-06",
   "operator": {
     "legal_name": "Sustainable Finance Partners, LLC",
     "trade_name": "Phronesis",
@@ -40,9 +40,10 @@
         "authorization_budget_seconds": 5
       },
       "path_b_agent_for_human": {
-        "description": "Stripe Agentic Commerce Suite checkout flow with SPT bound to AP2 Cart Mandate at issuance",
+        "description": "Stripe Agentic Commerce Suite checkout flow with SPT bound to AP2 Cart Mandate at issuance (in build)",
         "spt_required": true,
-        "ap2_cart_mandate_at_spt_issuance": true
+        "ap2_cart_mandate_at_spt_issuance": true,
+        "availability": "in_build"
       }
     },
     "human_paths": {
@@ -61,7 +62,8 @@
     "pricing_model": "decision_asset_lifecycle",
     "per_call_pricing": {
       "agent_schedule_ref": "/.well-known/pricing.json#agent_schedule",
-      "settlement": "stripe_meter_event_at_canonical_persistence"
+      "settlement": "stripe_meter_event_at_canonical_persistence",
+      "availability": "in_build"
     },
     "refund_policy_url": "https://sustainablefinancepartner.com/refund-policy"
   },
