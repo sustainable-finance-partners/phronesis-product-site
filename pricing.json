@@ -1,6 +1,6 @@
 {
   "surface": "pricing",
-  "updated": "2026-10-02",
+  "updated": "2026-10-06",
   "operator": {
     "legal_name": "Sustainable Finance Partners, LLC",
     "trade_name": "Phronesis",
@@ -23,7 +23,8 @@
       "name": "Record",
       "price_usd_month": 49,
       "includes": {
-        "mints_standard_per_month": 5
+        "mints_standard_per_month": 5,
+        "mints_standard_per_month_availability": "in_build"
       },
       "claim_state": "live"
     },
@@ -32,7 +33,8 @@
       "name": "Practice",
       "price_usd_month": 499,
       "includes": {
-        "mints_standard_per_month": 50
+        "mints_standard_per_month": 50,
+        "mints_standard_per_month_availability": "in_build"
       },
       "claim_state": "live"
     },
@@ -51,42 +53,49 @@
     {
       "request": "read_public_asset_digest_or_index_snapshot",
       "scheme": "exact",
-      "price_usd": 0
+      "price_usd": 0,
+      "availability": "live"
     },
     {
       "request": "read_party_scoped_or_unresolved_asset",
       "scheme": "exact",
-      "price_usd": 0.05
+      "price_usd": 0.05,
+      "availability": "in_build"
     },
     {
       "request": "mint_standard",
       "scheme": "exact",
       "price_usd": 1.0,
-      "resolution_fee_usd": 0.5
+      "resolution_fee_usd": 0.5,
+      "availability": "in_build"
     },
     {
       "request": "mint_deep",
       "scheme": "upto",
       "price_usd": 25.0,
-      "resolution_fee_usd": 5.0
+      "resolution_fee_usd": 5.0,
+      "availability": "in_build"
     },
     {
       "request": "mint_strategic",
       "scheme": "upto",
       "price_usd": 100.0,
-      "resolution_fee_usd": 50.0
+      "resolution_fee_usd": 50.0,
+      "availability": "in_build"
     },
     {
       "request": "passport_read_digest",
       "scheme": "exact",
       "price_usd": 0.1,
-      "claim_state": "when the Passport is live"
+      "claim_state": "when the Passport is live",
+      "availability": "in_build"
     },
     {
       "request": "passport_read_full",
       "scheme": "exact",
       "price_usd": 1.0,
-      "claim_state": "when the Passport is live"
+      "claim_state": "when the Passport is live",
+      "availability": "in_build"
     }
   ],
   "agent_payment_rails": {
