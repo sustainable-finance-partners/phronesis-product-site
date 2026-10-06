@@ -34,7 +34,7 @@
     "supported_methods": ["ap2_mandate", "stripe_spt", "bearer_jwt"],
     "agent_paths": {
       "path_a_autonomous_agent": {
-        "description": "Direct API access via AP2 mandate authorization (Google Agent Payments Protocol)",
+        "description": "Agents authenticate with an Authority Credential; an AP2 mandate, where presented, is recorded as evidence of delegated authority (Terms §4.3).",
         "mandate_types_required": ["intent_mandate", "cart_mandate"],
         "mandate_format": "verifiable_credential_signed_by_principal",
         "authorization_budget_seconds": 5

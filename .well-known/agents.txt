@@ -1,7 +1,7 @@
 # agents.txt — Phronesis agent discovery manifest
 # Authority: Sustainable Finance Partners, LLC (operator)
 # Spec: https://phronesisintel.com/spec
-# Last updated: 2026-05-25
+# Last updated: 2026-10-06
 
 User-Agent: *
 
@@ -31,7 +31,7 @@ Scorecard-JSON: https://api.phronesisintel.com/scorecard.json
 Bench-JSON: https://api.phronesisintel.com/.well-known/bench.json
 
 # --- Authentication ---
-# Path A (autonomous agents):  AP2 mandate (Google Agent Payments Protocol)
+# Path A (autonomous agents):  Agents authenticate with an Authority Credential; an AP2 mandate, where presented, is recorded as evidence of delegated authority (Terms §4.3).
 #                              Intent Mandate + Cart Mandate as Verifiable Credentials
 # Path B (agents-for-humans):  Stripe SPT (Shared Payment Token) bound to AP2 Cart Mandate
 # Path C (humans):             Bearer JWT, subscription tiers
@@ -40,8 +40,6 @@ Auth-Methods: AP2, Stripe-SPT, Bearer-JWT
 # --- Substrate discipline (enforced at the code layer) ---
 # Idempotency-Key header REQUIRED on all mutating endpoints.
 # Errors are structured with stable machine-recoverable codes (16-code enum).
-# MCP and REST are co-equal at every endpoint — neither transport is the
-# "real" API; both pass through the same boundary publish gate.
 # Per-tenant isolation is enforced by the code path itself, not by
 # configuration or policy — cross-tenant data access is architecturally
 # prevented at the boundary publish layer.

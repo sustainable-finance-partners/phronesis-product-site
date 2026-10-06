@@ -10,7 +10,7 @@ For the SFP corporate parent site, see [sustainablefinancepartner.com](https://s
 .
 ├── index.html                       Home page
 ├── verticals.html                   Vertical coverage (V1–V8)
-├── scorecard.html                   Live forecast scorecard (fetches phronesis-jrstinehour.replit.app/scorecard.json)
+├── scorecard.html                   Live forecast scorecard (fetches api.phronesisintel.com/scorecard.json)
 ├── pricing.html                     Pricing tiers
 ├── spec.html                        For-agents technical surface (links to canonical /spec)
 ├── styles.css                       Shared design system (byte-identical with sfp-corporate-site)
@@ -30,7 +30,7 @@ at Cloudflare Registrar 2026-04-19 (3-yr auto-renew); DNS hosting at Cloudflare 
 
 ## Live data dependency
 
-`scorecard.html` fetches `https://phronesis-jrstinehour.replit.app/scorecard.json` on page
+`scorecard.html` fetches `https://api.phronesisintel.com/scorecard.json` on page
 load. The Hermes contract surface must allow CORS from `https://phronesisintel.com` origin
 for the scorecard to render. If the browser console shows a CORS error post-deploy, the
 mcp_server middleware needs the origin added to its allowlist (carry-item per Sprint 5.4

@@ -140,7 +140,7 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
 <p>The Stripe Agentic Commerce Suite flow (Shared Payment Token bound to an AP2 Cart Mandate at issuance) is a documented forward-state; per-call settlement today runs against the authenticated caller's tenant via Stripe meter events.</p>
 
 <h3>Path C — Direct human SaaS (Discovery / Inquiry / Practice / Practice+ / Enterprise subscribers)</h3>
-<p>Human subscribers authenticate via Bearer JWT issued at login. Subscription tier per Pricing_Strategy v1.2 canonical (Discovery Free / Inquiry $49 / Practice $499 / Practice+ $2,499 / Enterprise negotiated) determines included usage allowances and overage rates. Compute depth tiers (Standard / Deep / Strategic / Strategic Sync) handle per-inquiry depth-classification per Themis #117.6. See <a href="/pricing">/pricing</a>.</p>
+<p>Human subscribers authenticate with a bearer token issued at OAuth consent (PKCE) or by the post-checkout signup claim. Subscription tier (Discovery Free / Inquiry $49 / Practice $499 / Practice+ $2,499 / Enterprise negotiated) determines included usage allowances and overage rates. Compute depth tiers (Standard / Deep / Strategic / Strategic Sync) handle per-inquiry depth-classification. See <a href="/pricing">/pricing</a>.</p>
 
 <h2>Idempotency</h2>
 <p>Every mutating endpoint requires the <code>Idempotency-Key</code> header. Keys are persisted to the Mnemosyne idempotency archive for a minimum of seventy-two hours. Repeat requests with the same key return the original response without side effects, regardless of whether the original was successful.</p>
@@ -182,7 +182,7 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
 // killswitch_reset) — also visible in tools/list.</code></pre>
 
 <h2>Verticals and archetypes</h2>
-<p>Twelve verticals; all twelve LIVE on production per 12-VERTICAL-COMPLETE substrate milestone; archetype taxonomy is per-vertical. See the <a href="/verticals">verticals page</a> for archetype detail. Themis canonical-rule catalog v1.10 carries 144 rules across 14 clusters (12 vertical clusters + 2 cross-cutting clusters #117 Agent-Surface-Discipline + #118 Data-Handling-Discipline). Canonical taxonomy is reflected in the OpenAPI spec.</p>
+<p>Twelve verticals; all twelve LIVE on production; archetype taxonomy is per-vertical. See the <a href="/verticals">verticals page</a> for archetype detail. Canonical taxonomy is reflected in the OpenAPI spec.</p>
 
 <h2>Discovery surfaces</h2>
 <p>For agent crawlers: <a href="/.well-known/agents.txt">agents.txt</a> · <a href="/.well-known/agentic-commerce.json">agentic-commerce.json</a> · <a href="https://api.phronesisintel.com/.well-known/openapi.json">openapi.json</a> · <a href="/pricing.json">pricing.json</a> · <a href="/robots.txt">robots.txt</a></p>
@@ -191,7 +191,7 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
 <p>The Hermes contract surface uses semantic versioning at the contract layer. Breaking changes go to a new major version with a six-month deprecation window for the prior major. Non-breaking additions (new endpoints, new optional fields) are added in minor versions and announced via the changelog.</p>
 
 <h2>SLA and limits</h2>
-<p>Production runtime is dedicated 24/7 (Reserved VM). Per-tenant rate limits and per-mandate burst limits documented at /spec#rate-limits (in development). Service credits available for 24+ hour continuous outage per the Refund Policy.</p>
+<p>Production runtime is dedicated 24/7. Per-tenant rate limits and per-mandate burst limits documented at /spec#rate-limits (in development). Service credits available for 24+ hour continuous outage per the Refund Policy.</p>
 
 <h2>Support</h2>
 <p>Issues, integration questions, contract clarifications: write to the support email published on the <a href="https://sustainablefinancepartner.com">Sustainable Finance Partners</a> Contact page. Bug reports against the contract surface are triaged at the customer-relations substrate; critical contract violations — anything that bypasses or undermines the single boundary publish gate that every endpoint passes through — are escalated immediately.</p>
@@ -235,7 +235,8 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
     </div>
     <div class="footer-bottom">
       <p>&copy; 2026 Sustainable Finance Partners, LLC. All rights reserved.</p>
-      <p>Phronesis is the flagship product of <a href="https://sustainablefinancepartner.com">Sustainable Finance Partners, LLC</a>.</p>
+      <p><a href="https://sustainablefinancepartner.com">Sustainable Finance Partners, LLC</a> operates the Phronesis platform.</p>
+      <p>PHRONESIS is a trademark of John Ross Stinehour, used under license by Sustainable Finance Partners, LLC.</p>
     </div>
   </div>
 </footer>
