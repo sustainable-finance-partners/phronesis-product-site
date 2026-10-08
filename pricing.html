@@ -98,6 +98,36 @@
 .faq-item { padding: var(--space-4) 0; border-bottom: 1px solid var(--color-cloud); }
 .faq-item h4 { margin: 0 0 var(--space-2) 0; font-size: var(--text-base); color: var(--color-deep); }
 .faq-item p { margin: 0; font-size: var(--text-sm); color: var(--color-slate); }
+
+/* Buy CTAs are plain POST forms (no script). The form is a column flex box so its
+   button stretches exactly as the .btn link it replaced did inside .tier-card, and
+   the reset below strips the browser's default button styling (:where keeps it at
+   element specificity, so .btn / .btn-primary / .btn-secondary still win). */
+.cta-form { display: flex; flex-direction: column; margin: 0; }
+:where(.cta-form) button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: none;
+  text-shadow: none;
+}
+.cta-form button:focus-visible {
+  outline: 2px solid var(--color-signal-deep);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+/* A held CTA: visibly muted, not clickable, no hover lift. */
+.btn-held,
+.btn-held:hover {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+  background: var(--color-deep);
+  border-color: var(--color-deep);
+}
 </style>
 </head>
 
@@ -137,7 +167,7 @@
         <p class="tier-price">$0</p>
         <p class="tier-target">Anyone.</p>
         <p class="tier-body">Read every public Decision Asset, the Bench and the scorecard. 100 API reads a month. No mints.</p>
-        <a href="https://api.phronesisintel.com/api/v1/signup?tier=tier-1-discovery" class="btn btn-secondary">Start free</a>
+        <form method="post" action="https://api.phronesisintel.com/api/v1/checkout" class="cta-form"><input type="hidden" name="tier" value="tier-1-discovery"><button type="submit" class="btn btn-secondary">Start free</button></form>
       </div>
 
       <div class="tier-card">
@@ -145,7 +175,7 @@
         <p class="tier-price">$49 <span class="period">/ month</span></p>
         <p class="tier-target">Researchers, analysts, small agent platforms.</p>
         <p class="tier-body">API + MCP access to the full record (unlimited reads), resolution alerts (when live), index snapshots with digests (when the record index is live), 5 Standard mints a month when the mint path is live.</p>
-        <a href="https://api.phronesisintel.com/api/v1/subscribe?tier=tier-2-inquiry" class="btn btn-primary">Subscribe</a>
+        <form method="post" action="https://api.phronesisintel.com/api/v1/checkout" class="cta-form"><input type="hidden" name="tier" value="tier-2-inquiry"><button type="submit" class="btn btn-primary">Subscribe</button></form>
       </div>
 
       <div class="tier-card">
@@ -153,7 +183,7 @@
         <p class="tier-price">$499 <span class="period">/ month</span></p>
         <p class="tier-target">Advisory firms, allocators, agent platforms in production.</p>
         <p class="tier-body">Everything in Record plus all archetypes and a 99% uptime target. 50 Standard mints a month, with Deep and Strategic mints metered at the agent schedule, when the mint path is live. Passport reads included when the Passport is live.</p>
-        <a href="https://api.phronesisintel.com/api/v1/subscribe?tier=tier-3-practice" class="btn btn-primary">Subscribe</a>
+        <span class="btn btn-primary btn-held" aria-disabled="true">Subscribe (in build)</span>
       </div>
 
       <div class="tier-card">
@@ -214,7 +244,7 @@
     </div>
     <div class="faq-item">
       <h4>Can I switch tiers mid-month?</h4>
-      <p>Yes; changes prorate.</p>
+      <p>Yes — write to support and we'll switch you; the change is prorated.</p>
     </div>
     <div class="faq-item">
       <h4>Do you offer annual pricing?</h4>
