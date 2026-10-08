@@ -118,16 +118,6 @@
   outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
-/* A held CTA: visibly muted, not clickable, no hover lift. */
-.btn-held,
-.btn-held:hover {
-  opacity: 0.5;
-  cursor: default;
-  transform: none;
-  box-shadow: none;
-  background: var(--color-deep);
-  border-color: var(--color-deep);
-}
 </style>
 </head>
 
@@ -183,7 +173,7 @@
         <p class="tier-price">$499 <span class="period">/ month</span></p>
         <p class="tier-target">Advisory firms, allocators, agent platforms in production.</p>
         <p class="tier-body">Everything in Record plus all archetypes and a 99% uptime target. 50 Standard mints a month, with Deep and Strategic mints metered at the agent schedule, when the mint path is live. Passport reads included when the Passport is live.</p>
-        <span class="btn btn-primary btn-held" aria-disabled="true">Subscribe (in build)</span>
+        <form method="post" action="https://api.phronesisintel.com/api/v1/checkout" class="cta-form"><input type="hidden" name="tier" value="tier-3-practice"><button type="submit" class="btn btn-primary">Subscribe</button></form>
       </div>
 
       <div class="tier-card">
