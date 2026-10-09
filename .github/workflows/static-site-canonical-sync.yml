@@ -138,6 +138,114 @@ jobs:
           done
           echo "PASS: Pricing v1.3 tier names present in pricing.json"
 
+      - name: JSON-LD AggregateOffer drift-checked against pricing.json
+        run: |
+          set -e
+          # index.html's JSON-LD AggregateOffer is generated from pricing.json. This step
+          # recomputes lowPrice, highPrice and offerCount from the listed tiers with
+          # claim_state live (priceCurrency from pricing.json's currency) and fails on any
+          # mismatch. Per-request rows stay out until they are live. Every JSON-LD block on
+          # index.html must parse.
+          python3 - <<'PY'
+          import json
+          import sys
+          from decimal import Decimal, InvalidOperation
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from typing import Any, NoReturn
+
+
+          def fail(msg: str) -> NoReturn:
+              print(f"FAIL: {msg}")
+              sys.exit(1)
+
+
+          class LdJson(HTMLParser):
+              def __init__(self) -> None:
+                  super().__init__()
+                  self.blocks: list[str] = []
+                  self._buf: list[str] | None = None
+
+              def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+                  if tag == "script" and dict(attrs).get("type") == "application/ld+json":
+                      self._buf = []
+
+              def handle_data(self, data: str) -> None:
+                  if self._buf is not None:
+                      self._buf.append(data)
+
+              def handle_endtag(self, tag: str) -> None:
+                  if tag == "script" and self._buf is not None:
+                      self.blocks.append("".join(self._buf))
+                      self._buf = None
+
+
+          def number(value: Any, where: str) -> Decimal:
+              if isinstance(value, bool) or not isinstance(value, (int, str, Decimal)):
+                  fail(f"{where} is not a number: {value!r}")
+              try:
+                  return Decimal(str(value))
+              except InvalidOperation:
+                  fail(f"{where} is not a number: {value!r}")
+
+
+          pricing = json.loads(Path("pricing.json").read_text("utf-8"), parse_float=Decimal)
+          # The listed tiers: claim_state live with a monthly list price. An on-inquiry
+          # tier has no price_usd_month, and per-request rows sit in agent_schedule, not
+          # tiers, so neither enters the offer.
+          prices = [
+              number(tier["price_usd_month"], f"pricing.json tier {tier['id']}")
+              for tier in pricing["tiers"]
+              if tier.get("claim_state") == "live" and "price_usd_month" in tier
+          ]
+          if not prices:
+              fail("pricing.json has no listed live tiers")
+          want = {
+              "lowPrice": min(prices),
+              "highPrice": max(prices),
+              "offerCount": Decimal(len(prices)),
+          }
+
+          parser = LdJson()
+          parser.feed(Path("index.html").read_text("utf-8"))
+          parser.close()
+          if not parser.blocks:
+              fail("index.html has no application/ld+json block")
+          offers: list[dict[str, Any]] = []
+          for i, block in enumerate(parser.blocks, 1):
+              try:
+                  doc = json.loads(block, parse_float=Decimal)
+              except json.JSONDecodeError as exc:
+                  fail(f"index.html JSON-LD block {i} does not parse: {exc}")
+              offer = doc.get("offers") if isinstance(doc, dict) else None
+              if isinstance(offer, dict) and offer.get("@type") == "AggregateOffer":
+                  offers.append(offer)
+          print(f"index.html: {len(parser.blocks)} JSON-LD block(s) parse")
+          if len(offers) != 1:
+              fail(f"index.html has {len(offers)} AggregateOffer(s), expected 1")
+          offer = offers[0]
+
+          mismatch = False
+          for key, expected in want.items():
+              got = number(offer.get(key), f"AggregateOffer.{key}")
+              if got != expected:
+                  print(f"FAIL: AggregateOffer.{key} = {got}, pricing.json gives {expected}")
+                  mismatch = True
+          if offer.get("priceCurrency") != pricing["currency"]:
+              print(
+                  f"FAIL: AggregateOffer.priceCurrency = {offer.get('priceCurrency')!r}, "
+                  f"pricing.json gives {pricing['currency']!r}"
+              )
+              mismatch = True
+          if mismatch:
+              sys.exit(1)
+          print(
+              f"PASS: AggregateOffer matches pricing.json live listed tiers "
+              f"(low {want['lowPrice']}, high {want['highPrice']}, "
+              f"count {want['offerCount']}, {pricing['currency']})"
+          )
+          PY
+
   trust-center-linkage:
     runs-on: ubuntu-latest
     name: Public Trust Center linked from site
