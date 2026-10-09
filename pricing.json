@@ -1,6 +1,6 @@
 {
   "surface": "pricing",
-  "updated": "2026-10-06",
+  "updated": "2026-10-08",
   "operator": {
     "legal_name": "Sustainable Finance Partners, LLC",
     "trade_name": "Phronesis",
@@ -36,7 +36,7 @@
         "mints_standard_per_month": 50,
         "mints_standard_per_month_availability": "in_build"
       },
-      "claim_state": "live"
+      "claim_state": "in_build"
     },
     {
       "id": "decision_room",
@@ -100,6 +100,7 @@
   ],
   "agent_payment_rails": {
     "stripe": "live",
+    "stripe_acs": "in_build",
     "x402": "in preparation; not yet accepted"
   },
   "honest_claim_states": true,

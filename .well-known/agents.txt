@@ -35,7 +35,7 @@ Bench-JSON: https://api.phronesisintel.com/.well-known/bench.json
 #                              Intent Mandate + Cart Mandate as Verifiable Credentials
 # Path B (agents-for-humans):  Stripe SPT (Shared Payment Token) bound to AP2 Cart Mandate (in build)
 # Path C (humans):             Bearer JWT, subscription tiers
-Auth-Methods: AP2, Stripe-SPT, Bearer-JWT
+Auth-Methods: AP2, Stripe-SPT (in build), Bearer-JWT
 
 # --- Substrate discipline (enforced at the code layer) ---
 # Idempotency-Key header REQUIRED on all mutating endpoints.

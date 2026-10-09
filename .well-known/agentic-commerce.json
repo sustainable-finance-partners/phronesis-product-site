@@ -31,7 +31,7 @@
     "pricing_machine_readable": "https://api.phronesisintel.com/.well-known/pricing.json"
   },
   "authentication": {
-    "supported_methods": ["ap2_mandate", "stripe_spt", "bearer_jwt"],
+    "supported_methods": ["ap2_mandate", {"stripe_spt": "in_build"}, "bearer_jwt"],
     "agent_paths": {
       "path_a_autonomous_agent": {
         "description": "Agents authenticate with an Authority Credential; an AP2 mandate, where presented, is recorded as evidence of delegated authority (Terms §4.3).",
@@ -54,8 +54,8 @@
     }
   },
   "commerce": {
-    "supported_settlement": ["stripe_meter_events", {"x402": "in preparation; not yet accepted"}],
-    "stripe_acs_native": true,
+    "supported_settlement": [{"stripe_meter_events": "in_build"}, {"x402": "in preparation; not yet accepted"}],
+    "stripe_acs_native": "in_build",
     "currency": "USD",
     "tax_handling": "stripe_tax_complete_tier",
     "climate_contribution_pct": 1.0,

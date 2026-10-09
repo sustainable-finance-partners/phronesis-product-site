@@ -137,7 +137,7 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
 }</code></pre>
 
 <h3>Agentic commerce (agents acting for humans) — FORWARD-STATE</h3>
-<p>The Stripe Agentic Commerce Suite flow (Shared Payment Token bound to an AP2 Cart Mandate at issuance) is a documented forward-state; per-call settlement today runs against the authenticated caller's tenant via Stripe meter events.</p>
+<p>The Stripe Agentic Commerce Suite flow (Shared Payment Token bound to an AP2 Cart Mandate at issuance) is a documented forward-state. Per-request settlement is in build. When it is live, agents will pay per request through Stripe — cards via Shared Payment Tokens, or USDC over x402 or Stripe's Machine Payments Protocol. Until then, per-request purchases are not available.</p>
 
 <h3>Path C — Direct human SaaS (Discovery / Inquiry / Practice / Practice+ / Enterprise subscribers)</h3>
 <p>Human subscribers authenticate with a bearer token issued at OAuth consent (PKCE) or by the post-checkout signup claim. Subscription tier (Discovery Free / Inquiry $49 / Practice $499 / Practice+ $2,499 / Enterprise negotiated) determines included usage allowances and overage rates. Compute depth tiers (Standard / Deep / Strategic / Strategic Sync) handle per-inquiry depth-classification. See <a href="/pricing">/pricing</a>.</p>
