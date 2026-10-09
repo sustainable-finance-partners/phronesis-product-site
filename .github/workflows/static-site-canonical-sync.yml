@@ -123,28 +123,20 @@ jobs:
           fi
           echo "PASS: 12-vertical canonical references present"
 
-      - name: Pricing v1.2 canonical tier names present
+      - name: Pricing v1.3 canonical tier names present in the published price list
         run: |
           set -e
-          # On any page that discusses subscription tiers, the canonical v1.2 tier names must appear
-          REQUIRED_TIER_TOKENS=(
-            "Discovery"
-            "Inquiry"
-            "Practice"
-            "Enterprise"
-          )
-          FAILED=0
-          for token in "${REQUIRED_TIER_TOKENS[@]}"; do
-            if ! grep -rn -l "$token" --include="*.html" . > /dev/null; then
-              echo "FAIL: canonical Pricing v1.2 tier token '$token' NOT present in any HTML file"
-              FAILED=1
+          # Since Pricing v1.3 (ratified 2026-10-02) the public tiers are Discovery, Record
+          # and Practice; the v1.2 names Inquiry, Practice+ and Enterprise are retired from
+          # every page. The tier names are checked in the one source (pricing.json), the
+          # same check the sfp-corporate-site gate runs.
+          for token in Discovery Record Practice; do
+            if ! grep -q "\"name\": \"$token\"" pricing.json; then
+              echo "FAIL: Pricing v1.3 tier '$token' NOT present in pricing.json"
+              exit 1
             fi
           done
-          if [ "$FAILED" -ne 0 ]; then
-            echo "FAIL: Pricing_Strategy v1.2 canonical tier names incomplete"
-            exit 1
-          fi
-          echo "PASS: Pricing v1.2 canonical tier names present"
+          echo "PASS: Pricing v1.3 tier names present in pricing.json"
 
   trust-center-linkage:
     runs-on: ubuntu-latest
