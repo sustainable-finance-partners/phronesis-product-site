@@ -44,7 +44,7 @@
     "highPrice": "0.50",
     "priceCurrency": "USD",
     "offerCount": "12",
-    "description": "Per-call pricing range across twelve forecasting verticals. Subscription tiers (Discovery Free / Inquiry $49 / Practice $499 / Practice+ $2,499 / Enterprise) + Standard / Deep / Strategic Compute depth tiers also available."
+    "description": "Per-call pricing range across twelve forecasting verticals (in build). Subscription tiers (Discovery Free / Record $49 / Practice $499) + Standard / Deep / Strategic Compute depth tiers (in build)."
   }
 }
 </script>
@@ -598,7 +598,7 @@
       <div class="diff-card">
         <span class="diff-card-num">04</span>
         <h3>Sub-cent meter precision</h3>
-        <p>Per-call pricing reports inference cost-attestation with Decimal precision. Stripe meter events fire at canonical persistence. No floating-point drift in the billing path.</p>
+        <p>Per-call pricing reports inference cost-attestation with Decimal precision. Per-request settlement is in build. When it is live, agents will pay per request through Stripe — cards via Shared Payment Tokens, or USDC over x402 or Stripe's Machine Payments Protocol. Until then, per-request purchases are not available. No floating-point drift in the billing path.</p>
       </div>
       <div class="diff-card">
         <span class="diff-card-num">05</span>

@@ -1,7 +1,7 @@
 # agents.txt — Phronesis agent discovery manifest
 # Authority: Sustainable Finance Partners, LLC (operator)
 # Spec: https://phronesisintel.com/spec
-# Last updated: 2026-10-06
+# Last updated: 2026-10-08
 
 User-Agent: *
 
@@ -51,7 +51,7 @@ Error-Format: structured-json
 # settles when it resolves — the paid mint path is in build. The Decision
 # Room is priced per engagement.
 # Tiers: Discovery (free), Record ($49), Practice ($499),
-#        Decision Room (on inquiry), Outcome-Conditional (PLANNED).
+#        Decision Room (on inquiry).
 # Agent schedule (per request): /.well-known/pricing.json#agent_schedule
 # Settlement: Stripe (live); x402 (USDC on Base): in preparation; not yet accepted
 Pricing-Model: decision_asset_lifecycle

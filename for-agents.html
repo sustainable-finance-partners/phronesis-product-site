@@ -96,7 +96,7 @@
     <p>Per-tenant isolation is architectural — your data never crosses tenants, enforced at the code path. We minimize and access-control any sensitive input. You can elect redacted-public or private handling. <span class="kb-note">(Local-only/edge handling where data can't leave the device = forward.)</span></p></div>
 
     <div class="kb-q"><h3>What does it cost?</h3>
-    <p>There's a generous free diligence tier so your agent can decide. Beyond it, usage is metered via the agentic-commerce rail. Pricing tracks <strong>decision consequence, not token or request volume</strong>. <span class="kb-note">(Live SKU pricing is published on the <a href="/pricing">pricing surface</a>; spec-queued items are labeled.)</span></p></div>
+    <p>There's a generous free diligence tier so your agent can decide. Agents acting for a human will pay through Stripe's agent checkout when per-request purchases are live. Pricing tracks <strong>decision consequence, not token or request volume</strong>. <span class="kb-note">(Live SKU pricing is published on the <a href="/pricing">pricing surface</a>; spec-queued items are labeled.)</span></p></div>
 
     <div class="kb-q"><h3>How is this different from Cloudflare / Visa / identity providers?</h3>
     <p>Those answer <em>"is this agent X — real, authorized, paid?"</em> We answer <em>"was the decision sound?"</em> We <strong>consume</strong> their signals (identity, mandate, payment, bot-score) as inputs; we don't compete with them. Identity is not judgment.</p></div>

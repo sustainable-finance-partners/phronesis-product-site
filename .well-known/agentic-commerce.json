@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.agentic-commerce.org/v1/manifest.json",
   "spec_version": "1.0",
-  "manifest_version": "2026-10-06",
+  "manifest_version": "2026-10-08",
   "operator": {
     "legal_name": "Sustainable Finance Partners, LLC",
     "trade_name": "Phronesis",
@@ -49,7 +49,12 @@
     "human_paths": {
       "path_c_human_saas": {
         "description": "Direct human subscription with Bearer JWT auth",
-        "subscription_tiers": ["tier-1-discovery", "tier-2-inquiry", "tier-3-practice", "tier-4-practice-plus", "tier-5-enterprise", "tier-6-outcome-conditional"]
+        "subscription_tiers": [
+          {"id": "tier-1-discovery", "name": "Discovery", "claim_state": "live"},
+          {"id": "tier-2-inquiry", "name": "Record", "claim_state": "live"},
+          {"id": "tier-3-practice", "name": "Practice", "claim_state": "live"},
+          {"id": "decision_room", "name": "Decision Room", "price": "on_inquiry", "claim_state": "live"}
+        ]
       }
     }
   },
@@ -81,6 +86,7 @@
     "layer_1_authorization": "ap2_mandate_verification",
     "layer_2_orchestration": "phronesis_plutus_ring",
     "layer_3_settlement": "stripe_spt_execution",
+    "layer_3_settlement_availability": "in_build",
     "substrate_guarantees": {
       "mcp_rest_co_equal": "every_endpoint_reachable_on_both_transports_through_the_same_boundary_publish_gate",
       "attribution_timestamp_confidence_audit": "every_decision_asset_carries_all_four_orthogonal_concerns",
