@@ -36,7 +36,7 @@
         "mints_standard_per_month": 50,
         "mints_standard_per_month_availability": "in_build"
       },
-      "claim_state": "in_build"
+      "claim_state": "live"
     },
     {
       "id": "decision_room",
