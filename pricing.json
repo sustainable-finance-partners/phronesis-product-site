@@ -1,6 +1,6 @@
 {
   "surface": "pricing",
-  "updated": "2026-10-08",
+  "updated": "2026-10-10",
   "operator": {
     "legal_name": "Sustainable Finance Partners, LLC",
     "trade_name": "Phronesis",
@@ -41,8 +41,7 @@
     {
       "id": "decision_room",
       "price": "on_inquiry",
-      "structure": "milestone_fee_credited_against_year_one",
-      "claim_state": "live"
+      "structure": "milestone_fee_credited_against_year_one"
     },
     {
       "id": "outcome_conditional",
@@ -99,9 +98,10 @@
     }
   ],
   "agent_payment_rails": {
-    "stripe": "live",
-    "stripe_acs": "in_build",
-    "x402": "in preparation; not yet accepted"
+    "humans_stripe_checkout": "live",
+    "agents_stripe_agent_checkout": "in_build",
+    "agents_x402_via_stripe": "in_build",
+    "wallet_abstraction": "not_offered"
   },
   "honest_claim_states": true,
   "discipline": "claim-states are labeled per surface; no SKU is implied that has not shipped",
