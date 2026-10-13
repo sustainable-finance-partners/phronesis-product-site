@@ -1,7 +1,7 @@
 # agents.txt — Phronesis agent discovery manifest
 # Authority: Sustainable Finance Partners, LLC (operator)
 # Spec: https://phronesisintel.com/spec
-# Last updated: 2026-10-08
+# Last updated: 2026-10-12
 
 User-Agent: *
 
@@ -53,7 +53,7 @@ Error-Format: structured-json
 # Tiers: Discovery (free), Record ($49), Practice ($499),
 #        Decision Room (on inquiry).
 # Agent schedule (per request): /.well-known/pricing.json#agent_schedule
-# Settlement: Stripe (live); x402 (USDC on Base): in preparation; not yet accepted
+# Settlement: Stripe Checkout for humans (live); agent payments (in build)
 Pricing-Model: decision_asset_lifecycle
 
 # --- Verticals (twelve applied + V#0 meta-vertical) ---
@@ -93,7 +93,7 @@ Primitive: P6=Market-State-Telemetry LIVE
 # verifiable — agents, regulators, and counterparties can independently
 # confirm any Decision Asset's content and provenance.
 # Three-layer trust stack: AP2 authorization → Plutus orchestration →
-# Stripe SPT execution.
+# Stripe SPT execution (in build).
 
 # --- Sister surfaces ---
 # Corporate parent: https://sustainablefinancepartner.com (Sustainable Finance Partners, LLC)

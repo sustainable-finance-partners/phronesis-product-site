@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.agentic-commerce.org/v1/manifest.json",
   "spec_version": "1.0",
-  "manifest_version": "2026-10-08",
+  "manifest_version": "2026-10-12",
   "operator": {
     "legal_name": "Sustainable Finance Partners, LLC",
     "trade_name": "Phronesis",
@@ -59,8 +59,7 @@
     }
   },
   "commerce": {
-    "supported_settlement": [{"stripe_meter_events": "in_build"}, {"x402": "in preparation; not yet accepted"}],
-    "stripe_acs_native": "in_build",
+    "supported_settlement": [{"humans_stripe_checkout": "live"}, {"agents_stripe_agent_checkout": "in_build"}, {"agents_x402_via_stripe": "in_build"}, {"wallet_abstraction": "not_offered"}],
     "currency": "USD",
     "tax_handling": "stripe_tax_complete_tier",
     "climate_contribution_pct": 1.0,
