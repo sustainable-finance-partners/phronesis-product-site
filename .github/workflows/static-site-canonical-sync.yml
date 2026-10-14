@@ -420,6 +420,12 @@ jobs:
             "Pattern-65"
             "THEMIS-DA-"
             "Themis-DA-"
+            # Internal component names. The public names are "the orchestration
+            # layer" and "the ledger". Listed in the forms the public surfaces carried.
+            "Mnemosyne ledger"
+            "mnemosyne_ledger"
+            "Plutus orchestration"
+            "plutus_ring"
           )
           FAILED=0
           for leak in "${FORBIDDEN_LEAKS[@]}"; do

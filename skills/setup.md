@@ -1,12 +1,12 @@
 # Phronesis Skills — Setup
 
-A curl-able setup guide for wiring Phronesis forecasting into an agent runtime — Claude Code, Cursor, Codex, or the Vercel Skills CLI. Phronesis exposes MCP and REST transports; this guide uses the public surfaces (no auth) for discovery and the JWT-gated Decision API for forecasts.
+A curl-able setup guide for wiring Phronesis forecasting into an agent runtime — your coding agent, Cursor, Codex, or the Vercel Skills CLI. Phronesis exposes MCP and REST transports; this guide uses the public surfaces (no auth) for discovery and the JWT-gated Decision API for forecasts.
 
 Production base URL: `https://api.phronesisintel.com`
 
 ## 1. Install the Skills
 
-**Claude Code:**
+**Your coding agent:**
 
 ```
 /plugin marketplace add sustainable-finance-partners/skills

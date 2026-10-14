@@ -13,7 +13,7 @@
   },
   "service": {
     "name": "Phronesis Decision-Assurance Layer",
-    "description": "The agentic economy's decision-assurance layer. A neutral substrate where agents and enterprises verify intent, price uncertainty, evaluate counterparties, coordinate transactions, and settle on outcome-conditional terms before acting. The atomic product is the Decision Asset — a 10-field machine-readable, auditable decision packet (forecast distribution + evidence graph + methodology hash + calibration record (honest-empty until ten resolutions) + baseline comparison + mandate scope + counterparty passport + action boundary + settlement hook + audit receipt). Forecasting is the entry primitive, not the product. Six foundational primitives (identity & mandate, reputation & track record, forecast & evidence, coordination & negotiation, outcome-conditional settlement, market-state telemetry) × twelve applied verticals, with V#0 AI Industrial Mobilization & Situational Awareness as the meta-vertical. Market Memory is the moat. Decision Assets persisted to canonical Mnemosyne ledger with public calibration scorecard.",
+    "description": "The agentic economy's decision-assurance layer. A neutral substrate where agents and enterprises verify intent, price uncertainty, evaluate counterparties, coordinate transactions, and settle on outcome-conditional terms before acting. The atomic product is the Decision Asset — a 10-field machine-readable, auditable decision packet (forecast distribution + evidence graph + methodology hash + calibration record (honest-empty until ten resolutions) + baseline comparison + mandate scope + counterparty passport + action boundary + settlement hook + audit receipt). Forecasting is the entry primitive, not the product. Six foundational primitives (identity & mandate, reputation & track record, forecast & evidence, coordination & negotiation, outcome-conditional settlement, market-state telemetry) × twelve applied verticals, with V#0 AI Industrial Mobilization & Situational Awareness as the meta-vertical. Market Memory is the moat. Decision Assets persisted to the ledger with public calibration scorecard.",
     "category": "agentic-commerce/decision-assurance",
     "atomic_product": "decision_asset",
     "meta_vertical": "v0-ai-industrial-mobilization-situational-awareness",
@@ -76,14 +76,14 @@
     "idempotency_archive_minimum_hours": 72,
     "error_format": "structured_json_with_stable_codes",
     "per_tenant_isolation": "enforced_at_boundary_publish_layer",
-    "audit_trail": "canonical_mnemosyne_ledger_immutable",
+    "audit_trail": "canonical_ledger_immutable",
     "decision_asset_substrate": true,
     "primary_source_citation_required": true,
     "timestamp_discipline": true
   },
   "trust_stack": {
     "layer_1_authorization": "ap2_mandate_verification",
-    "layer_2_orchestration": "phronesis_plutus_ring",
+    "layer_2_orchestration": "phronesis_orchestration_layer",
     "layer_3_settlement": "stripe_spt_execution",
     "layer_3_settlement_availability": "in_build",
     "substrate_guarantees": {

@@ -52,12 +52,36 @@ jobs:
           # Banned-language patterns (case-insensitive). Match (a) model-vendor +
           # tier/family names; (b) explicit model-id strings; (c) pricing.json
           # algorithm-exposure keys.
-          BANNED_NAMES='\b(anthropic|haiku|claude(?!bot)|gpt(?!bot)|opus|sonnet|gemini|openai|kimi|qwen|deepseek)\b'
+          #
+          # BANNED_NAMES matches whole words. grep -E has no lookahead: the earlier
+          # claude(?!bot) and gpt(?!bot) alternatives never matched, so a bare
+          # "claude" or "gpt" passed. The word boundary already keeps "ClaudeBot" and
+          # "GPTBot" out, because each is one word.
+          BANNED_NAMES='\b(anthropic|haiku|claude|gpt|opus|sonnet|gemini|openai|kimi|qwen|deepseek)\b'
           BANNED_MODEL_IDS='\b(claude-[a-z0-9.-]+|haiku-[0-9.]+|opus-[0-9.]+|sonnet-[0-9.]+|gpt-[a-z0-9.-]+)\b'
           BANNED_JSON_KEYS='"(model_provider|inference_model|model_tier|model_family|model_name)"\s*:\s*"[^"]+"'
 
+          # Matcher self-test: a pattern that cannot match is a gate that cannot fail.
+          # Every name in BANNED_NAMES must match as a bare word, in any case, and the
+          # two crawler names must pass. It runs before any file is read.
+          must_match=(anthropic haiku claude gpt opus sonnet gemini openai kimi qwen deepseek CLAUDE Claude GPT Gpt)
+          must_pass=(ClaudeBot claudebot GPTBot gptbot 'User-agent: ClaudeBot' 'User-agent: GPTBot')
+          for probe in "${must_match[@]}"; do
+            if ! grep -E -i -q "$BANNED_NAMES" <<< "$probe"; then
+              echo "::error::Algorithm Protection Gate matcher self-test FAILED: '$probe' must match BANNED_NAMES and does not"
+              exit 1
+            fi
+          done
+          for probe in "${must_pass[@]}"; do
+            if grep -E -i -q "$BANNED_NAMES" <<< "$probe"; then
+              echo "::error::Algorithm Protection Gate matcher self-test FAILED: crawler name '$probe' must pass BANNED_NAMES and does not"
+              exit 1
+            fi
+          done
+
           violations=0
           violation_log=$(mktemp)
+          own_pointer_masked=$(mktemp)
 
           # Scan candidate files (HTML + JSON + TXT + MD), excluding legal allow-list.
           while IFS= read -r -d '' file; do
@@ -68,14 +92,23 @@ jobs:
             fi
             # Allow-listed crawler directive: skip robots.txt explicitly (also caught above)
             # Now scan for banned-language patterns.
+            #
+            # The repository's own operating pointer names itself. In that one file,
+            # at the repository root only, the literal token CLAUDE.md is passed;
+            # every other word in it is scanned like any other file.
+            scan_input="$file"
+            if [[ "$file" == "./CLAUDE.md" ]]; then
+              sed 's/CLAUDE\.md/(this file)/g' "$file" > "$own_pointer_masked"
+              scan_input="$own_pointer_masked"
+            fi
             matched=0
-            if grep -E -i -n -H "$BANNED_NAMES" "$file" >> "$violation_log" 2>/dev/null; then
+            if grep -E -i -n -H --label="$file" "$BANNED_NAMES" < "$scan_input" >> "$violation_log" 2>/dev/null; then
               matched=1
             fi
-            if grep -E -i -n -H "$BANNED_MODEL_IDS" "$file" >> "$violation_log" 2>/dev/null; then
+            if grep -E -i -n -H --label="$file" "$BANNED_MODEL_IDS" < "$scan_input" >> "$violation_log" 2>/dev/null; then
               matched=1
             fi
-            if grep -E -n -H "$BANNED_JSON_KEYS" "$file" >> "$violation_log" 2>/dev/null; then
+            if grep -E -n -H --label="$file" "$BANNED_JSON_KEYS" < "$scan_input" >> "$violation_log" 2>/dev/null; then
               matched=1
             fi
             if [[ $matched -eq 1 ]]; then
