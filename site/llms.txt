@@ -23,6 +23,8 @@ breadth is not twelve finished products; it is one motion accumulating a cross-a
 record (deadline-risk, counterparty-risk, capacity-constraint, regulatory-timing) no
 single-vertical tool can match.
 
+V#13 General — any consequential decision, in any domain: the caller brings the proposed action, a frozen resolution rule and a resolution source; Phronesis captures, anchors, resolves and scores. Catalogued; mints on the customer mint path. Proven first on grid-compute.
+
 ## Endpoints
 - [API base](https://api.phronesisintel.com): REST surface — production base URL.
 - [MCP server](https://api.phronesisintel.com/mcp): Model Context Protocol transport with semantic parity to REST.

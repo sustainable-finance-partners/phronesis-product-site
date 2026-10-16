@@ -85,12 +85,12 @@ jobs:
           # Scan every file the host publishes, whatever its extension (pages, JSON,
           # text, CSS, SVG, XML, _headers, _redirects), excluding the legal allow-list;
           # grep -I passes over a binary file, which carries no copy.
-          # The scan covers what the host publishes (site/, the build output directory)
-          # and the skills draft (skills/, held to the same rule by the COO's 10-15
-          # ruling). The repository-only files at the root (CLAUDE.md, README.md,
-          # .github/) are not published and not scanned; the publish-folder job below
-          # fails if one of them enters site/. That is why the token mask this step
-          # once carried for the operating pointer's own file name is gone.
+          # The scan covers what the host publishes (site/, the build output directory),
+          # the skills setup guide included (site/skills/, public by design, ADR-0034;
+          # §15.10.767 §R8.2). The repository-only files at the root (CLAUDE.md,
+          # README.md, .github/) are not published and not scanned; the publish-folder
+          # job below fails if one of them enters site/. That is why the token mask this
+          # step once carried for the operating pointer's own file name is gone.
           while IFS= read -r -d '' file; do
             basename=$(basename "$file")
             # Allow-listed legal-substrate files: skip
@@ -113,7 +113,7 @@ jobs:
             if [[ $matched -eq 1 ]]; then
               violations=$((violations + 1))
             fi
-          done < <(find site skills -type f -print0)
+          done < <(find site -type f -print0)
 
           if [[ -s "$violation_log" ]]; then
             echo "::error::Algorithm Protection Gate FAILED — banned-language found in customer-facing copy"
@@ -146,10 +146,13 @@ jobs:
     # COO ruling 2026-10-15 (§15.10.761 §2): the site publishes from a subfolder,
     # not ignore rules. The host's build output directory is site/; this job fails
     # when a public file sits at the root (it would silently not be published),
-    # when a repository-only name (CLAUDE.md, README.md, skills/, .github/) enters
+    # when a repository-only name (CLAUDE.md, README.md, .github/) enters
     # site/ at any depth, or when site/ lacks index.html or 404.html (without a
     # top-level 404.html the host answers an unknown path with the homepage and a
-    # 200, and nothing could return 404). It runs its own self-test first.
+    # 200, and nothing could return 404). Since §15.10.767 §R8.2 the skills setup
+    # guide is public by design (ADR-0034): it lives in site/skills/, and the job
+    # also fails when site/_redirects lacks the rule that serves it at the stable
+    # path /skills/setup. It runs its own self-test first.
     name: Publish folder holds only public files
     runs-on: ubuntu-latest
     steps:
@@ -171,5 +174,5 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Vendor-name check (self-test, then site/ and skills/)
+      - name: Vendor-name check (self-test, then site/)
         run: python3 scripts/site_gates.py vendor-names

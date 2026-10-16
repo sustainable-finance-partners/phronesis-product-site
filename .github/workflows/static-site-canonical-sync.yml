@@ -410,44 +410,20 @@ jobs:
     # R-numbers from the Ratification Ledger). The Decision_Assurance_Layer
     # §2.5 brand-discipline principle: capability named plainly, no internal
     # numbering jargon in customer copy.
+    #
+    # §15.10.767 §S.4 (the reader test of 2026-10-16): the list moved to
+    # gates/taxonomy_leaks.json and the check to scripts/site_gates.py
+    # taxonomy-leaks. It covers internal component names, governance references
+    # (lesson numbers, diligence names, internal document titles), rule and
+    # cluster numbers, and the retired claim-state ('12 of 12', bare 'Live' on
+    # /verticals, LIVE on an applied vertical's agents.txt line), over every file
+    # the host publishes. Every rule carries seeded fixtures its self-test proves
+    # fail the gate; every marker of the shell list this job carried is one of them.
     runs-on: ubuntu-latest
     name: No internal taxonomy leaks on public surfaces
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Forbidden internal-taxonomy markers on customer-facing HTML
-        run: |
-          set -e
-          FORBIDDEN_LEAKS=(
-            "Sacred Invariant"
-            "sacred_invariants"
-            "Pattern-32"
-            "Pattern-43"
-            "Pattern-50"
-            "Pattern-65"
-            "THEMIS-DA-"
-            "Themis-DA-"
-            # Internal component names. The public names are "the orchestration
-            # layer" and "the ledger". Listed in the forms the public surfaces carried.
-            "Mnemosyne ledger"
-            "mnemosyne_ledger"
-            "Plutus orchestration"
-            "plutus_ring"
-          )
-          FAILED=0
-          for leak in "${FORBIDDEN_LEAKS[@]}"; do
-            # Only flag *.html and *.txt + the agent-discoverable JSON.
-            # ADR / changelog narratives in repo docs are out of scope.
-            if grep -rn "$leak" --include="*.html" --include="*.txt" --include="*.json" . 2>&1 | grep -v "^./.github/" > /dev/null; then
-              MATCHES=$(grep -rn "$leak" --include="*.html" --include="*.txt" --include="*.json" . 2>&1 | grep -v "^./.github/" || true)
-              echo "FAIL: internal-taxonomy leak '$leak' found on customer-facing surface:"
-              echo "$MATCHES"
-              FAILED=1
-            fi
-          done
-          if [ "$FAILED" -ne 0 ]; then
-            echo "FAIL: internal-taxonomy leaks present on customer-facing surfaces — see Decision_Assurance_Layer §2.5 brand discipline"
-            exit 1
-          fi
-          echo "PASS: no internal-taxonomy leaks on customer-facing surfaces"
+      - name: Internal names, governance references and retired claim-state (self-test, then site/)
+        run: python3 ../scripts/site_gates.py taxonomy-leaks

@@ -23,10 +23,11 @@ inside `site/`).
 │   ├── styles.css                   Shared design system (byte-identical with sfp-corporate-site)
 │   ├── manifest.json, favicon.svg, robots.txt, sitemap.xml
 │   ├── _headers, _redirects         Pages header and redirect rules (not served)
+│   ├── skills/setup.md              Skills setup guide: public by design (ADR-0034), served at /skills/setup
 │   └── .well-known/                 agents.txt, agentic-commerce.json, agentic-verify.txt
-├── skills/setup.md                  Skills setup guide (repository-only draft)
-├── scripts/site_gates.py            Publish-folder, vendor-name and live-404 checks
+├── scripts/site_gates.py            Publish-folder, vendor-name, taxonomy-leak and live-404 checks
 ├── gates/vendor_names.json          Vendor names + the ratified strings allowed to carry them
+├── gates/taxonomy_leaks.json        Internal names, governance references, retired claim-state (+ fixtures)
 ├── .github/workflows/               CI gates
 ├── CLAUDE.md                        Operating pointer
 └── README.md                        This file
@@ -39,7 +40,9 @@ Cloudflare Pages project `phronesis-product-site` → custom domain `phronesisin
 registered at Cloudflare Registrar 2026-04-19 (3-yr auto-renew); DNS hosting at Cloudflare
 default.
 
-After a deploy, check from the desk that the repository-only paths answer 404:
+After a deploy, check from the desk that the repository-only paths (`/CLAUDE.md`,
+`/README.md`, `/.github/*` and every other root file) answer 404 and that the stable
+path `/skills/setup` answers 200:
 
 ```
 python scripts/site_gates.py live-404 phronesisintel.com

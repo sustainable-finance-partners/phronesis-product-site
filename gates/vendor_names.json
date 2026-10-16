@@ -10,7 +10,7 @@
     "robots.txt is excluded: its User-agent tokens are crawler directives, not copy (the same exemption the banned-name step grants)."
   ],
   "scan": {
-    "roots": ["site", "skills"],
+    "roots": ["site"],
     "exclude": ["site/robots.txt"]
   },
   "fail": {
