@@ -228,7 +228,7 @@
 <section>
   <div class="container-narrow">
     <span class="eyebrow">Rails</span>
-    <p class="lead">Humans pay by card through Stripe. Agents acting for a human will pay through Stripe's agent checkout when per-request purchases are live. Agent-native payment over x402 (USDC on Base) is <strong>in preparation; not yet accepted</strong> — and every priced request will offer it alongside Stripe when it is live. Phronesis holds no customer keys; receipts settle to an operator account.</p>
+    <p class="lead">Humans pay by card through Stripe. Agents acting for a human will pay through Stripe's agent checkout when per-request purchases are live. Agent-native payment over x402 (USDC on Base) is <strong>in build; not yet accepted</strong> — and every priced request will offer it alongside Stripe when it is live. Phronesis holds no customer keys; receipts settle to an operator account.</p>
 
     <span class="eyebrow" style="margin-top: var(--space-8); display: block;">Re-reads and retries</span>
     <p class="lead"><strong>When per-request purchases are live (in build):</strong> A purchase buys a <em>version</em> of a Decision Asset, identified by its digest. Re-reading what you bought is free until the asset is superseded, and the record tells you why it was. If your agent retries a purchase with the same <code>purchase_id</code> within 72 hours, nothing is charged twice.</p>
@@ -252,7 +252,7 @@
     </div>
     <div class="faq-item">
       <h4>What payment methods?</h4>
-      <p>Stripe (cards). Agent-native x402 payment: in preparation; not yet accepted.</p>
+      <p>Stripe (cards). Agent-native x402 payment: in build; not yet accepted.</p>
     </div>
     <div class="faq-item">
       <h4>What is the Discovery rate limit?</h4>
