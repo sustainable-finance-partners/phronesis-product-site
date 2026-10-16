@@ -1,0 +1,96 @@
+{
+  "_doc": [
+    "Vendor product names on the published site (scripts/site_gates.py vendor-names; COO ruling 2026-10-15, §15.10.761 §4 Sites).",
+    "Vendor product names appear on our surfaces only inside ratified strings. A fail-tier name anywhere else fails the build.",
+    "Report-tier names are printed on every run, each marked ratified or not, and fail nothing until the COO moves a name to the fail tier.",
+    "An allowlist row sanctions the names inside ONE exact ratified string in ONE file; its source names the Copy Set line it comes from.",
+    "A row whose string no longer occurs in its file, or that names no listed vendor, fails the build.",
+    "The algorithm-protection banned-name step (anthropic, claude, gpt, gemini, openai and the rest) is separate and has no allowlist; names it carries are not repeated here.",
+    "any_case names are matched in any case; exact_case names are ordinary words too (cursor, codex, perplexity, llama) and match only as capitalized product names.",
+    "robots.txt is excluded: its User-agent tokens are crawler directives, not copy (the same exemption the banned-name step grants)."
+  ],
+  "scan": {
+    "roots": ["site", "skills"],
+    "exclude": ["site/robots.txt"]
+  },
+  "fail": {
+    "any_case": [
+      "ChatGPT",
+      "Copilot",
+      "DALL-E",
+      "Hugging Face",
+      "HuggingFace",
+      "LangChain",
+      "LlamaIndex",
+      "CrewAI",
+      "Midjourney",
+      "OpenRouter",
+      "Groq",
+      "Vercel"
+    ],
+    "exact_case": [
+      "Cursor",
+      "Codex",
+      "Windsurf",
+      "Perplexity",
+      "Llama",
+      "Mistral",
+      "Mixtral",
+      "Grok",
+      "xAI",
+      "Bard",
+      "Cohere",
+      "AutoGen"
+    ]
+  },
+  "report": {
+    "any_case": [
+      "Replit"
+    ],
+    "exact_case": [
+      "Stripe",
+      "Visa",
+      "Mastercard",
+      "Cloudflare",
+      "Coinbase",
+      "PayPal",
+      "Google",
+      "Microsoft",
+      "Amazon",
+      "AWS",
+      "GitHub"
+    ]
+  },
+  "allowlist": [
+    {
+      "file": "site/pricing.html",
+      "text": "Humans pay by card through Stripe.",
+      "source": "Copy Set v1 W-A2 §2 C10 (made true in code §7)"
+    },
+    {
+      "file": "site/pricing.html",
+      "text": "Agents acting for a human will pay through Stripe's agent checkout when per-request purchases are live.",
+      "source": "Copy Set v1 W-A2 §2 C11"
+    },
+    {
+      "file": "site/for-agents.html",
+      "text": "Agents acting for a human will pay through Stripe's agent checkout when per-request purchases are live.",
+      "source": "Copy Set v1 W-A2 §2 C11"
+    },
+    {
+      "file": "site/.well-known/agents.txt",
+      "text": "Stripe Checkout for humans (live); agent payments (in build)",
+      "source": "Copy Set v1 W-A2 §9 (rails statements; agents.txt line 56)"
+    },
+    {
+      "file": "site/index.html",
+      "text": "When it is live, agents will pay per request through Stripe — cards via Shared Payment Tokens, or USDC over x402 or Stripe's Machine Payments Protocol.",
+      "source": "Copy Set v1 W-A2 §4 (the 739 §2 /spec:140 text, reused)"
+    },
+    {
+      "file": "site/spec.html",
+      "text": "When it is live, agents will pay per request through Stripe — cards via Shared Payment Tokens, or USDC over x402 or Stripe's Machine Payments Protocol.",
+      "source": "Copy Set v1 W-A2 §4 (the 739 §2 /spec:140 text, reused)"
+    }
+  ]
+}

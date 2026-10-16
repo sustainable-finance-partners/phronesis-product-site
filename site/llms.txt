@@ -6,7 +6,7 @@
 > the identity and payment rails and consumes them; it certifies the one thing they can't —
 > whether the action was defensible. The atomic product is the Decision Asset. Market Memory —
 > the resolved-outcome calibration ledger — is the moat. Semantic parity across REST and MCP; transport-appropriate projection.
-> Calibration is honest-empty until outcomes resolve (first signal ~Jan 2027). Pre-revenue.
+> A calibration statement needs at least ten resolved records per series, expected about January 2027; current counts are on the scorecard. Pre-revenue.
 
 Phronesis is built for AI agents as much as humans. The transports carry semantic parity: an MCP server
 and a REST API, both passing through the same deny-by-default action gate. Agents discover,

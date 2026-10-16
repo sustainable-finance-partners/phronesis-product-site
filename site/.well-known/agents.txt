@@ -87,12 +87,12 @@ Primitive: P5=Outcome-Conditional planned
 Primitive: P6=Market-State-Telemetry LIVE
 
 # --- Substrate properties ---
-# Decision Assets persisted to canonical Mnemosyne ledger (Market Memory).
+# Decision Assets persisted to the ledger (Market Memory).
 # Public calibration scorecard. Audit trail on every Decision Asset.
 # Proof of Decision: every Decision Asset's audit_receipt is publicly
 # verifiable — agents, regulators, and counterparties can independently
 # confirm any Decision Asset's content and provenance.
-# Three-layer trust stack: AP2 authorization → Plutus orchestration →
+# Three-layer trust stack: AP2 authorization → the orchestration layer →
 # Stripe SPT execution (in build).
 
 # --- Sister surfaces ---
