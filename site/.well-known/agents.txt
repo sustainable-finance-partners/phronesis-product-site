@@ -1,7 +1,7 @@
 # agents.txt — Phronesis agent discovery manifest
 # Authority: Sustainable Finance Partners, LLC (operator)
 # Spec: https://phronesisintel.com/spec
-# Last updated: 2026-10-12
+# Last updated: 2026-10-16
 
 User-Agent: *
 
@@ -57,23 +57,25 @@ Error-Format: structured-json
 Pricing-Model: decision_asset_lifecycle
 
 # --- Verticals (twelve applied + V#0 meta-vertical) ---
-# All twelve applied verticals are LIVE on production. V#0 sits above
-# them as the meta-vertical (cross-cutting AI Industrial Mobilization &
+# Twelve applied verticals are catalogued on one substrate; the calibration substance concentrates where decisions resolve first — today, grid-compute. The breadth is one motion accumulating a cross-archetype record, not twelve finished products.
+# V#0 sits above them as the meta-vertical (cross-cutting AI Industrial Mobilization &
 # Situational Awareness view that watches the agentic-economy build-out
 # across every applied vertical at once).
 Vertical: V0=AI-Industrial-Mobilization-Situational-Awareness meta-vertical LIVE
-Vertical: V1=Energy-Transition LIVE
-Vertical: V2=Computing-AI-Infrastructure LIVE
-Vertical: V3=Healthcare LIVE (HIPAA Safe Harbor)
-Vertical: V4=Climate-Physical-Risk LIVE
-Vertical: V5=Regulatory LIVE
-Vertical: V6=Supply-Chain LIVE
-Vertical: V7=Space-Space-Economy LIVE
-Vertical: V8=Robotics LIVE
-Vertical: V9=AI-AGI-Compute LIVE
-Vertical: V10=Physics-Materials-Discovery LIVE
-Vertical: V11=Longevity-Human-Health LIVE
-Vertical: V12=Quantum-Computing LIVE
+Vertical: V1=Energy-Transition SERIES-LIVE
+Vertical: V2=Computing-AI-Infrastructure SERIES-LIVE proving-first
+Vertical: V3=Healthcare CATALOGUED-FIRST-MINT-2026-04-26 (HIPAA Safe Harbor)
+Vertical: V4=Climate-Physical-Risk CATALOGUED
+Vertical: V5=Regulatory CATALOGUED
+Vertical: V6=Supply-Chain CATALOGUED
+Vertical: V7=Space-Space-Economy CATALOGUED-FIRST-MINT-2026-04-28
+Vertical: V8=Robotics CATALOGUED-FIRST-MINT-2026-04-27
+Vertical: V9=AI-AGI-Compute CATALOGUED
+Vertical: V10=Physics-Materials-Discovery CATALOGUED
+Vertical: V11=Longevity-Human-Health CATALOGUED
+Vertical: V12=Quantum-Computing CATALOGUED
+# V#13 General — any consequential decision, in any domain: the caller brings the proposed action, a frozen resolution rule and a resolution source; Phronesis captures, anchors, resolves and scores. Catalogued; mints on the customer mint path. Proven first on grid-compute.
+Vertical: V13=General any-consequential-decision CATALOGUED
 
 # --- Architecture (six primitives) ---
 # Phronesis substrate is a matrix of six foundational primitives × twelve

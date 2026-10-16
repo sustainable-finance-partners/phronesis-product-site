@@ -9,7 +9,8 @@
 ## §1. Binding gates on this repo (CI-enforced)
 
 - **Algorithm-protection / banned-language gate** — no model-vendor or model-tier names on marketing surfaces (legal substrate files are allow-listed for processor disclosure: `privacy.html`, `privacy-policy.html`, `terms-of-service.html`, `refund-policy.html`; crawler directives in `robots.txt`).
-- **No-internal-taxonomy-leaks gate** — internal ring/component names never appear on public surfaces.
+- **No-internal-taxonomy-leaks gate** — internal ring/component names, governance references (lesson numbers, diligence names, internal document titles), rule and cluster numbers, and retired claim-state never appear on public surfaces (`scripts/site_gates.py taxonomy-leaks`, list in `gates/taxonomy_leaks.json`, §15.10.767 §S.4).
+- **Publish folder** — the host publishes `site/` only; `site/skills/setup.md` is public by design (ADR-0034) at `/skills/setup`.
 - Canonical-reference, vertical-count-parity, stale-reference, and Trust-Center-link gates.
 
 ## §2. Discipline

@@ -9,3 +9,5 @@
 # 15.10.610 1.c: ONE privacy URL — the SFP legal host is canonical.
 /privacy https://sustainablefinancepartner.com/privacy-policy 301
 /deploy https://api.phronesisintel.com/deploy 302
+# 15.10.767 R8.2: the skills setup guide is public by design (ADR-0034), served at the stable path /skills/setup.
+/skills/setup /skills/setup.md 200

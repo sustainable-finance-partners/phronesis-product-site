@@ -81,9 +81,16 @@ jobs:
 
           violations=0
           violation_log=$(mktemp)
-          own_pointer_masked=$(mktemp)
 
-          # Scan candidate files (HTML + JSON + TXT + MD), excluding legal allow-list.
+          # Scan every file the host publishes, whatever its extension (pages, JSON,
+          # text, CSS, SVG, XML, _headers, _redirects), excluding the legal allow-list;
+          # grep -I passes over a binary file, which carries no copy.
+          # The scan covers what the host publishes (site/, the build output directory),
+          # the skills setup guide included (site/skills/, public by design, ADR-0034;
+          # §15.10.767 §R8.2). The repository-only files at the root (CLAUDE.md,
+          # README.md, .github/) are not published and not scanned; the publish-folder
+          # job below fails if one of them enters site/. That is why the token mask this
+          # step once carried for the operating pointer's own file name is gone.
           while IFS= read -r -d '' file; do
             basename=$(basename "$file")
             # Allow-listed legal-substrate files: skip
@@ -92,29 +99,21 @@ jobs:
             fi
             # Allow-listed crawler directive: skip robots.txt explicitly (also caught above)
             # Now scan for banned-language patterns.
-            #
-            # The repository's own operating pointer names itself. In that one file,
-            # at the repository root only, the literal token CLAUDE.md is passed;
-            # every other word in it is scanned like any other file.
             scan_input="$file"
-            if [[ "$file" == "./CLAUDE.md" ]]; then
-              sed 's/CLAUDE\.md/(this file)/g' "$file" > "$own_pointer_masked"
-              scan_input="$own_pointer_masked"
-            fi
             matched=0
-            if grep -E -i -n -H --label="$file" "$BANNED_NAMES" < "$scan_input" >> "$violation_log" 2>/dev/null; then
+            if grep -I -E -i -n -H --label="$file" "$BANNED_NAMES" < "$scan_input" >> "$violation_log" 2>/dev/null; then
               matched=1
             fi
-            if grep -E -i -n -H --label="$file" "$BANNED_MODEL_IDS" < "$scan_input" >> "$violation_log" 2>/dev/null; then
+            if grep -I -E -i -n -H --label="$file" "$BANNED_MODEL_IDS" < "$scan_input" >> "$violation_log" 2>/dev/null; then
               matched=1
             fi
-            if grep -E -n -H --label="$file" "$BANNED_JSON_KEYS" < "$scan_input" >> "$violation_log" 2>/dev/null; then
+            if grep -I -E -n -H --label="$file" "$BANNED_JSON_KEYS" < "$scan_input" >> "$violation_log" 2>/dev/null; then
               matched=1
             fi
             if [[ $matched -eq 1 ]]; then
               violations=$((violations + 1))
             fi
-          done < <(find . -type f \( -name '*.html' -o -name '*.json' -o -name '*.txt' -o -name '*.md' \) -not -path './.git/*' -not -path './node_modules/*' -not -path './.github/*' -print0)
+          done < <(find site -type f -print0)
 
           if [[ -s "$violation_log" ]]; then
             echo "::error::Algorithm Protection Gate FAILED — banned-language found in customer-facing copy"
@@ -142,3 +141,38 @@ jobs:
 
           echo "✅ Algorithm Protection Gate PASSED — zero banned-language matches outside legal-substrate + crawler-directive allow-list"
           echo "scrub_count=0" >> "$GITHUB_OUTPUT"
+
+  publish-folder:
+    # COO ruling 2026-10-15 (§15.10.761 §2): the site publishes from a subfolder,
+    # not ignore rules. The host's build output directory is site/; this job fails
+    # when a public file sits at the root (it would silently not be published),
+    # when a repository-only name (CLAUDE.md, README.md, .github/) enters
+    # site/ at any depth, or when site/ lacks index.html or 404.html (without a
+    # top-level 404.html the host answers an unknown path with the homepage and a
+    # 200, and nothing could return 404). Since §15.10.767 §R8.2 the skills setup
+    # guide is public by design (ADR-0034): it lives in site/skills/, and the job
+    # also fails when site/_redirects lacks the rule that serves it at the stable
+    # path /skills/setup. It runs its own self-test first.
+    name: Publish folder holds only public files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Publish-folder check (self-test, then the tree)
+        run: python3 scripts/site_gates.py publish-folder
+
+  vendor-names:
+    # COO ruling 2026-10-15 (§15.10.761 §4 Sites): vendor product names appear on
+    # our surfaces only inside ratified strings. The names and the allow-listed
+    # ratified occurrences are in gates/vendor_names.json; a fail-tier name outside
+    # an allow-listed string fails the job, report-tier names are listed on every
+    # run. It runs its own self-test first.
+    name: Vendor product names only inside ratified strings
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Vendor-name check (self-test, then site/)
+        run: python3 scripts/site_gates.py vendor-names

@@ -1,0 +1,396 @@
+{
+  "_doc": [
+    "Internal names and retired claim-state on the published site (scripts/site_gates.py taxonomy-leaks; COO dispatch 2026-10-16, §15.10.767 §S.2 and §S.4; the reader test of 2026-10-16 §4).",
+    "A fail-tier rule fails the build on any match in a file it scans. A pending row holds the hits of ONE fail-tier rule inside ONE exact string in ONE file: an occurrence that has no ratified replacement yet. It is printed on every run, and it fails the build once the string no longer occurs (drop the row in the same change that ships the ratified string).",
+    "Report-tier rules list what the COO has not ruled yet. They print on every run and fail nothing.",
+    "Every rule carries fixtures: the self-test seeds each one into a tree and proves the gate finds it (a fail-tier fixture fails the gate). near_misses are texts the rule must not find. files scopes a rule to the files named.",
+    "Governance references (lesson numbers, diligence names, internal document titles, cluster and rule numbers) are removed from public copy, not mapped (Copy Set §13 F). Component names are replaced only by a ratified string.",
+    "This list carries every entry of the shell step it replaces (Sacred Invariant, sacred_invariants, Pattern-32/43/50/65, THEMIS-DA-/Themis-DA-, Mnemosyne ledger, mnemosyne_ledger, Plutus orchestration, plutus_ring) as fixtures of the rules that now cover them.",
+    "Below this list sits a recurrence floor held in code (RECURRENCE_FLOOR in scripts/site_gates.py): every name, reference and retired claim above, and every shell-list marker, seeded alone into the published files, must fail this list. Dropping a rule, turning one to report, moving its scope, excluding a file or weakening a pattern together with its own fixtures fails the self-test."
+  ],
+  "scan": {
+    "roots": ["site"],
+    "exclude": []
+  },
+  "rules": [
+    {
+      "id": "codename-themis",
+      "tier": "fail",
+      "word": "Themis",
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["<span class=\"label\">Themis cluster</span>", "via the Themis-Healthcare substrate", "THEMIS-DA-0001", "Themis-DA-"],
+      "near_misses": ["Themistocles"]
+    },
+    {
+      "id": "codename-hygieia",
+      "tier": "fail",
+      "word": "Hygieia",
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["HIPAA-adjacent with Hygieia V#3 cluster"]
+    },
+    {
+      "id": "codename-mnemosyne",
+      "tier": "fail",
+      "word": "Mnemosyne",
+      "why": "internal component name on a public surface (§15.10.767 §S.2; the public word is 'the ledger', Copy Set §13 F)",
+      "fixtures": ["persisted to the Mnemosyne ledger", "mnemosyne_ledger"]
+    },
+    {
+      "id": "codename-hermes",
+      "tier": "fail",
+      "word": "Hermes",
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["the Hermes contract surface"]
+    },
+    {
+      "id": "codename-plutus",
+      "tier": "fail",
+      "word": "Plutus",
+      "why": "internal component name on a public surface (§15.10.767 §S.2; the public word is 'the orchestration layer', Copy Set §11 G)",
+      "fixtures": ["Plutus orchestration", "plutus_ring"]
+    },
+    {
+      "id": "codename-pythia",
+      "tier": "fail",
+      "word": "Pythia",
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["the Pythia prompt template"]
+    },
+    {
+      "id": "codename-asklepios",
+      "tier": "fail",
+      "word": "Asklepios",
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["Asklepios ring"]
+    },
+    {
+      "id": "codename-tiresias",
+      "tier": "fail",
+      "word": "Tiresias",
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["Tiresias forecaster"]
+    },
+    {
+      "id": "codename-mousai",
+      "tier": "fail",
+      "word": "Mousai",
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["Mousai ring"]
+    },
+    {
+      "id": "codename-calliope",
+      "tier": "fail",
+      "word": "Calliope",
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["Calliope voice"]
+    },
+    {
+      "id": "codename-logos",
+      "tier": "fail",
+      "word": "Logos",
+      "any_case": false,
+      "why": "internal seat name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["passed the Logos gate"],
+      "near_misses": ["partner logos"]
+    },
+    {
+      "id": "codename-iris",
+      "tier": "fail",
+      "word": "Iris",
+      "any_case": false,
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["the Iris ring"],
+      "near_misses": ["the iris of the eye"]
+    },
+    {
+      "id": "codename-athena",
+      "tier": "fail",
+      "word": "Athena",
+      "any_case": false,
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["the Athena ring"],
+      "near_misses": ["athenaeum"]
+    },
+    {
+      "id": "codename-kairos",
+      "tier": "fail",
+      "word": "Kairos",
+      "any_case": false,
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["the Kairos scheduler"],
+      "near_misses": ["kairos"]
+    },
+    {
+      "id": "codename-metis",
+      "tier": "fail",
+      "word": "Metis",
+      "any_case": false,
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["the Metis ring"],
+      "near_misses": ["metis"]
+    },
+    {
+      "id": "codename-argus",
+      "tier": "fail",
+      "word": "Argus",
+      "any_case": false,
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["the Argus monitor"],
+      "near_misses": ["argus-eyed"]
+    },
+    {
+      "id": "codename-atlas",
+      "tier": "fail",
+      "word": "Atlas",
+      "any_case": false,
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["the Atlas ring"],
+      "near_misses": ["an atlas of risk"]
+    },
+    {
+      "id": "codename-rampart",
+      "tier": "fail",
+      "word": "Rampart",
+      "any_case": false,
+      "why": "internal component name on a public surface (§15.10.767 §S.2)",
+      "fixtures": ["the Rampart gate"],
+      "near_misses": ["a rampart of rules"]
+    },
+    {
+      "id": "governance-lesson-number",
+      "tier": "fail",
+      "regex": "Lesson\\s*#\\s*\\d+",
+      "flags": "i",
+      "why": "governance reference (a lesson number): our minutes, not product; removed, not mapped (Copy Set §13 F)",
+      "fixtures": ["per Lesson #28-COO-vendor BINDING extension", "lesson # 27"],
+      "near_misses": ["a lesson learned", "lesson 3 of the course"]
+    },
+    {
+      "id": "governance-diligence-name",
+      "tier": "fail",
+      "word": "Karpathy",
+      "why": "governance reference (a diligence name): removed, not mapped (Copy Set §13 F)",
+      "fixtures": ["Per Karpathy diligence Q7:"]
+    },
+    {
+      "id": "governance-diligence-question",
+      "tier": "fail",
+      "regex": "\\bdiligence\\s+Q\\d+\\b",
+      "flags": "i",
+      "why": "governance reference (a diligence question number): removed, not mapped (Copy Set §13 F)",
+      "fixtures": ["per the diligence Q7 answer"],
+      "near_misses": ["due diligence questions"]
+    },
+    {
+      "id": "governance-pricing-strategy",
+      "tier": "fail",
+      "regex": "Pricing_Strategy|Pricing\\s+Strategy\\s+v\\d",
+      "flags": "i",
+      "why": "governance reference (an internal document title): removed, not mapped; the pricing page carries the tier (§15.10.767 §S.1)",
+      "fixtures": ["Per Pricing_Strategy v1.2 compute tier", "Pricing Strategy v1.3 canonical"],
+      "near_misses": ["our pricing strategy is simple"]
+    },
+    {
+      "id": "governance-internal-document-title",
+      "tier": "fail",
+      "regex": "\\b[A-Z][a-z]+(?:_[A-Z][A-Za-z0-9]*)+(?:_[A-Za-z0-9]+)*\\b",
+      "why": "governance reference (an internal document title in its file-name form): removed, not mapped (Copy Set §13 F)",
+      "fixtures": ["per Algorithm_Protection_v1 §6.X", "Decision_Assurance_Layer §2.5", "Commerce_Copy_Set_v1"],
+      "near_misses": ["AI_OBSERVABILITY_EVENTS", "snake_case_key", "Idempotency-Key"]
+    },
+    {
+      "id": "governance-pattern-number",
+      "tier": "fail",
+      "regex": "\\bPattern-\\d+\\b",
+      "why": "governance reference (a pattern number): removed, not mapped",
+      "fixtures": ["Pattern-32", "Pattern-43", "Pattern-50", "Pattern-65"],
+      "near_misses": ["pattern-matching"]
+    },
+    {
+      "id": "governance-sacred-invariant",
+      "tier": "fail",
+      "regex": "sacred[\\s_]+invariants?",
+      "flags": "i",
+      "why": "governance reference (an invariant number): removed, not mapped",
+      "fixtures": ["Sacred Invariant #4", "sacred_invariants"]
+    },
+    {
+      "id": "rule-id-number",
+      "tier": "fail",
+      "regex": "#\\d+\\.(?:\\d+|X)\\b",
+      "why": "an internal rule or rule-cluster ID; customer-facing surfaces never name them (Algorithm_Protection clause d; §15.10.767 §S.2)",
+      "fixtures": ["(12 rules #101.1-#101.12)", "Hygieia V#3 cluster #21.X", "cross-cutting layer #50.9"],
+      "near_misses": ["V#10×V#12", "V#3", "color: #0A1628;"]
+    },
+    {
+      "id": "rule-cluster-number",
+      "tier": "fail",
+      "regex": "\\bcluster\\s*#\\s*\\d+",
+      "flags": "i",
+      "why": "an internal rule-cluster number (§15.10.767 §S.2)",
+      "fixtures": ["at Themis cluster #99 boundary", "Cluster # 101"],
+      "near_misses": ["AI training run trajectory (cluster size, model scale)"]
+    },
+    {
+      "id": "claim-12-of-12",
+      "tier": "fail",
+      "regex": "\\b(?:12|twelve)\\s+of\\s+(?:12|twelve)\\b",
+      "flags": "i",
+      "why": "the retired claim '12 of 12' (Copy Set §13 E; the June recut)",
+      "fixtures": ["live on production today (12 of 12).", "twelve of twelve"],
+      "near_misses": ["12 of 13", "Twelve applied verticals are catalogued on one substrate"]
+    },
+    {
+      "id": "claim-all-twelve-live",
+      "tier": "fail",
+      "regex": "\\ball\\s+(?:twelve|12)\\s+(?:applied\\s+)?verticals\\s+(?:are\\s+)?live\\b",
+      "flags": "i",
+      "why": "the retired claim that every applied vertical is live (Copy Set §13 E)",
+      "fixtures": ["All twelve applied verticals are live on production today", "# All twelve applied verticals are LIVE on production.", "All twelve applied verticals live on production today."],
+      "near_misses": ["Twelve applied verticals catalogued on one substrate; proven first on grid-compute."]
+    },
+    {
+      "id": "claim-vertical-complete",
+      "tier": "fail",
+      "regex": "\\b12-VERTICAL-COMPLETE\\b",
+      "flags": "i",
+      "why": "the retired completeness milestone label (Copy Set §13 E)",
+      "fixtures": ["Live on production (12-VERTICAL-COMPLETE milestone)"],
+      "near_misses": ["attests the 12-vertical-deep substrate"]
+    },
+    {
+      "id": "claim-bare-live-badge",
+      "tier": "fail",
+      "regex": ">\\s*Live\\s*<",
+      "flags": "i",
+      "files": ["site/verticals.html"],
+      "why": "a bare 'Live' badge, retired on /verticals: three states only, 'Series live', 'Catalogued · first mint attested {date}', 'Catalogued' (Copy Set §13 E)",
+      "fixtures": ["<span class=\"vertical-deep-status live\">Live</span>", "<span>LIVE</span>"],
+      "near_misses": ["<span class=\"vertical-deep-status series-live\">Series live</span>", "<span class=\"vertical-deep-status catalogued\">Catalogued</span>"]
+    },
+    {
+      "id": "claim-live-on-production",
+      "tier": "fail",
+      "regex": "\\blive\\s+on\\s+production\\b",
+      "flags": "i",
+      "files": ["site/verticals.html"],
+      "why": "a per-card 'Live on production' status, retired on /verticals (Copy Set §13 E)",
+      "fixtures": ["<span class=\"value\">Live on production</span>"],
+      "near_misses": ["<span class=\"value\">Production since 2026-04-24</span>"]
+    },
+    {
+      "id": "claim-vertical-line-live",
+      "tier": "fail",
+      "regex": "^Vertical:\\s*V(?:1[0-3]|[1-9])=.*(?<![-A-Za-z])LIVE(?![-A-Za-z])",
+      "flags": "im",
+      "files": ["site/.well-known/agents.txt"],
+      "why": "a bare LIVE token on an applied vertical's agents.txt line; the §13 H tokens are SERIES-LIVE, CATALOGUED-FIRST-MINT-{date} and CATALOGUED",
+      "fixtures": ["Vertical: V4=Climate-Physical-Risk LIVE", "Vertical: V3=Healthcare LIVE (HIPAA Safe Harbor)", "Vertical: V13=General any-consequential-decision LIVE", "Vertical: V4=Climate-Physical-Risk Live"],
+      "near_misses": ["Vertical: V1=Energy-Transition SERIES-LIVE", "Vertical: V2=Computing-AI-Infrastructure SERIES-LIVE proving-first", "Vertical: V7=Space-Space-Economy CATALOGUED-FIRST-MINT-2026-04-28", "Vertical: V0=AI-Industrial-Mobilization-Situational-Awareness meta-vertical LIVE"]
+    },
+    {
+      "id": "claim-nationality-exclusion",
+      "tier": "fail",
+      "regex": "\\bChinese\\s+(?:quantum\\s+)?vendors?\\b",
+      "flags": "i",
+      "why": "a nationality-framed vendor exclusion; the public form is the allowlist (reader test §4.3; Copy Set §13 F V#12)",
+      "fixtures": ["(Chinese quantum vendors PROHIBITED per the rule)"],
+      "near_misses": ["Canonical attestation accepts US-and-allied quantum vendors (an allowlist)."]
+    },
+    {
+      "id": "report-home-vertical-live-badge",
+      "tier": "report",
+      "regex": "class=\"vertical-status live\">Live<",
+      "files": ["site/index.html"],
+      "why": "the home page's vertical list carries a bare 'Live' badge on every vertical; §13 E rules the /verticals page only",
+      "fixtures": ["<span class=\"vertical-status live\">Live</span>"]
+    },
+    {
+      "id": "report-home-jsonld-live-offer",
+      "tier": "report",
+      "regex": "\"description\":\\s*\"[^\"]*\\bLIVE\\.\"",
+      "files": ["site/index.html"],
+      "why": "a JSON-LD offer on the home page describes a vertical as 'LIVE.'",
+      "fixtures": ["{ \"name\": \"Phronesis Energy\", \"description\": \"Energy transition Decision Assets. LIVE.\" }"]
+    },
+    {
+      "id": "report-agents-v0-live",
+      "tier": "report",
+      "regex": "^Vertical:\\s*V0=.*(?<![-A-Za-z])LIVE(?![-A-Za-z])",
+      "flags": "m",
+      "files": ["site/.well-known/agents.txt"],
+      "why": "the V#0 meta-vertical line still reads LIVE; §13 H gives tokens for V1-V13 only",
+      "fixtures": ["Vertical: V0=AI-Industrial-Mobilization-Situational-Awareness meta-vertical LIVE"]
+    },
+    {
+      "id": "report-agentic-commerce-verticals-live",
+      "tier": "report",
+      "regex": "\"verticals_live\"\\s*:",
+      "files": ["site/.well-known/agentic-commerce.json"],
+      "why": "the agentic-commerce manifest lists all twelve applied verticals under verticals_live; no ratified per-status form for this file yet",
+      "fixtures": ["\"verticals_live\": [\"energy\"]"]
+    }
+  ],
+  "pending": [
+    {
+      "file": "site/llms.txt",
+      "rule": "codename-hermes",
+      "text": "the Hermes contract-v1 response shapes",
+      "source": "name map row 1; no ratified §13 string; diff proposed to Logos in the 767 handback"
+    },
+    {
+      "file": "site/scorecard.html",
+      "rule": "codename-hermes",
+      "text": "Live data fetched from the Hermes contract surface.",
+      "source": "name map row 2; no ratified §13 string; diff proposed to Logos in the 767 handback"
+    },
+    {
+      "file": "site/scorecard.html",
+      "rule": "codename-hermes",
+      "text": "Data fetched live from the Hermes contract surface at",
+      "source": "name map row 3; no ratified §13 string; diff proposed to Logos in the 767 handback"
+    },
+    {
+      "file": "site/scorecard.html",
+      "rule": "codename-hermes",
+      "text": "// Live calibration scorecard fetch from Hermes contract surface",
+      "source": "name map row 4; no ratified §13 string; diff proposed to Logos in the 767 handback"
+    },
+    {
+      "file": "site/spec.html",
+      "rule": "codename-hermes",
+      "text": "Phronesis Hermes contract surface.",
+      "source": "name map row 5; no ratified §13 string; diff proposed to Logos in the 767 handback"
+    },
+    {
+      "file": "site/spec.html",
+      "rule": "codename-hermes",
+      "text": "Hermes Contract Surface",
+      "source": "name map row 6; no ratified §13 string; diff proposed to Logos in the 767 handback"
+    },
+    {
+      "file": "site/spec.html",
+      "rule": "codename-mnemosyne",
+      "text": "persisted to the Mnemosyne idempotency archive",
+      "source": "name map row 7; §13 F covers the home page only; diff proposed to Logos in the 767 handback"
+    },
+    {
+      "file": "site/spec.html",
+      "rule": "codename-plutus",
+      "text": "(Plutus charge failure)",
+      "source": "name map row 8; no ratified §13 string; diff proposed to Logos in the 767 handback"
+    },
+    {
+      "file": "site/spec.html",
+      "rule": "codename-hermes",
+      "text": "The Hermes contract surface uses semantic versioning",
+      "source": "name map row 9; no ratified §13 string; diff proposed to Logos in the 767 handback"
+    },
+    {
+      "file": "site/verticals.html",
+      "rule": "codename-themis",
+      "text": "Cross-cutting Themis-Regulatory substrate layer at architecture level.",
+      "source": "name map row 15 (V#5 prose); no ratified §13 string; diff proposed to Logos in the 767 handback"
+    }
+  ]
+}
