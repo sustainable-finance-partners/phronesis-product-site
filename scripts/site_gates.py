@@ -28,11 +28,14 @@ Commands:
                   file (``gates/taxonomy_leaks.json``, §15.10.767 §S.4). A
                   fail-tier hit fails unless it lies inside a pending string listed
                   for that file (an occurrence with no ratified replacement yet,
-                  printed on every run until Logos passes one); report-tier rules
-                  list what is not yet ruled and fail nothing. Every rule carries
-                  seeded fixtures that must fail it, and a recurrence floor held
-                  in code (``RECURRENCE_FLOOR``) must fail the list whatever it
-                  is edited to.
+                  printed on every run until Logos passes one) or inside the one
+                  occurrence of a ratified string allow-listed for that file (a
+                  name the COO ruled stays there: "Hermes" where it names the
+                  contract surface, §15.10.773 §F.4); report-tier rules list what
+                  is not yet ruled and fail nothing. Every rule carries seeded
+                  fixtures that must fail it, and a recurrence floor held in code
+                  (``RECURRENCE_FLOOR``) must fail the list whatever it is edited
+                  to, the allowlist in place.
   live-404        (desk, after the merge deploys) GET the repository-only paths on
                   the named hosts (every one must answer 404) and the public stable
                   paths (every one must answer 200).
@@ -732,15 +735,19 @@ REQUIRED_LEAK_RULES = frozenset(
         "claim-bare-live-badge",
         "claim-live-on-production",
         "claim-vertical-line-live",
+        "claim-agentic-commerce-verticals-live",
     }
 )
 
 #: Published files a recurrence of a page-wide entry is seeded into (review of
 #: §15.10.767 §S.4): the pages the reader test read, the agent-facing files and
-#: the now-public skills guide.
+#: the now-public skills guide; since §15.10.773 §F.4 also /spec and /scorecard,
+#: where the allowlist sanctions "Hermes" inside ratified strings only.
 _RECURRENCE_FILES = (
     "site/index.html",
     "site/verticals.html",
+    "site/spec.html",
+    "site/scorecard.html",
     "site/llms.txt",
     "site/.well-known/agents.txt",
     "site/.well-known/agentic-commerce.json",
@@ -755,8 +762,10 @@ _RECURRENCE_TEXTS = (
     "Mnemosyne",
     "Hermes",
     "Plutus",
-    # governance references, removed not mapped (§S.2; Copy Set §13 F)
+    # governance references, removed not mapped (§S.2; Copy Set §13 F); "Lesson #"
+    # numbered or not (§15.10.773 §F.4)
     "per Lesson #28-COO-vendor BINDING extension",
+    "Lesson #",
     "Per Karpathy diligence Q7:",
     "Per Pricing_Strategy v1.2 compute tier",
     # internal rule and cluster numbers (§S.2)
@@ -792,12 +801,25 @@ _RECURRENCE_SCOPED = (
         "site/.well-known/agents.txt",
         "Vertical: V13=General any-consequential-decision LIVE",
     ),
+    # what §15.10.773 §F.3 and §F.4 removed, each seeded into the file it left
+    ("site/spec.html", "Twelve verticals; all twelve LIVE on production"),
+    ("site/.well-known/agentic-commerce.json", '"verticals_live": ["energy"]'),
+    ("site/scorecard.html", "Live data fetched from the Hermes contract surface."),
+    ("site/scorecard.html", "Data fetched live from the Hermes contract surface at"),
+    ("site/spec.html", "The Hermes contract surface uses semantic versioning"),
+    ("site/spec.html", "persisted to the Mnemosyne idempotency archive"),
+    ("site/spec.html", "(Plutus charge failure)"),
+    (
+        "site/verticals.html",
+        "Cross-cutting Themis-Regulatory substrate layer at architecture level.",
+    ),
 )
 #: The recurrence floor, held in code so that no edit of the list can pass one
 #: silently (a rule dropped, a tier turned to report, a scope moved, a file
-#: excluded, a pattern weakened together with its own fixtures): each (published
-#: file, text) is seeded alone into that file, and the shipped list must fail it
-#: with a fail-tier hit there. The list may grow; it cannot shrink below this.
+#: excluded, a pattern weakened together with its own fixtures, an allowlist row
+#: widened to the bare name): each (published file, text) is seeded alone into
+#: that file, and the shipped list, its allowlist in place, must fail it with an
+#: unheld fail-tier hit there. The list may grow; it cannot shrink below this.
 RECURRENCE_FLOOR: tuple[tuple[str, str], ...] = (
     tuple((rel, text) for text in _RECURRENCE_TEXTS for rel in _RECURRENCE_FILES)
     + _RECURRENCE_SCOPED
@@ -805,6 +827,10 @@ RECURRENCE_FLOOR: tuple[tuple[str, str], ...] = (
 
 _REGEX_FLAGS = {"i": re.IGNORECASE, "m": re.MULTILINE}
 _TIERS = ("fail", "report")
+#: The two lists of held rows, each with the tag its problems carry: "pending"
+#: (an occurrence with no ratified replacement yet) and "allowlist" (a ratified
+#: string that stays, §15.10.773 §F.4).
+_HELD_KINDS = {"pending": "PENDING", "allowlist": "ALLOWLIST"}
 
 
 @dataclass(frozen=True)
@@ -827,11 +853,20 @@ class LeakRule:
 
 
 @dataclass(frozen=True)
-class Pending:
+class Held:
+    """A row that holds the hits of ONE fail-tier rule inside ONE exact string in
+    ONE file. ``kind`` "pending": no ratified replacement yet, every occurrence of
+    the string held; "allowlist": a ratified string, ONE occurrence sanctioned."""
+
     file: str
     rule: str
     text: str
     source: str
+    kind: str = "pending"  # a key of _HELD_KINDS
+
+    @property
+    def tag(self) -> str:
+        return _HELD_KINDS[self.kind]
 
 
 @dataclass(frozen=True)
@@ -839,7 +874,8 @@ class LeakConfig:
     roots: tuple[str, ...]
     exclude: frozenset[str]
     rules: tuple[LeakRule, ...]
-    pending: tuple[Pending, ...]
+    pending: tuple[Held, ...]
+    allowlist: tuple[Held, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -848,7 +884,7 @@ class LeakHit:
     line: int
     rule: LeakRule
     found: str
-    pending: Pending | None  # the pending row when inside one
+    held: Held | None  # the pending or allowlist row when inside one
 
 
 def _text(row: dict[str, Any], key: str, where: str) -> str:
@@ -920,65 +956,82 @@ def load_leak_config(data: dict[str, Any]) -> LeakConfig:
             )
         )
     by_id = {r.id: r for r in rules}
-    pending: list[Pending] = []
-    raw_pending = data.get("pending", [])
-    if not isinstance(raw_pending, list):
-        raise ValueError("pending must be a list")
-    for i, row in enumerate(raw_pending):
-        where = f"pending[{i}]"
-        if not isinstance(row, dict):
-            raise ValueError(f"{where} must be an object")
-        item = Pending(
-            file=_text(row, "file", where),
-            rule=_text(row, "rule", where),
-            text=_text(row, "text", where),
-            source=_text(row, "source", where),
-        )
-        if item.rule not in by_id:
-            raise ValueError(f"{where}: rule {item.rule!r} is not a listed rule")
-        if by_id[item.rule].tier != "fail":
-            raise ValueError(
-                f"{where}: rule {item.rule!r} is report-tier; only a fail-tier hit is held pending"
+    held: dict[str, list[Held]] = {}
+    for kind in _HELD_KINDS:
+        raw_rows = data.get(kind, [])
+        if not isinstance(raw_rows, list):
+            raise ValueError(f"{kind} must be a list")
+        rows: list[Held] = []
+        for i, row in enumerate(raw_rows):
+            where = f"{kind}[{i}]"
+            if not isinstance(row, dict):
+                raise ValueError(f"{where} must be an object")
+            item = Held(
+                file=_text(row, "file", where),
+                rule=_text(row, "rule", where),
+                text=_text(row, "text", where),
+                source=_text(row, "source", where),
+                kind=kind,
             )
-        pending.append(item)
+            if item.rule not in by_id:
+                raise ValueError(f"{where}: rule {item.rule!r} is not a listed rule")
+            if by_id[item.rule].tier != "fail":
+                raise ValueError(
+                    f"{where}: rule {item.rule!r} is report-tier; only a fail-tier hit is held"
+                )
+            rows.append(item)
+        held[kind] = rows
+    pending_keys = {(r.file, r.rule, r.text) for r in held["pending"]}
+    for i, item in enumerate(held["allowlist"]):
+        if (item.file, item.rule, item.text) in pending_keys:
+            raise ValueError(
+                f"allowlist[{i}]: {item.file}: {item.text!r} is also pending; a string "
+                "is ratified or pending, not both"
+            )
     return LeakConfig(
         roots=roots,
         exclude=frozenset(_strings(scan.get("exclude", []), "scan.exclude")),
         rules=tuple(rules),
-        pending=tuple(pending),
+        pending=tuple(held["pending"]),
+        allowlist=tuple(held["allowlist"]),
     )
 
 
 def scan_leaks(root: Path, config: LeakConfig) -> tuple[list[LeakHit], list[str], int]:
-    """(every hit, every pending-list problem, files scanned)."""
+    """(every hit, every pending-list or allowlist problem, files scanned)."""
     hits: list[LeakHit] = []
     problems: list[str] = []
     by_id = {r.id: r for r in config.rules}
-    by_file: dict[str, list[Pending]] = {}
-    for row in config.pending:
+    by_file: dict[str, list[Held]] = {}
+    for row in (*config.pending, *config.allowlist):
         by_file.setdefault(row.file, []).append(row)
         rule = by_id[row.rule]
         if not rule.pattern.search(row.text):
             problems.append(
-                f"PENDING[no-match]: {row.file}: {row.text!r} holds nothing rule "
-                f"{row.rule} finds; a pending row exists only to hold a hit"
+                f"{row.tag}[no-match]: {row.file}: {row.text!r} holds nothing rule "
+                f"{row.rule} finds; a {row.kind} row exists only to hold a hit"
             )
         if not rule.applies_to(row.file):
             problems.append(
-                f"PENDING[out-of-scope]: {row.file}: rule {row.rule} does not scan this file"
+                f"{row.tag}[out-of-scope]: {row.file}: rule {row.rule} does not scan this file"
             )
     scanned = 0
     seen_files: set[str] = set()
     for rel, text in _iter_text_files(root, config.roots, config.exclude):
         scanned += 1
         seen_files.add(rel)
-        held: list[tuple[int, int, Pending]] = []
+        held: list[tuple[int, int, Held]] = []
         for row in by_file.get(rel, []):
             spans = _spans(text, row.text)
             if not spans:
                 problems.append(
-                    f"PENDING[stale]: {rel}: {row.text!r} no longer occurs in the file; "
+                    f"{row.tag}[stale]: {rel}: {row.text!r} no longer occurs in the file; "
                     "the page changed (drop the row) or the row is wrong"
+                )
+            elif row.kind == "allowlist" and len(spans) > 1:
+                problems.append(
+                    f"{row.tag}[repeated]: {rel}: {row.text!r} occurs {len(spans)} times; "
+                    "an allowlist row sanctions one occurrence"
                 )
             held.extend((a, b, row) for a, b in spans)
         for rule in config.rules:
@@ -998,7 +1051,8 @@ def scan_leaks(root: Path, config: LeakConfig) -> tuple[list[LeakHit], list[str]
                 line = text.count("\n", 0, match.start()) + 1
                 hits.append(LeakHit(rel, line, rule, match.group(0), hold))
     for rel in sorted(set(by_file) - seen_files):
-        problems.append(f"PENDING[no-file]: {rel} is not a scanned file")
+        for tag in sorted({row.tag for row in by_file[rel]}):
+            problems.append(f"{tag}[no-file]: {rel} is not a scanned file")
     hits.sort(key=lambda h: (h.file, h.line, h.rule.id, h.found))
     return hits, problems, scanned
 
@@ -1007,18 +1061,32 @@ def leaks_report(root: Path, config: LeakConfig) -> tuple[int, list[str]]:
     """The verdict on the tree at ``root`` (0 pass, 1 fail) and the lines that give it."""
     lines: list[str] = []
     hits, problems, scanned = scan_leaks(root, config)
-    failing = [h for h in hits if h.rule.tier == "fail" and h.pending is None]
-    held = [h for h in hits if h.rule.tier == "fail" and h.pending is not None]
+    failing = [h for h in hits if h.rule.tier == "fail" and h.held is None]
+    pending = [
+        h
+        for h in hits
+        if h.rule.tier == "fail" and h.held is not None and h.held.kind == "pending"
+    ]
+    allowed = [
+        h
+        for h in hits
+        if h.rule.tier == "fail" and h.held is not None and h.held.kind == "allowlist"
+    ]
     report = [h for h in hits if h.rule.tier == "report"]
     for hit in hits:
         if hit.rule.tier == "report":
             tag, state = "REPORT ", f"not yet ruled: {hit.rule.why}"
-        elif hit.pending is None:
+        elif hit.held is None:
             tag, state = "FAIL   ", hit.rule.why
-        else:
+        elif hit.held.kind == "pending":
             tag, state = (
                 "PENDING",
-                f"held until a ratified string replaces it ({hit.pending.source})",
+                f"held until a ratified string replaces it ({hit.held.source})",
+            )
+        else:
+            tag, state = (
+                "ALLOWED",
+                f"inside a ratified string allow-listed for this file ({hit.held.source})",
             )
         lines.append(
             f"  {tag} {hit.file}:{hit.line} {hit.found!r} [{hit.rule.id}] -> {state}"
@@ -1029,12 +1097,14 @@ def leaks_report(root: Path, config: LeakConfig) -> tuple[int, list[str]]:
     lines.append(
         f"TAXONOMY LEAKS COMPARED: {scanned} files under {', '.join(config.roots)}; "
         f"{len(config.rules)} rules ({fail_rules} fail, {len(config.rules) - fail_rules} report); "
-        f"fail-tier hits {len(failing) + len(held)} ({len(failing)} unheld, "
-        f"{len(held)} pending a ratified string); report-tier hits {len(report)}"
+        f"fail-tier hits {len(failing) + len(pending) + len(allowed)} ({len(failing)} unheld, "
+        f"{len(pending)} pending a ratified string, {len(allowed)} inside allow-listed "
+        f"ratified strings); report-tier hits {len(report)}"
     )
     if failing or problems:
         lines.append(
-            f"TAXONOMY-LEAKS: FAIL ({len(failing)} hit(s), {len(problems)} pending-list problem(s))"
+            f"TAXONOMY-LEAKS: FAIL ({len(failing)} hit(s), {len(problems)} pending-list "
+            "or allowlist problem(s))"
         )
         return 1, lines
     lines.append("TAXONOMY-LEAKS: OK")
@@ -1168,6 +1238,101 @@ _LEAK_CASES: tuple[
     ("a clean tree passes", {"site/a.html": "<p>the gate</p>\n"}, [], 0, ()),
 )
 
+#: The allowlist row the allowlist cases start from (§15.10.773 §F.4 mechanics).
+_ALLOW_ROW: dict[str, str] = {
+    "file": "site/s.html",
+    "rule": "name",
+    "text": "Themis Contract Surface",
+    "source": "self-test",
+}
+
+#: (case, {file: contents}, allowlist rows, expected exit, expected problem kinds);
+#: the pending list is empty in every allowlist case.
+_LEAK_ALLOW_CASES: tuple[
+    tuple[str, dict[str, str], list[dict[str, str]], int, tuple[str, ...]], ...
+] = (
+    (
+        "a hit inside its ratified string is allowed",
+        {"site/s.html": "<span>Themis Contract Surface</span>\n"},
+        [_ALLOW_ROW],
+        0,
+        (),
+    ),
+    (
+        "a bare recurrence beside the ratified string fails",
+        {"site/s.html": "Themis Contract Surface\n<p>Themis</p>\n"},
+        [_ALLOW_ROW],
+        1,
+        (),
+    ),
+    (
+        "the ratified string a second time fails",
+        {"site/s.html": "Themis Contract Surface\n<p>Themis Contract Surface</p>\n"},
+        [_ALLOW_ROW],
+        1,
+        ("ALLOWLIST[repeated]",),
+    ),
+    (
+        "a ratified string allowed in one file does not allow another",
+        {
+            "site/s.html": "Themis Contract Surface\n",
+            "site/b.html": "Themis Contract Surface\n",
+        },
+        [_ALLOW_ROW],
+        1,
+        (),
+    ),
+    (
+        "a stale allowlist row fails",
+        {"site/s.html": "<p>the contract surface</p>\n"},
+        [_ALLOW_ROW],
+        1,
+        ("ALLOWLIST[stale]",),
+    ),
+    (
+        "an allowlist row that holds no hit fails",
+        {"site/s.html": "the contract surface\n"},
+        [{**_ALLOW_ROW, "text": "the contract surface"}],
+        1,
+        ("ALLOWLIST[no-match]",),
+    ),
+    (
+        "an allowlist row for a file not scanned fails",
+        {"site/s.html": "x\n"},
+        [{**_ALLOW_ROW, "file": "site/gone.html"}],
+        1,
+        ("ALLOWLIST[no-file]",),
+    ),
+    (
+        "an allowlist row outside its rule's files fails",
+        {"site/a.html": "<b>Live</b>\n"},
+        [
+            {
+                "file": "site/a.html",
+                "rule": "badge",
+                "text": "<b>Live</b>",
+                "source": "t",
+            }
+        ],
+        1,
+        ("ALLOWLIST[out-of-scope]",),
+    ),
+    (
+        "an allowlist row allows only its own rule's hits",
+        {"site/v.html": "<p>Themis <b>Live</b></p>\n"},
+        [
+            {
+                "file": "site/v.html",
+                "rule": "name",
+                "text": "Themis <b>Live</b>",
+                "source": "t",
+            }
+        ],
+        1,
+        (),
+    ),
+)
+
 #: Config rows the loader must refuse: (case, the mutation of the self-test config).
 _LEAK_BAD_CONFIGS: tuple[tuple[str, dict[str, Any]], ...] = (
     # Each rule mutation clears the pending list, so the refusal comes from the
@@ -1225,6 +1390,32 @@ _LEAK_BAD_CONFIGS: tuple[tuple[str, dict[str, Any]], ...] = (
         "a pending row on a report-tier rule",
         {"pending": [{"file": "f", "rule": "seen", "text": "LIVE.", "source": "s"}]},
     ),
+    ("an allowlist that is not a list", {"allowlist": {"file": "f"}}),
+    (
+        "an allowlist row on an unknown rule",
+        {"allowlist": [{"file": "f", "rule": "nope", "text": "t", "source": "s"}]},
+    ),
+    (
+        "an allowlist row on a report-tier rule",
+        {"allowlist": [{"file": "f", "rule": "seen", "text": "LIVE.", "source": "s"}]},
+    ),
+    (
+        "an allowlist row without a source",
+        {"allowlist": [{"file": "f", "rule": "name", "text": "Themis", "source": ""}]},
+    ),
+    (
+        "a string both pending and allow-listed",
+        {
+            "allowlist": [
+                {
+                    "file": "site/a.html",
+                    "rule": "name",
+                    "text": "the Themis gate",
+                    "source": "s",
+                }
+            ]
+        },
+    ),
 )
 
 
@@ -1235,9 +1426,10 @@ def missing_leak_rules(config: LeakConfig) -> list[str]:
 
 def floor_failures(config: LeakConfig) -> list[str]:
     """Every recurrence of ``RECURRENCE_FLOOR`` the list ``config`` lets pass, one
-    line each: seeded alone into its file (no pending rows, so any fail-tier hit
-    fails the gate; the self-test's fixture runs prove that verdict), it must draw
-    a fail-tier hit in that file."""
+    line each: seeded alone into its file (no pending rows, so any unheld fail-tier
+    hit fails the gate; the self-test's fixture runs prove that verdict), it must
+    draw a fail-tier hit in that file that no allowlist row sanctions. The
+    allowlist stays in place, so a row widened to the bare name is caught."""
     bare = dataclasses.replace(config, pending=())
     out: list[str] = []
     with tempfile.TemporaryDirectory() as tmp:
@@ -1246,7 +1438,9 @@ def floor_failures(config: LeakConfig) -> list[str]:
             _touch(root, rel, text + "\n")
             hits, _, _ = scan_leaks(root, bare)
             (root / rel).unlink()  # one seeded file at a time
-            if not any(h.file == rel and h.rule.tier == "fail" for h in hits):
+            if not any(
+                h.file == rel and h.rule.tier == "fail" and h.held is None for h in hits
+            ):
                 out.append(f"recurrence {text!r} in {rel} passes the list")
     return out
 
@@ -1256,8 +1450,8 @@ def leak_self_test(config: LeakConfig) -> tuple[list[str], int, int]:
     carries every required rule, and dropping any one of them is noticed; every
     shipped rule's fixtures fail the gate in a seeded tree (a report-tier fixture is
     found and fails nothing); every near miss is not found; a scoped rule is silent
-    outside its files; the pending list holds only what it names; the loader
-    refuses bad rows."""
+    outside its files; the pending list and the allowlist hold only what they name
+    (an allowlist row one occurrence of it); the loader refuses bad rows."""
     problems: list[str] = []
     missing = missing_leak_rules(config)
     if missing:
@@ -1277,7 +1471,31 @@ def leak_self_test(config: LeakConfig) -> tuple[list[str], int, int]:
     )
     if len(floor_failures(silenced)) != len(RECURRENCE_FLOOR):
         problems.append("the recurrence floor passes a list whose rules fail nothing")
-    bare = dataclasses.replace(config, pending=())
+    # The floor can fail through the allowlist: the /spec row widened from its
+    # ratified string to the bare name sanctions a bare recurrence, and the floor
+    # names it (§15.10.773 §F.4: Hermes at its ratified occurrences only).
+    if "codename-hermes" in {r.id for r in config.rules}:
+        widened = dataclasses.replace(
+            config,
+            allowlist=(
+                *config.allowlist,
+                Held(
+                    "site/spec.html",
+                    "codename-hermes",
+                    "Hermes",
+                    "self-test",
+                    "allowlist",
+                ),
+            ),
+        )
+        if (
+            "recurrence 'Hermes' in site/spec.html passes the list"
+            not in floor_failures(widened)
+        ):
+            problems.append(
+                "the recurrence floor passes an allowlist row widened to the bare name"
+            )
+    bare = dataclasses.replace(config, pending=(), allowlist=())
     fixtures_run = 0
     near_run = 0
     for rule in config.rules:
@@ -1309,12 +1527,20 @@ def leak_self_test(config: LeakConfig) -> tuple[list[str], int, int]:
             if rule.pattern.search(text):
                 problems.append(f"{rule.id}: near miss {text!r} is found")
     test_config = load_leak_config(_LEAK_SELF_TEST_CONFIG)
+    cases: list[tuple[str, dict[str, str], LeakConfig, int, tuple[str, ...]]] = []
     for case, files, pending_rows, want_exit, want_kinds in _LEAK_CASES:
         case_config = test_config
         if pending_rows is not None:
             case_config = load_leak_config(
                 {**_LEAK_SELF_TEST_CONFIG, "pending": pending_rows}
             )
+        cases.append((case, files, case_config, want_exit, want_kinds))
+    for case, files, allow_rows, want_exit, want_kinds in _LEAK_ALLOW_CASES:
+        case_config = load_leak_config(
+            {**_LEAK_SELF_TEST_CONFIG, "pending": [], "allowlist": allow_rows}
+        )
+        cases.append((case, files, case_config, want_exit, want_kinds))
+    for case, files, case_config, want_exit, want_kinds in cases:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             _touch(root, "site/index.html", "<p>home</p>\n")
@@ -1353,6 +1579,7 @@ def cmd_taxonomy_leaks(root: Path, config_path: Path) -> int:
         f"fixtures each found, every fail-tier one failing the gate; {near_run} near "
         f"misses not found; {len(RECURRENCE_FLOOR)} code-held recurrences each "
         f"failing the gate; {len(_LEAK_CASES)} pending-list cases; "
+        f"{len(_LEAK_ALLOW_CASES)} allowlist cases; "
         f"{len(_LEAK_BAD_CONFIGS)} refused configs)"
     )
     verdict, lines = leaks_report(root, config)

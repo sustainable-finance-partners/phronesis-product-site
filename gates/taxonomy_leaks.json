@@ -2,6 +2,7 @@
   "_doc": [
     "Internal names and retired claim-state on the published site (scripts/site_gates.py taxonomy-leaks; COO dispatch 2026-10-16, §15.10.767 §S.2 and §S.4; the reader test of 2026-10-16 §4).",
     "A fail-tier rule fails the build on any match in a file it scans. A pending row holds the hits of ONE fail-tier rule inside ONE exact string in ONE file: an occurrence that has no ratified replacement yet. It is printed on every run, and it fails the build once the string no longer occurs (drop the row in the same change that ships the ratified string).",
+    "An allowlist row sanctions the hits of ONE fail-tier rule inside ONE occurrence of ONE ratified string in ONE file: a name the COO ruled stays where the string uses it (§15.10.773 §F.4; Copy Set §13 K: 'Hermes' is the public name of the contract surface at four occurrences only). Its source names the ruling. It fails the build when its string no longer occurs, occurs more than once, or holds no hit of its rule. The recurrence floor runs with the allowlist in place, so no row can sanction a bare recurrence.",
     "Report-tier rules list what the COO has not ruled yet. They print on every run and fail nothing.",
     "Every rule carries fixtures: the self-test seeds each one into a tree and proves the gate finds it (a fail-tier fixture fails the gate). near_misses are texts the rule must not find. files scopes a rule to the files named.",
     "Governance references (lesson numbers, diligence names, internal document titles, cluster and rule numbers) are removed from public copy, not mapped (Copy Set §13 F). Component names are replaced only by a ratified string.",
@@ -39,8 +40,8 @@
       "id": "codename-hermes",
       "tier": "fail",
       "word": "Hermes",
-      "why": "internal component name on a public surface (§15.10.767 §S.2)",
-      "fixtures": ["the Hermes contract surface"]
+      "why": "internal component name on a public surface (§15.10.767 §S.2); allowed only inside its allow-listed ratified strings, where it names the contract surface (§15.10.773 §F.4; Copy Set §13 K)",
+      "fixtures": ["the Hermes contract surface", "Data fetched live from the Hermes contract surface at", "The Hermes contract surface uses semantic versioning"]
     },
     {
       "id": "codename-plutus",
@@ -159,10 +160,10 @@
     {
       "id": "governance-lesson-number",
       "tier": "fail",
-      "regex": "Lesson\\s*#\\s*\\d+",
+      "regex": "Lesson\\s*#",
       "flags": "i",
-      "why": "governance reference (a lesson number): our minutes, not product; removed, not mapped (Copy Set §13 F)",
-      "fixtures": ["per Lesson #28-COO-vendor BINDING extension", "lesson # 27"],
+      "why": "governance reference (a lesson number): our minutes, not product; removed, not mapped (Copy Set §13 F); 'Lesson #' fails numbered or not, as the source spells it (§15.10.773 §F.4)",
+      "fixtures": ["per Lesson #28-COO-vendor BINDING extension", "lesson # 27", "Lesson #", "Lesson #N"],
       "near_misses": ["a lesson learned", "lesson 3 of the course"]
     },
     {
@@ -243,11 +244,11 @@
     {
       "id": "claim-all-twelve-live",
       "tier": "fail",
-      "regex": "\\ball\\s+(?:twelve|12)\\s+(?:applied\\s+)?verticals\\s+(?:are\\s+)?live\\b",
+      "regex": "\\ball\\s+(?:twelve|12)\\s+(?:applied\\s+)?(?:verticals\\s+)?(?:are\\s+)?live\\b",
       "flags": "i",
-      "why": "the retired claim that every applied vertical is live (Copy Set §13 E)",
-      "fixtures": ["All twelve applied verticals are live on production today", "# All twelve applied verticals are LIVE on production.", "All twelve applied verticals live on production today."],
-      "near_misses": ["Twelve applied verticals catalogued on one substrate; proven first on grid-compute."]
+      "why": "the retired claim that every applied vertical is live (Copy Set §13 E; /spec, §15.10.773 §F.3)",
+      "fixtures": ["All twelve applied verticals are live on production today", "# All twelve applied verticals are LIVE on production.", "All twelve applied verticals live on production today.", "Twelve verticals; all twelve LIVE on production"],
+      "near_misses": ["Twelve applied verticals catalogued on one substrate; proven first on grid-compute.", "<li><a href=\"/verticals\">All twelve</a></li>"]
     },
     {
       "id": "claim-vertical-complete",
@@ -298,6 +299,15 @@
       "near_misses": ["Canonical attestation accepts US-and-allied quantum vendors (an allowlist)."]
     },
     {
+      "id": "claim-agentic-commerce-verticals-live",
+      "tier": "fail",
+      "regex": "\"verticals_live\"\\s*:",
+      "files": ["site/.well-known/agentic-commerce.json"],
+      "why": "the retired verticals_live array, which listed every applied vertical as live; the manifest states series_live and catalogued (first_mint_attested where attested), as the API's /v1/catalog does (§15.10.773 §F.3; Copy Set §13 E, §13 H)",
+      "fixtures": ["\"verticals_live\": [\"energy\"]"],
+      "near_misses": ["\"series_live\": [\"energy\", \"computing-ai-infrastructure\"]", "\"catalogued\": [{\"healthcare\": {\"first_mint_attested\": \"2026-04-26\"}}, \"regulatory\"]"]
+    },
+    {
       "id": "report-home-vertical-live-badge",
       "tier": "report",
       "regex": "class=\"vertical-status live\">Live<",
@@ -321,76 +331,34 @@
       "files": ["site/.well-known/agents.txt"],
       "why": "the V#0 meta-vertical line still reads LIVE; §13 H gives tokens for V1-V13 only",
       "fixtures": ["Vertical: V0=AI-Industrial-Mobilization-Situational-Awareness meta-vertical LIVE"]
-    },
-    {
-      "id": "report-agentic-commerce-verticals-live",
-      "tier": "report",
-      "regex": "\"verticals_live\"\\s*:",
-      "files": ["site/.well-known/agentic-commerce.json"],
-      "why": "the agentic-commerce manifest lists all twelve applied verticals under verticals_live; no ratified per-status form for this file yet",
-      "fixtures": ["\"verticals_live\": [\"energy\"]"]
     }
   ],
   "pending": [
     {
-      "file": "site/llms.txt",
-      "rule": "codename-hermes",
-      "text": "the Hermes contract-v1 response shapes",
-      "source": "name map row 1; no ratified §13 string; diff proposed to Logos in the 767 handback"
-    },
-    {
-      "file": "site/scorecard.html",
-      "rule": "codename-hermes",
-      "text": "Live data fetched from the Hermes contract surface.",
-      "source": "name map row 2; no ratified §13 string; diff proposed to Logos in the 767 handback"
-    },
-    {
-      "file": "site/scorecard.html",
-      "rule": "codename-hermes",
-      "text": "Data fetched live from the Hermes contract surface at",
-      "source": "name map row 3; no ratified §13 string; diff proposed to Logos in the 767 handback"
-    },
-    {
       "file": "site/scorecard.html",
       "rule": "codename-hermes",
       "text": "// Live calibration scorecard fetch from Hermes contract surface",
-      "source": "name map row 4; no ratified §13 string; diff proposed to Logos in the 767 handback"
+      "source": "name map row 4; §15.10.773 §F.4 leaves the JS comment untouched (served in the page source, not rendered) and allow-lists Hermes only where it names the contract, so the comment is held here and printed on every run"
+    }
+  ],
+  "allowlist": [
+    {
+      "file": "site/spec.html",
+      "rule": "codename-hermes",
+      "text": "Hermes Contract Surface",
+      "source": "the /spec eyebrow (name map row 6; §15.10.773 §F.4; Copy Set §13 K)"
     },
     {
       "file": "site/spec.html",
       "rule": "codename-hermes",
       "text": "Phronesis Hermes contract surface.",
-      "source": "name map row 5; no ratified §13 string; diff proposed to Logos in the 767 handback"
+      "source": "the /spec meta description (name map row 5; §15.10.773 §F.4; Copy Set §13 K)"
     },
     {
-      "file": "site/spec.html",
+      "file": "site/llms.txt",
       "rule": "codename-hermes",
-      "text": "Hermes Contract Surface",
-      "source": "name map row 6; no ratified §13 string; diff proposed to Logos in the 767 handback"
-    },
-    {
-      "file": "site/spec.html",
-      "rule": "codename-mnemosyne",
-      "text": "persisted to the Mnemosyne idempotency archive",
-      "source": "name map row 7; §13 F covers the home page only; diff proposed to Logos in the 767 handback"
-    },
-    {
-      "file": "site/spec.html",
-      "rule": "codename-plutus",
-      "text": "(Plutus charge failure)",
-      "source": "name map row 8; no ratified §13 string; diff proposed to Logos in the 767 handback"
-    },
-    {
-      "file": "site/spec.html",
-      "rule": "codename-hermes",
-      "text": "The Hermes contract surface uses semantic versioning",
-      "source": "name map row 9; no ratified §13 string; diff proposed to Logos in the 767 handback"
-    },
-    {
-      "file": "site/verticals.html",
-      "rule": "codename-themis",
-      "text": "Cross-cutting Themis-Regulatory substrate layer at architecture level.",
-      "source": "name map row 15 (V#5 prose); no ratified §13 string; diff proposed to Logos in the 767 handback"
+      "text": "the Hermes contract-v1 response shapes",
+      "source": "the llms.txt line (name map row 1; §15.10.773 §F.4; Copy Set §13 K)"
     }
   ]
 }

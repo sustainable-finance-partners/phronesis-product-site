@@ -325,7 +325,8 @@ jobs:
           # use different forms — match each surface's canonical form:
           #   - HTML: "V#1", "V#2", ... "V#12"
           #   - agents.txt: "V1=", "V2=", ... "V12="
-          #   - agentic-commerce.json: the slug forms inside verticals_live array
+          #   - agentic-commerce.json: the slug forms inside series_live and catalogued
+          #     (checked by the next step)
           FAILED=0
           for n in 1 2 3 4 5 6 7 8 9 10 11 12; do
             # Check HTML surfaces — must reference V#N
@@ -347,21 +348,64 @@ jobs:
           fi
           echo "PASS: all twelve applied verticals (V#1..V#12) enumerated on every canonical surface"
 
-      - name: agentic-commerce.json verticals_live array has exactly 12 entries
+      - name: agentic-commerce.json series_live and catalogued name every vertical once
         run: |
           set -e
-          # Use python to count the JSON array length so we don't depend on
-          # ad-hoc grep heuristics for the slug list.
-          python3 -c "
-          import json, sys
-          with open('.well-known/agentic-commerce.json') as f:
-              data = json.load(f)
-          live = data.get('service', {}).get('verticals_live', [])
-          if len(live) != 12:
-              print(f'FAIL: verticals_live has {len(live)} entries, expected 12')
+          # §15.10.773 §F.3: verticals_live (every applied vertical listed as live)
+          # is retired. The manifest states the claim states the API's /v1/catalog
+          # states (schema 1.2; Copy Set §13 E, §13 H): series_live, and catalogued,
+          # where a vertical whose first mint is attested carries its date as
+          # {"<slug>": {"first_mint_attested": "YYYY-MM-DD"}}. Together the two
+          # arrays name the twelve applied verticals and V#13 General, each once.
+          # Python reads the JSON so the check does not depend on grep heuristics.
+          python3 - <<'PY'
+          import json
+          import re
+          import sys
+
+          with open(".well-known/agentic-commerce.json", encoding="utf-8") as f:
+              service = json.load(f).get("service", {})
+          if "verticals_live" in service:
+              print("FAIL: service.verticals_live is retired; the manifest states series_live and catalogued")
               sys.exit(1)
-          print(f'PASS: verticals_live has exactly {len(live)} entries')
-          "
+          slugs = []
+          attested = 0
+          for key in ("series_live", "catalogued"):
+              entries = service.get(key)
+              if not isinstance(entries, list) or not entries:
+                  print(f"FAIL: service.{key} is missing or empty")
+                  sys.exit(1)
+              for entry in entries:
+                  if isinstance(entry, str) and entry:
+                      slugs.append(entry)
+                      continue
+                  # A catalogued vertical whose first mint is attested: one slug, one date.
+                  ok = key == "catalogued" and isinstance(entry, dict) and len(entry) == 1
+                  if ok:
+                      ((slug, detail),) = entry.items()
+                      ok = (
+                          bool(slug)
+                          and isinstance(detail, dict)
+                          and set(detail) == {"first_mint_attested"}
+                          and re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(detail["first_mint_attested"])) is not None
+                      )
+                  if not ok:
+                      print(f"FAIL: service.{key} entry {entry!r} is neither a slug nor a catalogued slug with its first_mint_attested date")
+                      sys.exit(1)
+                  slugs.append(slug)
+                  attested += 1
+          repeated = sorted({s for s in slugs if slugs.count(s) > 1})
+          if repeated:
+              print(f"FAIL: verticals named more than once: {repeated}")
+              sys.exit(1)
+          if len(slugs) != 13:
+              print(f"FAIL: series_live and catalogued name {len(slugs)} verticals, expected 13 (V#1..V#13)")
+              sys.exit(1)
+          print(
+              f"PASS: series_live {len(service['series_live'])} + catalogued "
+              f"{len(service['catalogued'])} ({attested} with first_mint_attested) = 13 verticals, each once"
+          )
+          PY
 
       - name: agentic-commerce.json names meta_vertical
         run: |
