@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.agentic-commerce.org/v1/manifest.json",
   "spec_version": "1.0",
-  "manifest_version": "2026-10-12",
+  "manifest_version": "2026-10-17",
   "operator": {
     "legal_name": "Sustainable Finance Partners, LLC",
     "trade_name": "Phronesis",
@@ -17,7 +17,8 @@
     "category": "agentic-commerce/decision-assurance",
     "atomic_product": "decision_asset",
     "meta_vertical": "v0-ai-industrial-mobilization-situational-awareness",
-    "verticals_live": ["energy", "computing-ai-infrastructure", "healthcare", "climate-physical-risk", "regulatory", "supply-chain", "space", "robotics", "ai-agi-compute", "physics-materials-discovery", "longevity-human-health", "quantum-computing"],
+    "series_live": ["energy", "computing-ai-infrastructure"],
+    "catalogued": [{"healthcare": {"first_mint_attested": "2026-04-26"}}, "climate-physical-risk", "regulatory", "supply-chain", {"space": {"first_mint_attested": "2026-04-28"}}, {"robotics": {"first_mint_attested": "2026-04-27"}}, "ai-agi-compute", "physics-materials-discovery", "longevity-human-health", "quantum-computing", "general-any-consequential-decision"],
     "verticals_pre_launch": [],
     "primitives_live": ["p1-identity-and-mandate", "p2-reputation-and-track-record", "p3-forecast-and-evidence", "p6-market-state-telemetry"],
     "primitives_planned": ["p4-coordination-and-negotiation", "p5-outcome-conditional"]

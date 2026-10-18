@@ -143,7 +143,7 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
 <p>Human subscribers authenticate with a bearer token issued at OAuth consent (PKCE) or by the post-checkout signup claim. Subscription tier (Discovery Free / Record $49 / Practice $499) determines included usage allowances and overage rates. Compute depth tiers (Standard / Deep / Strategic / Strategic Sync) handle per-inquiry depth-classification. See <a href="/pricing">/pricing</a>.</p>
 
 <h2>Idempotency</h2>
-<p>Every mutating endpoint requires the <code>Idempotency-Key</code> header. Keys are persisted to the Mnemosyne idempotency archive for a minimum of seventy-two hours. Repeat requests with the same key return the original response without side effects, regardless of whether the original was successful.</p>
+<p>Every mutating endpoint requires the <code>Idempotency-Key</code> header. Keys are persisted to the idempotency archive for a minimum of seventy-two hours. Repeat requests with the same key return the original response without side effects, regardless of whether the original was successful.</p>
 
 <p>Recommended key shape: ULID or UUIDv7. Maximum length: 256 characters. Keys must be unique per principal-tenant; collisions across tenants do not interfere due to per-tenant isolation at the boundary publish layer.</p>
 
@@ -161,7 +161,7 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
   }
 }</code></pre>
 
-<p>Code categories: <code>auth</code> (mandate or JWT failure) · <code>validation</code> (request shape error) · <code>rate_limit</code> (per-tenant or per-mandate limit hit) · <code>circuit</code> (downstream circuit-breaker tripped) · <code>substrate</code> (canonical-correctness violation) · <code>billing</code> (Plutus charge failure) · <code>not_found</code> · <code>internal</code>. Retryable errors include <code>rate_limit</code> and <code>circuit</code>; all others are non-retryable.</p>
+<p>Code categories: <code>auth</code> (mandate or JWT failure) · <code>validation</code> (request shape error) · <code>rate_limit</code> (per-tenant or per-mandate limit hit) · <code>circuit</code> (downstream circuit-breaker tripped) · <code>substrate</code> (canonical-correctness violation) · <code>billing</code> (charge failure) · <code>not_found</code> · <code>internal</code>. Retryable errors include <code>rate_limit</code> and <code>circuit</code>; all others are non-retryable.</p>
 
 <h2>Meter events and pricing</h2>
 <p>Forecast minting fires a Stripe meter event at the moment of canonical persistence to the ledger (in build). Meter event amounts are reported with sub-cent precision (Decimal lift, no float). The published per-call price and the inference cost-attestation component are both in <a href="/pricing.json">/pricing.json</a>.</p>
@@ -182,13 +182,13 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
 // killswitch_reset) — also visible in tools/list.</code></pre>
 
 <h2>Verticals and archetypes</h2>
-<p>Twelve verticals; all twelve LIVE on production; archetype taxonomy is per-vertical. See the <a href="/verticals">verticals page</a> for archetype detail. Canonical taxonomy is reflected in the OpenAPI spec.</p>
+<p>Twelve applied verticals are catalogued on one substrate; the calibration substance concentrates where decisions resolve first — today, grid-compute. The breadth is one motion accumulating a cross-archetype record, not twelve finished products. See the <a href="/verticals">verticals page</a> for archetype detail. Canonical taxonomy is reflected in the OpenAPI spec.</p>
 
 <h2>Discovery surfaces</h2>
 <p>For agent crawlers: <a href="/.well-known/agents.txt">agents.txt</a> · <a href="/.well-known/agentic-commerce.json">agentic-commerce.json</a> · <a href="https://api.phronesisintel.com/.well-known/openapi.json">openapi.json</a> · <a href="/pricing.json">pricing.json</a> · <a href="/robots.txt">robots.txt</a></p>
 
 <h2>Versioning</h2>
-<p>The Hermes contract surface uses semantic versioning at the contract layer. Breaking changes go to a new major version with a six-month deprecation window for the prior major. Non-breaking additions (new endpoints, new optional fields) are added in minor versions and announced via the changelog.</p>
+<p>The contract surface uses semantic versioning at the contract layer. Breaking changes go to a new major version with a six-month deprecation window for the prior major. Non-breaking additions (new endpoints, new optional fields) are added in minor versions and announced via the changelog.</p>
 
 <h2>SLA and limits</h2>
 <p>Production runtime is dedicated 24/7. Per-tenant rate limits and per-mandate burst limits documented at /spec#rate-limits (in development). Service credits available for 24+ hour continuous outage per the Refund Policy.</p>
