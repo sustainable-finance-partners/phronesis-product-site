@@ -1250,11 +1250,11 @@ class ClaimStateTests(unittest.TestCase):
         for path in sorted(SITE.rglob("*")):
             if not path.is_file():
                 continue
+            rel = path.relative_to(SITE).as_posix()
             try:
-                text = path.read_bytes().decode("utf-8")
+                text = read_site(rel)  # LF line ends, as every test here reads a file
             except UnicodeDecodeError:
                 continue
-            rel = path.relative_to(SITE).as_posix()
             found += [(rel, ln) for ln in text.split("\n") if P1_TOKEN_SHAPE in ln]
         self.assertEqual(found, [(".well-known/agents.txt", pinned()["782.P1"])])
 
