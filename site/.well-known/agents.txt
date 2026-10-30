@@ -86,7 +86,7 @@ Vertical: V13=General any-consequential-decision CATALOGUED
 # Phronesis substrate is a matrix of six foundational primitives × twelve
 # applied verticals × eight agent roles. The primitives are the durable
 # horizontal infrastructure; verticals are the applied markets.
-Primitive: P1=Identity-and-Mandate LIVE
+Primitive: P1=Identity-and-Mandate LIVE (authentication) · FORWARD-STATE (mandate binding)
 Primitive: P2=Reputation-and-Track-Record MVP (Counterparty Passport — UNRATED until observation substrate ships)
 Primitive: P3=Forecast-and-Evidence LIVE (Decision Asset substrate)
 Primitive: P4=Coordination-and-Negotiation planned

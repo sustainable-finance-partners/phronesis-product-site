@@ -250,6 +250,24 @@
       "text": "ai-train=yes, ai-input=yes, search=yes",
       "sha256": "14cb19984f75c24ede58e436f98f3410221715085c6a3e345baf2602bd06436e",
       "line_sha256": "a0ce9d097e63726b1a6561f2adaed53b3dfa7e20b0a184312ab3971abfe9d05a"
+    },
+    {
+      "id": "782.P1",
+      "what": "the signed agents.txt P1 primitive token (782 §1.2): the token after the arrow on the dispatch line",
+      "source": "00_Operating_Model/CCO_DISPATCH_782_DEPLOY_PLACEHOLDER_FOUND_LIVE_RATIFIED_COPY_RIDES_1031_S7_NGUARD_AGENTS_P1_TOKEN_POST_REPUBLISH_CENSUS_TOOLS_LIST_CUSTOMER_BUCKET_UNAUTH_READ_TOOLS_SIZING_20261030.md",
+      "line": 13,
+      "extract": {
+        "kind": "quoted-after",
+        "anchor": "→ ",
+        "open": "`",
+        "close": "`"
+      },
+      "renders": [
+        "site/.well-known/agents.txt Architecture section, the P1 Primitive line"
+      ],
+      "text": "Primitive: P1=Identity-and-Mandate LIVE (authentication) · FORWARD-STATE (mandate binding)",
+      "sha256": "b43aecf36c099f368ab2b2adb9370249e4d6c3b290509801d04ddbabd5cdfb42",
+      "line_sha256": "2ed060922ee08c8cd3cb9c12386e28e9891cf1011a8764ac7cc85c71dbc981ac"
     }
   ],
   "api_render": {

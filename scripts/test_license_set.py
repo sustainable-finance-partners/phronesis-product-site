@@ -19,7 +19,10 @@ from the source documents, and the tests below prove
     but its title, description and canonical lines), the words its CSS can place, its
     ``<main>`` and the body chrome around it; the license sections of llms.txt and
     agents.txt with their ordered headings and the section directly above each; and
-    the whole robots.txt, line for line.
+    the whole robots.txt, line for line;
+  * the agents.txt P1 primitive line is the signed 782 §1.2 token (pin ``782.P1``, cut
+    from the dispatch line after its arrow), and no other published line carries that
+    token shape.
 
 The machine-readable declaration on this host (``site/license.xml``, the RSL 1.0
 document robots.txt names, and the aipref ``Content-Usage`` robots rule) is tested
@@ -436,6 +439,18 @@ AGENTS_SECTION_ABOVE_LICENSE = (
     "\n"
 )
 
+#: The agents.txt P1 token shape 782 §1.2 flips (case-sensitive: the JSON slug form
+#: ``p1-identity-and-mandate`` is another shape, listed in the PR's census, not flipped).
+P1_TOKEN_SHAPE = "Identity-and-Mandate"
+#: The 782 §1.2 dispatch line: the token it replaces sits in the backtick span after this
+#: anchor; the signed replacement (pin ``782.P1``) in the span after the line's one arrow.
+P1_REPLACED_EXTRACT = {
+    "kind": "quoted-after",
+    "anchor": "editing for S.1:**",
+    "open": "`",
+    "close": "`",
+}
+
 #: The license page's frame: its bytes outside the ``<head>…</head>`` and
 #: ``<body>…</body>`` spans. An HTML parser puts markup found before ``<html>`` or
 #: between ``</head>`` and ``<body>`` into the rendered body, so nothing may sit there,
@@ -556,6 +571,26 @@ class PinTests(unittest.TestCase):
             with self.subTest(pin=need):
                 self.assertIn(need, ids)
         self.assertIn("A.content-signal", ids)
+        self.assertIn("782.P1", ids)
+
+    def test_the_p1_token_is_782s_replacement_on_its_source_line(self) -> None:
+        # 782 §1.2 :13 names the token it replaces, then one arrow, then the signed
+        # replacement. The pin is the replacement, cut from that line by its rule.
+        row = next(r for r in load_pin()["strings"] if r["id"] == "782.P1")
+        self.assertTrue(str(row["source"]).startswith("00_Operating_Model/CCO_DISPATCH_782_"))
+        self.assertEqual((row["line"], row["extract"]["anchor"]), (13, "→ "))
+        root = os.environ.get(WORKSPACE_ENV)
+        if not root:
+            self.skipTest(f"{WORKSPACE_ENV} is not set: the source documents are not here")
+        line = _source_lines(Path(root) / row["source"])[int(row["line"]) - 1]
+        self.assertEqual(sha256(line), row["line_sha256"], "the source line moved")
+        self.assertEqual(extract(line, row["extract"]), row["text"])
+        replaced = extract(line, P1_REPLACED_EXTRACT)
+        self.assertEqual(line.count("→"), 1)
+        self.assertLess(line.index(f"`{replaced}`"), line.index("→"))
+        self.assertLess(line.index("→"), line.index(f"`{row['text']}`"))
+        # The token it replaces is gone from agents.txt as a line.
+        self.assertNotIn(replaced, read_site(".well-known/agents.txt").split("\n"))
 
     def test_the_api_fixture_still_hashes_to_its_recorded_digest(self) -> None:
         fixture = api_fixture()
@@ -824,6 +859,16 @@ class MachineReadableTests(unittest.TestCase):
         heading = f"# --- {heading_text(self.strings['license.heading'])} ---\n"
         above = section_above(read_site(".well-known/agents.txt"), heading, "# --- ")
         self.assertEqual(above, AGENTS_SECTION_ABOVE_LICENSE)
+
+    def test_agents_txt_p1_primitive_is_the_signed_token(self) -> None:
+        # 782 §1.2: one token. The six primitive lines stay P1..P6 in order, and P1's is
+        # the pinned token, whole (P1 authentication live, mandate binding forward-state).
+        lines = read_site(".well-known/agents.txt").split("\n")
+        primitives = [ln for ln in lines if ln.startswith("Primitive:")]
+        self.assertEqual(
+            [ln.split("=", 1)[0] for ln in primitives], [f"Primitive: P{n}" for n in range(1, 7)]
+        )
+        self.assertEqual(primitives[0], self.strings["782.P1"])
 
     def test_robots_txt_is_exactly_the_expected_text(self) -> None:
         # All of robots.txt, line for line: the posture block below plus the file's own
@@ -1197,6 +1242,21 @@ class ClaimStateTests(unittest.TestCase):
     def test_security_links_the_trust_center_section(self) -> None:
         page = read_site("security.html")
         self.assertIn(f'<a href="{TRUST_SECTION_URL}">How the record is protected</a>', page)
+
+    def test_no_other_published_line_carries_the_p1_token(self) -> None:
+        # 782 §1.2's census rule: the token shape flips wherever this host publishes it.
+        # It is published once: the agents.txt P1 line, which is the signed token.
+        found: list[tuple[str, str]] = []
+        for path in sorted(SITE.rglob("*")):
+            if not path.is_file():
+                continue
+            try:
+                text = path.read_bytes().decode("utf-8")
+            except UnicodeDecodeError:
+                continue
+            rel = path.relative_to(SITE).as_posix()
+            found += [(rel, ln) for ln in text.split("\n") if P1_TOKEN_SHAPE in ln]
+        self.assertEqual(found, [(".well-known/agents.txt", pinned()["782.P1"])])
 
 
 def main(argv: list[str]) -> int:
