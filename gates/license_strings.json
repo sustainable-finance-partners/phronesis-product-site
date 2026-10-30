@@ -255,17 +255,21 @@
   "api_render": {
     "_doc": [
       "The API's flag-ON render of its RSL 1.0 document and its aipref Content-Usage value,",
-      "pinned so the site's static declaration is tested against the API's (the same permits,",
-      "payment, prohibits and terms). Written by a script from the render and the source file;",
-      "never typed. rendered_sha256 is the digest of the canonical JSON of 'rendered'."
+      "pinned so the site's static declaration is tested against the API's: site/license.xml",
+      "equals rsl_document byte for byte. The pin is the source file's content (its git blob",
+      "id), not a commit: the API pull request is squash-merged, so no branch commit reaches",
+      "main. read_from_commit names where the blob was read, for information only. Written by",
+      "a script from a render of a git-archive export of that commit and from the blob; never",
+      "typed. rendered_sha256 is the digest of the canonical JSON of 'rendered'."
     ],
     "repo": "sustainable-finance-partners/phronesis",
-    "commit": "aee48c3cae9ebf3fd9ac9adfad06412f65ec3607",
     "path": "mcp_server/legal/register_license.py",
+    "blob": "5badb94254a09ccec84f4d9c1e2b0722be867ec1",
+    "read_from_commit": "cf4784cecb21b8c4f01bb524eb87f81b434f8a96",
     "functions": "render_rsl_document(), content_usage_value()",
     "env": "PHRONESIS_REGISTER_LICENSE_V1_ENABLED=true; PHRONESIS_REGISTER_LICENSE_TRAINING_PERMITTED unset (default: permitted)",
     "rendered": {
-      "rsl_document": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!-- Phronesis Register License v1.0 — effective 2026-10-31. -->\n<rsl xmlns=\"https://rslstandard.org/rsl\">\n  <content url=\"/\">\n    <license>\n      <permits type=\"usage\">search ai-index ai-input ai-train</permits>\n      <payment type=\"attribution\"/>\n    </license>\n    <terms>https://phronesisintel.com/license</terms>\n  </content>\n</rsl>\n",
+      "rsl_document": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!-- Phronesis Register License v1.0 — effective 2026-10-31. -->\n<rsl xmlns=\"https://rslstandard.org/rsl\" max-age=\"1\">\n  <content url=\"/\">\n    <license>\n      <permits type=\"usage\">search ai-index ai-input ai-train</permits>\n      <payment type=\"attribution\"/>\n    </license>\n    <terms>https://phronesisintel.com/license</terms>\n  </content>\n</rsl>\n",
       "rsl_permits_usage": [
         "search",
         "ai-index",
@@ -278,43 +282,55 @@
       "rsl_content_url": "/",
       "content_usage": "train-ai=y, ai-use=y, search=y"
     },
-    "rendered_sha256": "976fdb6b6390a68eee337ed507cd0abdac3150cb405785f6dcfe1bc90da60c40",
+    "rendered_sha256": "9dfc02793d94fc2a6b0ea0de5e760f64be60e8bf41cf1c9cc1a41aca7dd7f8e6",
     "source_lines": [
       {
         "for": "rsl_permits_usage (without training)",
-        "line": 102,
+        "line": 112,
         "text": "_RSL_USAGE_WITHOUT_TRAINING: Final[str] = \"search ai-index ai-input\"",
         "line_sha256": "750a40ff81ea4e0c47783bca0af1471812d79b236e7cf6415356370968b3f8c4"
       },
       {
         "for": "rsl_permits_usage (the training term)",
-        "line": 103,
+        "line": 113,
         "text": "_RSL_TRAINING_USAGE: Final[str] = \"ai-train\"",
         "line_sha256": "58dbda29b61b12ca073c4d85c68c8875f0778bdacfd5c129cfe42244460734a5"
       },
       {
         "for": "rsl_content_url",
-        "line": 173,
+        "line": 189,
         "text": "        '  <content url=\"/\">\\n'",
         "line_sha256": "92cb5e45f6a2eea94087ca03f436d325d77e7b1e49bf7aa46f4f4ab622459a16"
       },
       {
         "for": "rsl_payment_type",
-        "line": 177,
+        "line": 193,
         "text": "        '      <payment type=\"attribution\"/>\\n'",
         "line_sha256": "046751ce11dc55945e9c5c241d3e925b438ad15115c4af4f6c169d7f7534606c"
       },
       {
         "for": "rsl_terms",
-        "line": 85,
+        "line": 89,
         "text": "REGISTER_LICENSE_URL: Final[str] = \"https://phronesisintel.com/license\"",
         "line_sha256": "f4dbe930986b7302a114abda318f000f9cfcbc4147191e315f958ccbcf4c3470"
       },
       {
         "for": "content_usage",
-        "line": 133,
+        "line": 149,
         "text": "    return f\"train-ai={train}, ai-use=y, search=y\"",
         "line_sha256": "e388d087a4a0a771c0369c8400e3688551b4a4166f70a36f43c09e16a3ff7ce2"
+      },
+      {
+        "for": "rsl_max_age (days)",
+        "line": 109,
+        "text": "RSL_MAX_AGE_DAYS: Final[int] = 1",
+        "line_sha256": "90c6eae88a3fd29f1459a5714c87028b6ec0d8a1b96177c969ac2bc205accc5b"
+      },
+      {
+        "for": "rsl_max_age (the <rsl> element)",
+        "line": 188,
+        "text": "        f'<rsl xmlns=\"{_RSL_NAMESPACE}\" max-age=\"{RSL_MAX_AGE_DAYS}\">\\n'",
+        "line_sha256": "55e99d4a985114a7a5686963408b38ac9746f03ad4e80104c637f711e90425b0"
       }
     ]
   }

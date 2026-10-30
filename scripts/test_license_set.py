@@ -14,14 +14,19 @@ from the source documents, and the tests below prove
     copy, so there the test is skipped and says so);
   * each pinned string still hashes to the digest recorded when it was extracted;
   * each pinned string appears, exactly, where it renders, and nothing stands beside the
-    license on its surfaces (the license page's ``<main>``, its meta description, the
-    license sections of llms.txt and agents.txt, the robots.txt crawl posture).
+    license on its surfaces: the license page's whole frame (nothing before ``<html>``,
+    between ``</head>`` and ``<body>`` or after ``</body>``), its head (``/security``'s
+    but its title, description and canonical lines), the words its CSS can place, its
+    ``<main>`` and the body chrome around it; the license sections of llms.txt and
+    agents.txt with their ordered headings and the section directly above each; and
+    the whole robots.txt, line for line.
 
 The machine-readable declaration on this host (``site/license.xml``, the RSL 1.0
 document robots.txt names, and the aipref ``Content-Usage`` robots rule) is tested
 against the API's own flag-ON render, pinned in the same file under ``api_render`` with
-its repository, commit and path. ``scripts/refresh_count.py`` (the pre-merge refresh of
-the homepage count) is tested here offline against a fixture payload.
+its repository, path and the file's git blob id (content, not a commit).
+``scripts/refresh_count.py`` (the pre-merge refresh of the homepage count) is tested
+here offline against a fixture payload.
 
 Run from anywhere: ``python3 scripts/test_license_set.py`` (the tests, exit 0 on pass)
 or ``python3 scripts/test_license_set.py --write-pin`` (re-extract the pin from the
@@ -53,10 +58,13 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SITE = REPO_ROOT / "site"
 PIN_PATH = REPO_ROOT / "gates" / "license_strings.json"
 WORKSPACE_ENV = "PHRONESIS_WORKSPACE"
-#: A clone of the app repository (sustainable-finance-partners/phronesis) holding the
-#: commit the ``api_render`` fixture names. Optional: without it the source-line check
-#: of the fixture is skipped and says so.
+#: A clone of the app repository (sustainable-finance-partners/phronesis). Optional:
+#: without it the source-line check of the ``api_render`` fixture is skipped and says
+#: so. With it, the check requires the pinned blob at the clone's checked-out commit
+#: (``HEAD``), or at the revision ``PHRONESIS_API_REV`` names (for example
+#: ``origin/main``), and reads the file only through git.
 API_TREE_ENV = "PHRONESIS_API_TREE"
+API_REV_ENV = "PHRONESIS_API_REV"
 
 LICENSE_URL = "https://phronesisintel.com/license"
 #: The RSL 1.0 document for this host's content; robots.txt names it (RSL 1.0 §4.4).
@@ -266,12 +274,13 @@ def api_rendered() -> dict[str, Any]:
     return rendered
 
 
-def site_rsl_document(api_document: str) -> str:
-    """This host's RSL document: the API's document, byte for byte, with ``max-age``."""
-    root = f'<rsl xmlns="{RSL_NAMESPACE}">'
-    if api_document.count(root) != 1:
-        raise ValueError("the API document's <rsl> element is not in the pinned form")
-    return api_document.replace(root, f'<rsl xmlns="{RSL_NAMESPACE}" max-age="{RSL_MAX_AGE_DAYS}">')
+def git_blob_id(content: bytes) -> str:
+    """The git object id of a file's bytes (``git hash-object``): its content, not a commit."""
+    return hashlib.sha1(b"blob %d\0" % len(content) + content).hexdigest()
+
+
+def _git(tree: str, *args: str) -> bytes:
+    return subprocess.run(["git", "-C", tree, *args], check=True, capture_output=True).stdout
 
 
 def rsl_terms_of(document: str) -> dict[str, Any]:
@@ -333,6 +342,27 @@ def robots_posture(strings: dict[str, str], content_usage: str) -> str:
     )
 
 
+def robots_txt(strings: dict[str, str], content_usage: str) -> str:
+    """The whole robots.txt, line for line: the file's own header, the crawl posture
+    (above), the sitemap record and the agent-discovery comments, as they stand. An
+    unsourced line added anywhere (header, between the records, after the sitemap) fails."""
+    return (
+        "# robots.txt for phronesisintel.com (Phronesis product site)\n"
+        "# Last updated: 2026-10-30\n"
+        "#\n"
+        + robots_posture(strings, content_usage)
+        + "\n"
+        "# Sitemaps\n"
+        "Sitemap: https://phronesisintel.com/sitemap.xml\n"
+        "\n"
+        "# Agent discovery\n"
+        "# The agents.txt file at /.well-known/agents.txt is the canonical agent manifest.\n"
+        "# Machine-readable pricing at /pricing.json\n"
+        "# OpenAPI spec at https://api.phronesisintel.com/.well-known/openapi.json\n"
+        "# Markdown contract docs at /spec\n"
+    )
+
+
 def section_until(text: str, heading: str, next_prefix: str) -> str:
     """From ``heading`` (a whole line, exactly once in ``text``) up to the line that
     starts the next section (``next_prefix``), or the end of the text."""
@@ -341,6 +371,99 @@ def section_until(text: str, heading: str, next_prefix: str) -> str:
     start = text.index(heading)
     end = text.find("\n" + next_prefix, start + len(heading) - 1)
     return text[start:] if end < 0 else text[start : end + 1]
+
+
+def section_above(text: str, heading: str, prefix: str) -> str:
+    """The section directly above ``heading`` (a whole line, exactly once in ``text``):
+    from the last line before it that starts with ``prefix`` up to the heading."""
+    if text.count(heading) != 1:
+        raise ValueError(f"{heading!r} occurs {text.count(heading)} times, not once")
+    at = text.index(heading)
+    if at == 0 or text[at - 1] != "\n":
+        raise ValueError(f"{heading!r} does not start a line below another section")
+    return text[text.rfind("\n" + prefix, 0, at - 1) + 1 : at]
+
+
+def llms_headings(strings: dict[str, str]) -> list[str]:
+    """Every heading line of llms.txt (any level), in order. A heading added anywhere,
+    one that would close the license section early included, fails."""
+    return [
+        "# Phronesis",
+        "## One motion, proven first where the stakes are sharpest",
+        "## Endpoints",
+        "## Verification",
+        "## Agent discovery",
+        "## Integration",
+        f"## {heading_text(strings['license.heading'])}",
+        "## What's live vs forward (honest)",
+    ]
+
+
+def agents_headers(strings: dict[str, str]) -> list[str]:
+    """Every ``# --- section ---`` header of agents.txt, in order."""
+    return [
+        "# --- What Phronesis is ---",
+        "# --- Surfaces ---",
+        "# --- Endpoints ---",
+        f"# --- {heading_text(strings['license.heading'])} ---",
+        "# --- Authentication ---",
+        "# --- Substrate discipline (enforced at the code layer) ---",
+        "# --- Pricing model ---",
+        "# --- Verticals (twelve applied + V#0 meta-vertical) ---",
+        "# --- Architecture (six primitives) ---",
+        "# --- Substrate properties ---",
+        "# --- Sister surfaces ---",
+    ]
+
+
+#: The llms.txt section directly above the license heading, whole, as it stands: a
+#: sentence placed in it, or just above the license heading, fails.
+LLMS_SECTION_ABOVE_LICENSE = (
+    "## Integration\n"
+    "\n"
+    "- [API contract spec](https://phronesisintel.com/spec): the Hermes contract-v1 "
+    "response shapes.\n"
+    "- [OpenAPI](https://api.phronesisintel.com/.well-known/openapi.json): OpenAPI 3.1 spec.\n"
+    "\n"
+)
+#: The agents.txt section directly above the license header, whole, as it stands.
+AGENTS_SECTION_ABOVE_LICENSE = (
+    "# --- Endpoints ---\n"
+    "MCP: https://api.phronesisintel.com/mcp\n"
+    "REST: https://api.phronesisintel.com\n"
+    "Scorecard-JSON: https://api.phronesisintel.com/scorecard.json\n"
+    "Bench-JSON: https://api.phronesisintel.com/.well-known/bench.json\n"
+    "\n"
+)
+
+#: The license page's frame: its bytes outside the ``<head>…</head>`` and
+#: ``<body>…</body>`` spans. An HTML parser puts markup found before ``<html>`` or
+#: between ``</head>`` and ``<body>`` into the rendered body, so nothing may sit there,
+#: or after ``</body>``.
+PAGE_FRAME = '<!DOCTYPE html>\n<html lang="en">\nHEAD\nBODY\n</html>\n'
+
+
+def page_frame(page: str) -> str:
+    """``page`` with its one ``<head>…</head>`` span replaced by ``HEAD`` and its one
+    ``<body>…</body>`` span by ``BODY``."""
+    for tag in ("<head>", "</head>", "<body>", "</body>"):
+        if page.count(tag) != 1:
+            raise ValueError(f"{tag} occurs {page.count(tag)} times, not once")
+    head_start, head_end = page.index("<head>"), page.index("</head>") + len("</head>")
+    body_start, body_end = page.index("<body>"), page.index("</body>") + len("</body>")
+    if not head_start < head_end <= body_start < body_end:
+        raise ValueError("<head> and <body> are not two spans in document order")
+    return page[:head_start] + "HEAD" + page[head_end:body_start] + "BODY" + page[body_end:]
+
+
+#: A CSS ``content`` declaration (generated content; property names are ASCII
+#: case-insensitive). Words placed by CSS render on the page as if written there.
+_CSS_CONTENT_RE = re.compile(r"(?<![\w-])content\s*:\s*[^;}]*", re.I)
+
+
+def generated_content(css: str) -> list[str]:
+    """Every ``content:`` declaration in ``css``, whitespace-normalized, in order."""
+    return [" ".join(m.split()) for m in _CSS_CONTENT_RE.findall(css)]
 
 
 # ── reading the published files ──────────────────────────────────────────────
@@ -439,8 +562,13 @@ class PinTests(unittest.TestCase):
         canonical = json.dumps(fixture["rendered"], ensure_ascii=False, sort_keys=True)
         self.assertEqual(sha256(canonical), fixture["rendered_sha256"])
         self.assertEqual(fixture["repo"], "sustainable-finance-partners/phronesis")
-        self.assertRegex(fixture["commit"], r"^[0-9a-f]{40}$")
         self.assertEqual(fixture["path"], "mcp_server/legal/register_license.py")
+        # The pin is the file's content (its git blob id), not a commit: the API pull
+        # request is squash-merged, so no branch commit reaches main. read_from_commit
+        # names where the blob was read, for information only.
+        self.assertRegex(fixture["blob"], r"^[0-9a-f]{40}$")
+        self.assertRegex(fixture["read_from_commit"], r"^[0-9a-f]{40}$")
+        self.assertNotIn("commit", fixture)
 
     def test_the_api_fixture_parses_as_its_own_document(self) -> None:
         # The token fields are the parse of the pinned document, not a second copy.
@@ -457,13 +585,18 @@ class PinTests(unittest.TestCase):
         root = os.environ.get(API_TREE_ENV)
         if not root:
             self.skipTest(f"{API_TREE_ENV} is not set: no clone of the app repository here")
+        rev = os.environ.get(API_REV_ENV) or "HEAD"
         fixture = api_fixture()
-        source = subprocess.run(
-            ["git", "-C", root, "show", f"{fixture['commit']}:{fixture['path']}"],
-            check=True,
-            capture_output=True,
-        ).stdout.decode("utf-8")
-        lines = source.split("\n")
+        # The pinned blob must be the file at the clone's checked-out commit (or at the
+        # named revision): this holds on the API PR's branch and, after the squash
+        # merge, on main. The file is read only through git, never from the work tree.
+        found = _git(root, "rev-parse", "--verify", f"{rev}:{fixture['path']}")
+        self.assertEqual(
+            found.decode("ascii").strip(), fixture["blob"], f"{fixture['path']} at {rev}"
+        )
+        content = _git(root, "show", fixture["blob"])
+        self.assertEqual(git_blob_id(content), fixture["blob"])
+        lines = content.decode("utf-8").split("\n")
         for row in fixture["source_lines"]:
             with self.subTest(line=row["line"], value=row["for"]):
                 line = lines[int(row["line"]) - 1]
@@ -479,6 +612,14 @@ class PinTests(unittest.TestCase):
         self.assertIn(f'"{rendered["rsl_terms"]}"', by_value["rsl_terms"])
         self.assertIn(rendered["content_usage"].replace("train-ai=y", "train-ai={train}"),
                       by_value["content_usage"])
+        # The API renders max-age itself, in days (RSL 1.0 §3.2): the same one day.
+        self.assertEqual(
+            by_value["rsl_max_age (days)"], f"RSL_MAX_AGE_DAYS: Final[int] = {RSL_MAX_AGE_DAYS}"
+        )
+        self.assertIn(
+            '<rsl xmlns="{_RSL_NAMESPACE}" max-age="{RSL_MAX_AGE_DAYS}">',
+            by_value["rsl_max_age (the <rsl> element)"],
+        )
 
 
 class LicensePageTests(unittest.TestCase):
@@ -540,6 +681,52 @@ class LicensePageTests(unittest.TestCase):
             skeleton, f"<body>\n\n{skip}\n\nHEADER\n\nMAIN\n\nFOOTER\n\n</body>"
         )
         self.assertTrue(self.page.endswith("</body>\n</html>\n"))
+
+    def test_the_page_is_the_fixed_frame(self) -> None:
+        # Nothing before <html>, between </head> and <body>, or after </body>: markup
+        # there renders as the start of the body, outside every other check here.
+        self.assertEqual(page_frame(self.page), PAGE_FRAME)
+
+    def test_head_is_the_security_head_but_its_own_three_lines(self) -> None:
+        # /security's head, byte for byte, except the title, the S.2 description and the
+        # canonical: the same metas, links and inline <style>. A stylesheet link, a
+        # script or a style rule added to this page alone fails here.
+        heading = html.escape(heading_text(self.strings["license.heading"]), quote=False)
+        description = html.escape(self.strings["S.2.license"], quote=True)
+        expected = between(read_site("security.html"), "<head>", "</head>")
+        for pattern, ours in (
+            (r"<title>[^<]*</title>", f"<title>{heading}</title>"),
+            (
+                r'<meta name="description" content="[^"]*">',
+                f'<meta name="description" content="{description}">',
+            ),
+            (
+                r'<link rel="canonical" href="[^"]*">',
+                f'<link rel="canonical" href="{LICENSE_URL}">',
+            ),
+        ):
+            theirs = re.findall(pattern, expected)
+            self.assertEqual(len(theirs), 1, pattern)
+            expected = expected.replace(theirs[0], ours, 1)
+        self.assertEqual(between(self.page, "<head>", "</head>"), expected)
+
+    def test_css_places_no_words_on_the_page(self) -> None:
+        # 781 F through CSS. The page's one <style> is /security's (the two pages share
+        # it; the other pages carry their own), and the page's only generated content is
+        # the logo glyph's empty string. The shared stylesheet's only generated content
+        # is the routing-card arrow, a class this page does not use. Neither carries an
+        # @import or a CSS escape (which could spell "content" another way).
+        style_re = re.compile(r"<style\b[^>]*>(.*?)</style>", re.S | re.I)
+        styles = style_re.findall(self.page)
+        self.assertEqual(len(styles), 1)
+        self.assertEqual(styles, style_re.findall(read_site("security.html")))
+        self.assertEqual(generated_content(self.page), ["content:''"])
+        sheet = read_site("styles.css")
+        self.assertEqual(generated_content(sheet), ["content: '→'"])
+        self.assertNotIn("routing-card", self.page)
+        for css in (styles[0], sheet):
+            self.assertNotIn("\\", css)
+            self.assertNotIn("@import", css.lower())
 
     def test_meta_description_is_s2(self) -> None:
         description = html.escape(self.strings["S.2.license"], quote=True)
@@ -613,6 +800,38 @@ class MachineReadableTests(unittest.TestCase):
         heading = f"# --- {heading_text(self.strings['license.heading'])} ---\n"
         section = section_until(read_site(".well-known/agents.txt"), heading, "# --- ")
         self.assertEqual(section, agents_block(self.strings) + "\n")
+
+    def test_llms_txt_headings_are_these_in_order(self) -> None:
+        # A heading of its own directly after S.1 would close the license section early;
+        # with the heading list fixed, it fails here.
+        lines = read_site("llms.txt").split("\n")
+        self.assertEqual([ln for ln in lines if ln.startswith("#")], llms_headings(self.strings))
+
+    def test_agents_txt_section_headers_are_these_in_order(self) -> None:
+        lines = read_site(".well-known/agents.txt").split("\n")
+        self.assertEqual(
+            [ln for ln in lines if ln.startswith("# --- ")], agents_headers(self.strings)
+        )
+
+    def test_llms_txt_section_above_the_license_is_exactly_its_text(self) -> None:
+        # The neighbour above: a sentence just above the license heading (or anywhere in
+        # the section it closes) fails here.
+        heading = f"## {heading_text(self.strings['license.heading'])}\n"
+        above = section_above(read_site("llms.txt"), heading, "## ")
+        self.assertEqual(above, LLMS_SECTION_ABOVE_LICENSE)
+
+    def test_agents_txt_section_above_the_license_is_exactly_its_text(self) -> None:
+        heading = f"# --- {heading_text(self.strings['license.heading'])} ---\n"
+        above = section_above(read_site(".well-known/agents.txt"), heading, "# --- ")
+        self.assertEqual(above, AGENTS_SECTION_ABOVE_LICENSE)
+
+    def test_robots_txt_is_exactly_the_expected_text(self) -> None:
+        # All of robots.txt, line for line: the posture block below plus the file's own
+        # header, sitemap and agent-discovery lines. A comment or directive added
+        # anywhere fails here.
+        self.assertEqual(
+            read_site("robots.txt"), robots_txt(self.strings, api_rendered()["content_usage"])
+        )
 
     def test_robots_posture_is_exactly_the_ruled_block(self) -> None:
         # The header comment, the RSL record and the wildcard group, byte for byte: the
@@ -698,8 +917,9 @@ class MachineReadableTests(unittest.TestCase):
 
 
 class RslDocumentTests(unittest.TestCase):
-    """``site/license.xml``: this host's RSL 1.0 declaration, the API's document plus a
-    one-day ``max-age``; served as ``application/rsl+xml`` (``site/_headers``)."""
+    """``site/license.xml``: this host's RSL 1.0 declaration, the API's document byte for
+    byte (its one-day ``max-age`` included); served as ``application/rsl+xml``
+    (``site/_headers``)."""
 
     document: str
     strings: dict[str, str]
@@ -709,8 +929,9 @@ class RslDocumentTests(unittest.TestCase):
         cls.document = read_site("license.xml")
         cls.strings = pinned()
 
-    def test_the_document_is_the_apis_with_max_age(self) -> None:
-        self.assertEqual(self.document, site_rsl_document(api_rendered()["rsl_document"]))
+    def test_the_document_is_the_apis_byte_for_byte(self) -> None:
+        # The API renders max-age="1" itself, so this host serves its document unchanged.
+        self.assertEqual(self.document, api_rendered()["rsl_document"])
 
     def test_permit_and_prohibit_tokens_equal_the_apis(self) -> None:
         site = rsl_terms_of(self.document)
@@ -731,9 +952,10 @@ class RslDocumentTests(unittest.TestCase):
         self.assertNotIn("all", site["permits"])
 
     def test_max_age_is_one_day(self) -> None:
-        root = ET.fromstring(self.document.encode("utf-8"))
-        self.assertEqual(root.tag, f"{{{RSL_NAMESPACE}}}rsl")
-        self.assertEqual(root.get("max-age"), RSL_MAX_AGE_DAYS)
+        for document in (self.document, api_rendered()["rsl_document"]):
+            root = ET.fromstring(document.encode("utf-8"))
+            self.assertEqual(root.tag, f"{{{RSL_NAMESPACE}}}rsl")
+            self.assertEqual(root.get("max-age"), RSL_MAX_AGE_DAYS)
 
     def test_content_url_is_this_hosts_root_path(self) -> None:
         # RSL 1.0 §3.3: for a robots.txt association the url MUST be an RFC 9309 path;
