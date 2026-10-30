@@ -1,7 +1,7 @@
 # agents.txt — Phronesis agent discovery manifest
 # Authority: Sustainable Finance Partners, LLC (operator)
 # Spec: https://phronesisintel.com/spec
-# Last updated: 2026-10-16
+# Last updated: 2026-10-30
 
 User-Agent: *
 
@@ -29,6 +29,11 @@ MCP: https://api.phronesisintel.com/mcp
 REST: https://api.phronesisintel.com
 Scorecard-JSON: https://api.phronesisintel.com/scorecard.json
 Bench-JSON: https://api.phronesisintel.com/.well-known/bench.json
+
+# --- Phronesis Register License v1.0 ---
+# **1. What this covers.** This license applies to the records, scores, legends, summaries and pages that Phronesis publishes on its public register at phronesisintel.com and api.phronesisintel.com (**"Published Records"**). It does not apply to Decision Assets minted at a customer's request, which are governed by the customer's terms and that record's `data_rights`, nor to use of the Phronesis API, which is governed by the Terms of Service.
+# **2. What you may do, free of charge, with attribution.** You may (a) read Published Records; (b) quote any single Published Record in full and quote or excerpt Published Records in any work, with attribution; (c) cite and link to Published Records; (d) index Published Records for search and use them in search results and in AI-generated answers, with attribution; and (e) use Published Records to train, fine-tune or evaluate machine-learning models, with attribution in your model documentation or data statement, for so long as the machine-readable license declaration published with this register states that such use is permitted. Phronesis may change that declaration at any time for future use.
+# The Phronesis Register License v1.0 governs this register: reading, quoting, citing, retrieval and training are permitted with attribution and a link; bulk redistribution, mirroring and dataset compilation are not; derivative scoring, ranking or repackaging requires a written license. Terms: https://phronesisintel.com/license
 
 # --- Authentication ---
 # Path A (autonomous agents):  Agents authenticate with an Authority Credential; an AP2 mandate, where presented, is recorded as evidence of delegated authority (Terms §4.3).

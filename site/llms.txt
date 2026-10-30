@@ -45,10 +45,12 @@ V#13 General — any consequential decision, in any domain: the caller brings th
 - [API contract spec](https://phronesisintel.com/spec): the Hermes contract-v1 response shapes.
 - [OpenAPI](https://api.phronesisintel.com/.well-known/openapi.json): OpenAPI 3.1 spec.
 
-## Access policy (Search-visible · Agent-callable · Training-protected)
-Content on these pages may be indexed and referenced. Use for model training requires a
-license: support@phronesisintel.com. Agents: the platform surfaces above are the intended
-path — call us, don't scrape us.
+## Phronesis Register License v1.0
+**1. What this covers.** This license applies to the records, scores, legends, summaries and pages that Phronesis publishes on its public register at phronesisintel.com and api.phronesisintel.com (**"Published Records"**). It does not apply to Decision Assets minted at a customer's request, which are governed by the customer's terms and that record's `data_rights`, nor to use of the Phronesis API, which is governed by the Terms of Service.
+
+**2. What you may do, free of charge, with attribution.** You may (a) read Published Records; (b) quote any single Published Record in full and quote or excerpt Published Records in any work, with attribution; (c) cite and link to Published Records; (d) index Published Records for search and use them in search results and in AI-generated answers, with attribution; and (e) use Published Records to train, fine-tune or evaluate machine-learning models, with attribution in your model documentation or data statement, for so long as the machine-readable license declaration published with this register states that such use is permitted. Phronesis may change that declaration at any time for future use.
+
+The Phronesis Register License v1.0 governs this register: reading, quoting, citing, retrieval and training are permitted with attribution and a link; bulk redistribution, mirroring and dataset compilation are not; derivative scoring, ranking or repackaging requires a written license. Terms: https://phronesisintel.com/license
 
 ## What's live vs forward (honest)
 - Live: the production platform; the deny-by-default, independently red-teamed action gate; the Decision Asset + Receipt; agent-discoverable surfaces; the public Decision Quality Bench (pre-resolution measures); the OAuth-consent connector (read-only open tier).

@@ -19,6 +19,7 @@ inside `site/`).
 │   ├── pricing.html, pricing.json   Pricing tiers (page + machine-readable)
 │   ├── spec.html, for-agents.html   For-agents technical surfaces
 │   ├── security.html, 404.html      Security page; the not-found page (needed for real 404s)
+│   ├── license.html                 The Phronesis Register License (served at /license)
 │   ├── llms.txt, evals.json         Agent-readable summaries
 │   ├── styles.css                   Shared design system (byte-identical with sfp-corporate-site)
 │   ├── manifest.json, favicon.svg, robots.txt, sitemap.xml
@@ -26,6 +27,8 @@ inside `site/`).
 │   ├── skills/setup.md              Skills setup guide: public by design (ADR-0034), served at /skills/setup
 │   └── .well-known/                 agents.txt, agentic-commerce.json, agentic-verify.txt
 ├── scripts/site_gates.py            Publish-folder, vendor-name, taxonomy-leak and live-404 checks
+├── scripts/test_license_set.py      The license set renders its signed strings exactly
+├── gates/license_strings.json       Those strings, each pinned to its source line
 ├── gates/vendor_names.json          Vendor names + the ratified strings allowed to carry them
 ├── gates/taxonomy_leaks.json        Internal names, governance references, retired claim-state (+ fixtures)
 ├── .github/workflows/               CI gates
@@ -51,7 +54,10 @@ python scripts/site_gates.py live-404 phronesisintel.com
 ## Live data dependency
 
 `scorecard.html` fetches `https://api.phronesisintel.com/scorecard.json` on page
-load. The Hermes contract surface must allow CORS from `https://phronesisintel.com` origin
+load. `index.html` refreshes its record count and as-of date from
+`https://api.phronesisintel.com/.well-known/scorecard.json` (cached 300 s); the static
+count and date are the fallback, and the app repo's parity gate reads them. The
+Hermes contract surface must allow CORS from `https://phronesisintel.com` origin
 for the scorecard to render. If the browser console shows a CORS error post-deploy, the
 mcp_server middleware needs the origin added to its allowlist (carry-item per Sprint 5.4
 dispatch §AC-Phronesis-Site-2).

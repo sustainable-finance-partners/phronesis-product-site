@@ -447,6 +447,21 @@ jobs:
           fi
           echo "PASS: no stale 8-vertical prose drift on index.html"
 
+  license-set-strings:
+    # The Register License page (/license), the license block in llms.txt and
+    # agents.txt, the crawl posture in robots.txt and the homepage record count render
+    # their counsel-approved and signed strings exactly. Each string is pinned to the
+    # source line it was extracted from (gates/license_strings.json); the source-line
+    # test runs on the desk, where the source documents are, and is skipped here.
+    runs-on: ubuntu-latest
+    name: License set renders its signed strings exactly
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: License-set string tests
+        run: python3 ../scripts/test_license_set.py
+
   internal-taxonomy-leak-check:
     # Per CC_4_7_POSITIONING_RECUT_AND_SITES_FIX_DISPATCH_20260525.md D3.AC-3
     # (Ledger §15.10.92) — customer-facing copy must not leak internal
