@@ -6,11 +6,13 @@
 # Agents: start at /llms.txt and
 # https://api.phronesisintel.com/.well-known/mcp.json.
 
-# All crawlers: welcome on all public surfaces.
+License: https://phronesisintel.com/license.xml
+
 # Content Signals (contentsignals.org): AI training yes, AI input
 # (reference/grounding) yes, search indexing yes.
 User-agent: *
 Content-Signal: ai-train=yes, ai-input=yes, search=yes
+Content-Usage: train-ai=y, ai-use=y, search=y
 Allow: /
 
 # Sitemaps

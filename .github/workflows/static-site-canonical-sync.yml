@@ -453,6 +453,8 @@ jobs:
     # their counsel-approved and signed strings exactly. Each string is pinned to the
     # source line it was extracted from (gates/license_strings.json); the source-line
     # test runs on the desk, where the source documents are, and is skipped here.
+    # The same module tests site/license.xml (the RSL declaration) against the API's
+    # pinned render and scripts/refresh_count.py offline against a fixture payload.
     runs-on: ubuntu-latest
     name: License set renders its signed strings exactly
     steps:

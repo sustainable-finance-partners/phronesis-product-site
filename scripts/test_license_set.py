@@ -13,7 +13,15 @@ from the source documents, and the tests below prove
     workspace is on this machine (``PHRONESIS_WORKSPACE`` names its root; CI has no
     copy, so there the test is skipped and says so);
   * each pinned string still hashes to the digest recorded when it was extracted;
-  * each pinned string appears, exactly, where it renders.
+  * each pinned string appears, exactly, where it renders, and nothing stands beside the
+    license on its surfaces (the license page's ``<main>``, its meta description, the
+    license sections of llms.txt and agents.txt, the robots.txt crawl posture).
+
+The machine-readable declaration on this host (``site/license.xml``, the RSL 1.0
+document robots.txt names, and the aipref ``Content-Usage`` robots rule) is tested
+against the API's own flag-ON render, pinned in the same file under ``api_render`` with
+its repository, commit and path. ``scripts/refresh_count.py`` (the pre-merge refresh of
+the homepage count) is tested here offline against a fixture payload.
 
 Run from anywhere: ``python3 scripts/test_license_set.py`` (the tests, exit 0 on pass)
 or ``python3 scripts/test_license_set.py --write-pin`` (re-extract the pin from the
@@ -28,18 +36,37 @@ import html
 import json
 import os
 import re
+import subprocess
 import sys
+import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
+from unittest import mock
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import refresh_count  # noqa: E402  (the sibling script; isolated mode drops its directory)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SITE = REPO_ROOT / "site"
 PIN_PATH = REPO_ROOT / "gates" / "license_strings.json"
 WORKSPACE_ENV = "PHRONESIS_WORKSPACE"
+#: A clone of the app repository (sustainable-finance-partners/phronesis) holding the
+#: commit the ``api_render`` fixture names. Optional: without it the source-line check
+#: of the fixture is skipped and says so.
+API_TREE_ENV = "PHRONESIS_API_TREE"
 
 LICENSE_URL = "https://phronesisintel.com/license"
+#: The RSL 1.0 document for this host's content; robots.txt names it (RSL 1.0 §4.4).
+RSL_DOCUMENT_URL = "https://phronesisintel.com/license.xml"
+RSL_NAMESPACE = "https://rslstandard.org/rsl"
+RSL_MEDIA_TYPE = "application/rsl+xml"
+#: RSL 1.0 §3.2 / §3.2.1: ``max-age`` is "a positive integer number of days" a client may
+#: treat the document and its association as authoritative (default 30). One day keeps a
+#: change to the declaration (License clause 2(e)) binding within a day.
+RSL_MAX_AGE_DAYS = "1"
 SCORECARD_URL = "https://api.phronesisintel.com/.well-known/scorecard.json"
 #: The gate's marker for the homepage count (discovery_surface_consistency.py in the
 #: app repo). The marker stays the span's LAST attribute and the digits stay the span's
@@ -200,6 +227,122 @@ def count_label(template: str, n: int, date: str) -> str:
     return template.replace("{n}", str(n)).replace("{date}", date)
 
 
+def license_main(strings: dict[str, str]) -> str:
+    """The license page's whole ``<main>``: the heading, the S.2 version line, and the ten
+    clauses in their bold/code structure. Nothing else."""
+    clauses = "\n\n".join(f"    <p>{render_inline(strings[pin])}</p>" for pin in LICENSE_CLAUSE_IDS)
+    heading = html.escape(heading_text(strings["license.heading"]), quote=False)
+    return (
+        '<main id="main">\n'
+        "\n"
+        '<section style="background: var(--gradient-hero); '
+        'padding: var(--space-16) 0 var(--space-8) 0;">\n'
+        '  <div class="container-narrow">\n'
+        f"    <h1>{heading}</h1>\n"
+        f'    <p class="effective">{html.escape(strings["S.2.license"], quote=False)}</p>\n'
+        "  </div>\n"
+        "</section>\n"
+        "\n"
+        '<section style="padding: var(--space-12) 0;">\n'
+        '  <div class="container-narrow policy">\n'
+        "\n"
+        f"{clauses}\n"
+        "\n"
+        "  </div>\n"
+        "</section>\n"
+        "\n"
+        "</main>"
+    )
+
+
+def api_fixture() -> dict[str, Any]:
+    """The API's flag-ON render (``api_render`` in the pin file)."""
+    data: dict[str, Any] = load_pin()["api_render"]
+    return data
+
+
+def api_rendered() -> dict[str, Any]:
+    rendered: dict[str, Any] = api_fixture()["rendered"]
+    return rendered
+
+
+def site_rsl_document(api_document: str) -> str:
+    """This host's RSL document: the API's document, byte for byte, with ``max-age``."""
+    root = f'<rsl xmlns="{RSL_NAMESPACE}">'
+    if api_document.count(root) != 1:
+        raise ValueError("the API document's <rsl> element is not in the pinned form")
+    return api_document.replace(root, f'<rsl xmlns="{RSL_NAMESPACE}" max-age="{RSL_MAX_AGE_DAYS}">')
+
+
+def rsl_terms_of(document: str) -> dict[str, Any]:
+    """The usage permits and prohibits (token lists, in order), the payment type, the
+    terms URL and the content url of a one-``<content>`` RSL document."""
+    ns = f"{{{RSL_NAMESPACE}}}"
+    root = ET.fromstring(document.encode("utf-8"))
+    if root.tag != f"{ns}rsl":
+        raise ValueError(f"root element is {root.tag!r}, not rsl in the RSL namespace")
+    contents = root.findall(f"{ns}content")
+    if len(contents) != 1:
+        raise ValueError(f"{len(contents)} <content> elements, not one")
+    content = contents[0]
+    licenses = content.findall(f"{ns}license")
+    if len(licenses) != 1:
+        raise ValueError(f"{len(licenses)} <license> elements, not one")
+    lic = licenses[0]
+    payments = lic.findall(f"{ns}payment")
+    terms = content.findall(f"{ns}terms")
+    if len(payments) != 1 or len(terms) != 1:
+        raise ValueError("not exactly one <payment> and one <terms>")
+    return {
+        "permits": [
+            tok
+            for el in lic.findall(f"{ns}permits")
+            if el.get("type") == "usage"
+            for tok in (el.text or "").split()
+        ],
+        "prohibits": [
+            tok
+            for el in lic.findall(f"{ns}prohibits")
+            if el.get("type") == "usage"
+            for tok in (el.text or "").split()
+        ],
+        "payment": payments[0].get("type"),
+        "terms": terms[0].text,
+        "url": content.get("url"),
+    }
+
+
+def robots_posture(strings: dict[str, str], content_usage: str) -> str:
+    """The robots.txt crawl posture, from its header comment to the wildcard group's end:
+    S.1, the global RSL ``License:`` record, the ruled Content-Signal and the API's aipref
+    Content-Usage rule. No sentence without a source."""
+    return (
+        "# Phronesis crawl policy.\n"
+        f"# {strings['S.1']}\n"
+        "# Agents: start at /llms.txt and\n"
+        "# https://api.phronesisintel.com/.well-known/mcp.json.\n"
+        "\n"
+        f"License: {RSL_DOCUMENT_URL}\n"
+        "\n"
+        "# Content Signals (contentsignals.org): AI training yes, AI input\n"
+        "# (reference/grounding) yes, search indexing yes.\n"
+        "User-agent: *\n"
+        f"Content-Signal: {strings['A.content-signal']}\n"
+        f"Content-Usage: {content_usage}\n"
+        "Allow: /\n"
+    )
+
+
+def section_until(text: str, heading: str, next_prefix: str) -> str:
+    """From ``heading`` (a whole line, exactly once in ``text``) up to the line that
+    starts the next section (``next_prefix``), or the end of the text."""
+    if text.count(heading) != 1:
+        raise ValueError(f"{heading!r} occurs {text.count(heading)} times, not once")
+    start = text.index(heading)
+    end = text.find("\n" + next_prefix, start + len(heading) - 1)
+    return text[start:] if end < 0 else text[start : end + 1]
+
+
 # ── reading the published files ──────────────────────────────────────────────
 
 
@@ -291,6 +434,52 @@ class PinTests(unittest.TestCase):
                 self.assertIn(need, ids)
         self.assertIn("A.content-signal", ids)
 
+    def test_the_api_fixture_still_hashes_to_its_recorded_digest(self) -> None:
+        fixture = api_fixture()
+        canonical = json.dumps(fixture["rendered"], ensure_ascii=False, sort_keys=True)
+        self.assertEqual(sha256(canonical), fixture["rendered_sha256"])
+        self.assertEqual(fixture["repo"], "sustainable-finance-partners/phronesis")
+        self.assertRegex(fixture["commit"], r"^[0-9a-f]{40}$")
+        self.assertEqual(fixture["path"], "mcp_server/legal/register_license.py")
+
+    def test_the_api_fixture_parses_as_its_own_document(self) -> None:
+        # The token fields are the parse of the pinned document, not a second copy.
+        rendered = api_rendered()
+        self.assertEqual(rsl_terms_of(rendered["rsl_document"]), {
+            "permits": rendered["rsl_permits_usage"],
+            "prohibits": rendered["rsl_prohibits_usage"],
+            "payment": rendered["rsl_payment_type"],
+            "terms": rendered["rsl_terms"],
+            "url": rendered["rsl_content_url"],
+        })
+
+    def test_the_api_fixture_equals_its_source_lines(self) -> None:
+        root = os.environ.get(API_TREE_ENV)
+        if not root:
+            self.skipTest(f"{API_TREE_ENV} is not set: no clone of the app repository here")
+        fixture = api_fixture()
+        source = subprocess.run(
+            ["git", "-C", root, "show", f"{fixture['commit']}:{fixture['path']}"],
+            check=True,
+            capture_output=True,
+        ).stdout.decode("utf-8")
+        lines = source.split("\n")
+        for row in fixture["source_lines"]:
+            with self.subTest(line=row["line"], value=row["for"]):
+                line = lines[int(row["line"]) - 1]
+                self.assertEqual(line, row["text"])
+                self.assertEqual(sha256(line), row["line_sha256"])
+        rendered = api_rendered()
+        by_value = {str(row["for"]): str(row["text"]) for row in fixture["source_lines"]}
+        usage = re.findall(r'"([^"]+)"', by_value["rsl_permits_usage (without training)"])
+        usage += re.findall(r'"([^"]+)"', by_value["rsl_permits_usage (the training term)"])
+        self.assertEqual(" ".join(usage).split(), rendered["rsl_permits_usage"])
+        self.assertIn(f'url="{rendered["rsl_content_url"]}"', by_value["rsl_content_url"])
+        self.assertIn(f'type="{rendered["rsl_payment_type"]}"', by_value["rsl_payment_type"])
+        self.assertIn(f'"{rendered["rsl_terms"]}"', by_value["rsl_terms"])
+        self.assertIn(rendered["content_usage"].replace("train-ai=y", "train-ai={train}"),
+                      by_value["content_usage"])
+
 
 class LicensePageTests(unittest.TestCase):
     page: str
@@ -330,6 +519,53 @@ class LicensePageTests(unittest.TestCase):
         body = re.sub(r"<p>.*?</p>", "", section, flags=re.S)
         self.assertEqual(re.sub(r"<[^>]+>", "", body).strip(), "")
 
+    def test_main_holds_only_the_license(self) -> None:
+        # 781 F: nothing inside or beside the counsel text. The whole <main> is the
+        # heading, the S.2 line and the ten clauses, byte for byte; a sentence in the
+        # hero, between the sections or after the clauses fails here.
+        self.assertEqual(self.page.count("<main"), 1)
+        self.assertEqual(between(self.page, "<main", "</main>"), license_main(self.strings))
+
+    def test_body_outside_main_is_the_standard_chrome(self) -> None:
+        # Outside <main> the body carries the site's skip link, header and footer only.
+        security = read_site("security.html")
+        body = between(self.page, "<body>", "</body>")
+        header = between(self.page, '<header class="site-header">', "</header>")
+        footer = _footer(self.page)
+        main = between(self.page, "<main", "</main>")
+        skip = '<a href="#main" class="skip-link">Skip to main content</a>'
+        self.assertIn(skip, between(security, "<body>", "</body>"))
+        skeleton = body.replace(header, "HEADER").replace(main, "MAIN").replace(footer, "FOOTER")
+        self.assertEqual(
+            skeleton, f"<body>\n\n{skip}\n\nHEADER\n\nMAIN\n\nFOOTER\n\n</body>"
+        )
+        self.assertTrue(self.page.endswith("</body>\n</html>\n"))
+
+    def test_meta_description_is_s2(self) -> None:
+        description = html.escape(self.strings["S.2.license"], quote=True)
+        self.assertEqual(
+            re.findall(r'<meta name="description" content="([^"]*)">', self.page), [description]
+        )
+
+    def test_head_carries_no_other_words(self) -> None:
+        # The head's only words are the <title> (the license heading) and the S.2 meta
+        # description: no other meta, no script, no second title.
+        head = between(self.page, "<head>", "</head>")
+        description = html.escape(self.strings["S.2.license"], quote=True)
+        self.assertEqual(
+            re.findall(r"<meta\b[^>]*>", head),
+            [
+                '<meta charset="UTF-8">',
+                '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+                f'<meta name="description" content="{description}">',
+            ],
+        )
+        tags = set(re.findall(r"<([a-zA-Z][a-zA-Z0-9-]*)\b", head))
+        self.assertEqual(tags, {"head", "meta", "title", "link", "style"})
+        self.assertEqual(len(texts_of(head, "title")), 1)
+        outside = re.sub(r"<style>.*?</style>|<title>.*?</title>|<[^>]+>", "", head, flags=re.S)
+        self.assertEqual(outside.strip(), "")
+
     def test_standard_header_and_footer(self) -> None:
         security = read_site("security.html")
         self.assertEqual(_footer(self.page), _footer(security))
@@ -366,6 +602,64 @@ class MachineReadableTests(unittest.TestCase):
     def test_agents_txt_carries_p1_p2_then_s1(self) -> None:
         self.assertEqual(read_site(".well-known/agents.txt").count(agents_block(self.strings)), 1)
 
+    def test_llms_txt_license_section_is_exactly_the_block(self) -> None:
+        # From the license heading to the next "## " heading: the block and its blank
+        # separator line, nothing else (a line after S.1 fails here).
+        heading = f"## {heading_text(self.strings['license.heading'])}\n"
+        section = section_until(read_site("llms.txt"), heading, "## ")
+        self.assertEqual(section, llms_block(self.strings) + "\n")
+
+    def test_agents_txt_license_section_is_exactly_the_block(self) -> None:
+        heading = f"# --- {heading_text(self.strings['license.heading'])} ---\n"
+        section = section_until(read_site(".well-known/agents.txt"), heading, "# --- ")
+        self.assertEqual(section, agents_block(self.strings) + "\n")
+
+    def test_robots_posture_is_exactly_the_ruled_block(self) -> None:
+        # The header comment, the RSL record and the wildcard group, byte for byte: the
+        # S.1 line, the ruled Content-Signal, the API's Content-Usage. An unsourced line
+        # (the old "All crawlers: welcome ..." sentence) fails here.
+        robots = read_site("robots.txt")
+        posture = robots_posture(self.strings, api_rendered()["content_usage"])
+        self.assertEqual(between(robots, "# Phronesis crawl policy.\n", "Allow: /\n"), posture)
+        self.assertNotIn("welcome", robots.lower())
+
+    def test_robots_directives_are_exactly_these(self) -> None:
+        robots = read_site("robots.txt")
+        directives = [ln for ln in robots.split("\n") if ln.strip() and not ln.startswith("#")]
+        self.assertEqual(
+            directives,
+            [
+                f"License: {RSL_DOCUMENT_URL}",
+                "User-agent: *",
+                f"Content-Signal: {self.strings['A.content-signal']}",
+                f"Content-Usage: {api_rendered()['content_usage']}",
+                "Allow: /",
+                "Sitemap: https://phronesisintel.com/sitemap.xml",
+            ],
+        )
+
+    def test_robots_license_record_is_global_and_names_this_hosts_document(self) -> None:
+        # RSL 1.0 §4.4: a License record outside any group applies to every client; the
+        # value is an absolute URI resolving to an RSL document (site/license.xml).
+        lines = read_site("robots.txt").split("\n")
+        records = [i for i, ln in enumerate(lines) if ln.lower().startswith("license:")]
+        groups = [i for i, ln in enumerate(lines) if ln.lower().startswith("user-agent:")]
+        self.assertEqual([lines[i] for i in records], [f"License: {RSL_DOCUMENT_URL}"])
+        self.assertLess(records[0], groups[0])
+        self.assertEqual(RSL_DOCUMENT_URL, "https://phronesisintel.com/" + "license.xml")
+        self.assertTrue((SITE / "license.xml").is_file())
+
+    def test_robots_content_usage_is_the_apis_in_the_wildcard_group(self) -> None:
+        # aipref attach-05 §3: a Content-Usage rule inside a group; no path = every path.
+        lines = read_site("robots.txt").split("\n")
+        rules = [i for i, ln in enumerate(lines) if ln.lower().startswith("content-usage:")]
+        self.assertEqual(
+            [lines[i] for i in rules], [f"Content-Usage: {api_rendered()['content_usage']}"]
+        )
+        wildcard = lines.index("User-agent: *")
+        self.assertGreater(rules[0], wildcard)
+        self.assertNotIn("", lines[wildcard : rules[0]])
+
     def test_s1_carries_the_license_url(self) -> None:
         self.assertTrue(self.strings["S.1"].endswith(f"Terms: {LICENSE_URL}"))
 
@@ -401,6 +695,61 @@ class MachineReadableTests(unittest.TestCase):
             for phrase in RETIRED_POSTURE_PHRASES:
                 with self.subTest(file=path.relative_to(SITE).as_posix(), phrase=phrase):
                     self.assertNotIn(phrase, text)
+
+
+class RslDocumentTests(unittest.TestCase):
+    """``site/license.xml``: this host's RSL 1.0 declaration, the API's document plus a
+    one-day ``max-age``; served as ``application/rsl+xml`` (``site/_headers``)."""
+
+    document: str
+    strings: dict[str, str]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.document = read_site("license.xml")
+        cls.strings = pinned()
+
+    def test_the_document_is_the_apis_with_max_age(self) -> None:
+        self.assertEqual(self.document, site_rsl_document(api_rendered()["rsl_document"]))
+
+    def test_permit_and_prohibit_tokens_equal_the_apis(self) -> None:
+        site = rsl_terms_of(self.document)
+        rendered = api_rendered()
+        self.assertEqual(site["permits"], rendered["rsl_permits_usage"])
+        self.assertEqual(site["prohibits"], rendered["rsl_prohibits_usage"])
+        self.assertEqual(site["payment"], rendered["rsl_payment_type"])
+        self.assertEqual(site["terms"], rendered["rsl_terms"])
+        self.assertEqual(site["terms"], LICENSE_URL)
+
+    def test_the_tokens_are_rsl_1_0_usage_tokens(self) -> None:
+        # RSL-SPEC-1.0 (2025-12-10) usage vocabulary; ai-all is not used (wider than
+        # License clause 2).
+        vocabulary = {"all", "ai-all", "ai-train", "ai-input", "ai-index", "search"}
+        site = rsl_terms_of(self.document)
+        self.assertLessEqual(set(site["permits"]) | set(site["prohibits"]), vocabulary)
+        self.assertNotIn("ai-all", site["permits"])
+        self.assertNotIn("all", site["permits"])
+
+    def test_max_age_is_one_day(self) -> None:
+        root = ET.fromstring(self.document.encode("utf-8"))
+        self.assertEqual(root.tag, f"{{{RSL_NAMESPACE}}}rsl")
+        self.assertEqual(root.get("max-age"), RSL_MAX_AGE_DAYS)
+
+    def test_content_url_is_this_hosts_root_path(self) -> None:
+        # RSL 1.0 §3.3: for a robots.txt association the url MUST be an RFC 9309 path;
+        # the robots.txt of https://phronesisintel.com/ that names this document scopes
+        # it to that origin, so "/" is every path of https://phronesisintel.com/.
+        self.assertEqual(rsl_terms_of(self.document)["url"], "/")
+
+    def test_the_comment_is_s2(self) -> None:
+        self.assertEqual(
+            re.findall(r"<!-- (.*?) -->", self.document), [self.strings["S.2.license"]]
+        )
+
+    def test_headers_serve_the_rsl_media_type(self) -> None:
+        rules = read_site("_headers").split("\n")
+        at = rules.index("/license.xml")
+        self.assertEqual(rules[at + 1], f"  Content-Type: {RSL_MEDIA_TYPE}")
 
 
 class HomepageCountTests(unittest.TestCase):
@@ -456,6 +805,162 @@ class HomepageCountTests(unittest.TestCase):
         for needle in ("aggregate_stats", "forecast_count", "generated_at", "data-as-of"):
             with self.subTest(needle=needle):
                 self.assertIn(needle, body)
+
+
+#: A scorecard payload in the shape /.well-known/scorecard.json serves (the fields the
+#: refresh reads, plus neighbours it must ignore). Offline: no test touches the network.
+SCORECARD_FIXTURE: dict[str, Any] = {
+    "status": "ok",
+    "aggregate_stats": {"forecast_count": 45, "resolved_count": 0},
+    "metadata": {"generated_at": "2026-10-30T04:54:10Z", "version": "fixture"},
+}
+
+
+class RefreshCountTests(unittest.TestCase):
+    """``scripts/refresh_count.py`` against a copy of the homepage and a fixture payload."""
+
+    home: str
+    tmp: tempfile.TemporaryDirectory[str]
+    index: Path
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.home = read_site("index.html")
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.index = Path(self.tmp.name) / "index.html"
+        self.index.write_bytes(self.home.encode("utf-8"))
+        no_network = mock.patch.object(
+            refresh_count, "fetch", side_effect=AssertionError("network used in a test")
+        )
+        no_network.start()
+        self.addCleanup(no_network.stop)
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _payload(self, **changes: Any) -> dict[str, Any]:
+        data = json.loads(json.dumps(SCORECARD_FIXTURE))
+        for key, value in changes.items():
+            section, field = key.split("__")
+            if value is None:
+                data[section].pop(field, None)
+            else:
+                data[section][field] = value
+        return dict(data)
+
+    def _static(self, page: str) -> tuple[str, str, str, str]:
+        m = _COUNT_SPAN_RE.search(page)
+        assert m is not None
+        t = re.search(r'<time id="record-count-as-of" datetime="([^"]+)">([^<]+)</time>', page)
+        assert t is not None
+        return m.group(2), m.group(1), t.group(1), t.group(2)
+
+    def test_rewrites_the_three_values_and_no_other_byte(self) -> None:
+        today = dt.date(2026, 10, 31)
+        payload = self._payload(metadata__generated_at="2026-10-31T05:00:00Z")
+        lines = refresh_count.refresh(self.index, payload, today)
+        page = self.index.read_bytes().decode("utf-8")
+        self.assertEqual(self._static(page), ("45", "2026-10-31", "2026-10-31", "2026-10-31"))
+        n0, d0, _, _ = self._static(self.home)
+        expected = self.home.replace(
+            f'data-as-of="{d0}" {DA_COUNT_SOURCE_MARKER}>{n0}</span>',
+            f'data-as-of="2026-10-31" {DA_COUNT_SOURCE_MARKER}>45</span>',
+        ).replace(
+            f'<time id="record-count-as-of" datetime="{d0}">{d0}</time>',
+            '<time id="record-count-as-of" datetime="2026-10-31">2026-10-31</time>',
+        )
+        self.assertEqual(page, expected)
+        self.assertEqual(
+            lines,
+            [
+                f"forecast_count: {n0} -> 45",
+                f"data-as-of: {d0} -> 2026-10-31",
+                f"<time>: {d0} -> 2026-10-31",
+                "index.html: written",
+            ],
+        )
+        # The page still meets the homepage tests' form and the gate's regex.
+        gate = _GATE_COUNT_RE.search(page)
+        assert gate is not None
+        self.assertEqual(gate.group(1), "45")
+
+    def test_keeps_crlf_line_ends(self) -> None:
+        self.index.write_bytes(self.home.replace("\n", "\r\n").encode("utf-8"))
+        refresh_count.refresh(self.index, self._payload(), dt.date(2026, 10, 30))
+        raw = self.index.read_bytes()
+        self.assertEqual(raw.count(b"\n"), raw.count(b"\r\n"))
+        self.assertEqual(self._static(raw.decode("utf-8"))[0], "45")
+
+    def test_dry_run_writes_nothing(self) -> None:
+        lines = refresh_count.refresh(self.index, self._payload(), dt.date(2026, 10, 30), write=False)
+        self.assertEqual(self.index.read_bytes().decode("utf-8"), self.home)
+        self.assertEqual(lines[-1], "index.html: dry run; nothing written")
+
+    def test_current_values_write_nothing(self) -> None:
+        n0, d0, _, _ = self._static(self.home)
+        payload = self._payload(
+            aggregate_stats__forecast_count=int(n0), metadata__generated_at=f"{d0}T00:00:00Z"
+        )
+        lines = refresh_count.refresh(self.index, payload, dt.date.fromisoformat(d0))
+        self.assertEqual(lines[-1], "index.html: already current; nothing written")
+        self.assertEqual(self.index.read_bytes().decode("utf-8"), self.home)
+
+    def test_refuses_and_leaves_the_file_untouched(self) -> None:
+        today = dt.date(2026, 10, 30)
+        cases: dict[str, Any] = {
+            "outage envelope": {"status": "insufficient_sample", "aggregate_stats": {}},
+            "count absent": self._payload(aggregate_stats__forecast_count=None),
+            "count a string": self._payload(aggregate_stats__forecast_count="45"),
+            "count a bool": self._payload(aggregate_stats__forecast_count=True),
+            "count negative": self._payload(aggregate_stats__forecast_count=-1),
+            "count a float": self._payload(aggregate_stats__forecast_count=45.0),
+            "no generated_at": self._payload(metadata__generated_at=None),
+            "date unreadable": self._payload(metadata__generated_at="Oct 30 2026"),
+            "date not real": self._payload(metadata__generated_at="2026-02-30T00:00:00Z"),
+            "date in the future": self._payload(metadata__generated_at="2026-10-31T00:00:00Z"),
+            "not an object": [45],
+        }
+        for name, payload in cases.items():
+            with self.subTest(case=name):
+                with self.assertRaises(refresh_count.Refused):
+                    refresh_count.refresh(self.index, payload, today)
+                self.assertEqual(self.index.read_bytes().decode("utf-8"), self.home)
+
+    def test_refuses_when_the_markup_is_not_found_once(self) -> None:
+        today = dt.date(2026, 10, 30)
+        span = _COUNT_SPAN_RE.search(self.home)
+        assert span is not None
+        for name, page in {
+            "span missing": self.home.replace('id="record-count" ', 'id="other" ', 1),
+            "span twice": self.home.replace(span.group(0), span.group(0) * 2, 1),
+            "time missing": self.home.replace('id="record-count-as-of"', 'id="other"', 1),
+        }.items():
+            with self.subTest(case=name):
+                self.index.write_bytes(page.encode("utf-8"))
+                with self.assertRaises(refresh_count.Refused):
+                    refresh_count.refresh(self.index, self._payload(), today)
+                self.assertEqual(self.index.read_bytes().decode("utf-8"), page)
+
+    def test_the_command_line_reads_a_file_and_prints_old_to_new(self) -> None:
+        source = Path(self.tmp.name) / "scorecard.json"
+        source.write_text(json.dumps(SCORECARD_FIXTURE), encoding="utf-8")
+        n0, d0, _, _ = self._static(self.home)
+        out: list[str] = []
+        with mock.patch.object(refresh_count, "INDEX", self.index), mock.patch(
+            "builtins.print", side_effect=lambda *a: out.append(" ".join(map(str, a)))
+        ):
+            rc = refresh_count.main(["refresh_count.py", "--from-file", str(source)])
+            bad = Path(self.tmp.name) / "outage.json"
+            bad.write_text(json.dumps({"aggregate_stats": {}}), encoding="utf-8")
+            rc_bad = refresh_count.main(["refresh_count.py", "--from-file", str(bad)])
+            rc_usage = refresh_count.main(["refresh_count.py", "--nope"])
+        self.assertEqual((rc, rc_bad, rc_usage), (0, 1, 2))
+        self.assertIn(f"forecast_count: {n0} -> 45", out)
+        self.assertIn(f"data-as-of: {d0} -> 2026-10-30", out)
+        self.assertTrue(any(line.startswith("REFUSED: aggregate_stats") for line in out))
+        self.assertEqual(self._static(self.index.read_bytes().decode("utf-8"))[0], "45")
 
 
 class ClaimStateTests(unittest.TestCase):

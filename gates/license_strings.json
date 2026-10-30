@@ -251,5 +251,71 @@
       "sha256": "14cb19984f75c24ede58e436f98f3410221715085c6a3e345baf2602bd06436e",
       "line_sha256": "a0ce9d097e63726b1a6561f2adaed53b3dfa7e20b0a184312ab3971abfe9d05a"
     }
-  ]
+  ],
+  "api_render": {
+    "_doc": [
+      "The API's flag-ON render of its RSL 1.0 document and its aipref Content-Usage value,",
+      "pinned so the site's static declaration is tested against the API's (the same permits,",
+      "payment, prohibits and terms). Written by a script from the render and the source file;",
+      "never typed. rendered_sha256 is the digest of the canonical JSON of 'rendered'."
+    ],
+    "repo": "sustainable-finance-partners/phronesis",
+    "commit": "aee48c3cae9ebf3fd9ac9adfad06412f65ec3607",
+    "path": "mcp_server/legal/register_license.py",
+    "functions": "render_rsl_document(), content_usage_value()",
+    "env": "PHRONESIS_REGISTER_LICENSE_V1_ENABLED=true; PHRONESIS_REGISTER_LICENSE_TRAINING_PERMITTED unset (default: permitted)",
+    "rendered": {
+      "rsl_document": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!-- Phronesis Register License v1.0 — effective 2026-10-31. -->\n<rsl xmlns=\"https://rslstandard.org/rsl\">\n  <content url=\"/\">\n    <license>\n      <permits type=\"usage\">search ai-index ai-input ai-train</permits>\n      <payment type=\"attribution\"/>\n    </license>\n    <terms>https://phronesisintel.com/license</terms>\n  </content>\n</rsl>\n",
+      "rsl_permits_usage": [
+        "search",
+        "ai-index",
+        "ai-input",
+        "ai-train"
+      ],
+      "rsl_prohibits_usage": [],
+      "rsl_payment_type": "attribution",
+      "rsl_terms": "https://phronesisintel.com/license",
+      "rsl_content_url": "/",
+      "content_usage": "train-ai=y, ai-use=y, search=y"
+    },
+    "rendered_sha256": "976fdb6b6390a68eee337ed507cd0abdac3150cb405785f6dcfe1bc90da60c40",
+    "source_lines": [
+      {
+        "for": "rsl_permits_usage (without training)",
+        "line": 102,
+        "text": "_RSL_USAGE_WITHOUT_TRAINING: Final[str] = \"search ai-index ai-input\"",
+        "line_sha256": "750a40ff81ea4e0c47783bca0af1471812d79b236e7cf6415356370968b3f8c4"
+      },
+      {
+        "for": "rsl_permits_usage (the training term)",
+        "line": 103,
+        "text": "_RSL_TRAINING_USAGE: Final[str] = \"ai-train\"",
+        "line_sha256": "58dbda29b61b12ca073c4d85c68c8875f0778bdacfd5c129cfe42244460734a5"
+      },
+      {
+        "for": "rsl_content_url",
+        "line": 173,
+        "text": "        '  <content url=\"/\">\\n'",
+        "line_sha256": "92cb5e45f6a2eea94087ca03f436d325d77e7b1e49bf7aa46f4f4ab622459a16"
+      },
+      {
+        "for": "rsl_payment_type",
+        "line": 177,
+        "text": "        '      <payment type=\"attribution\"/>\\n'",
+        "line_sha256": "046751ce11dc55945e9c5c241d3e925b438ad15115c4af4f6c169d7f7534606c"
+      },
+      {
+        "for": "rsl_terms",
+        "line": 85,
+        "text": "REGISTER_LICENSE_URL: Final[str] = \"https://phronesisintel.com/license\"",
+        "line_sha256": "f4dbe930986b7302a114abda318f000f9cfcbc4147191e315f958ccbcf4c3470"
+      },
+      {
+        "for": "content_usage",
+        "line": 133,
+        "text": "    return f\"train-ai={train}, ai-use=y, search=y\"",
+        "line_sha256": "e388d087a4a0a771c0369c8400e3688551b4a4166f70a36f43c09e16a3ff7ce2"
+      }
+    ]
+  }
 }
