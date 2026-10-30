@@ -1124,16 +1124,27 @@ class RefreshCountTests(unittest.TestCase):
         assert t is not None
         return m.group(2), m.group(1), t.group(1), t.group(2)
 
+    def _other_count(self) -> int:
+        """A count the page does not carry, so a refresh always has something to change.
+
+        The page's own count is read, never assumed: a fixture equal to the page would
+        take the "already current" branch and pass these tests without exercising them.
+        """
+        return int(self._static(self.home)[0]) + 1
+
     def test_rewrites_the_three_values_and_no_other_byte(self) -> None:
+        n0, d0, _, _ = self._static(self.home)
+        n1 = str(self._other_count())
         today = dt.date(2026, 10, 31)
-        payload = self._payload(metadata__generated_at="2026-10-31T05:00:00Z")
+        payload = self._payload(
+            aggregate_stats__forecast_count=int(n1), metadata__generated_at="2026-10-31T05:00:00Z"
+        )
         lines = refresh_count.refresh(self.index, payload, today)
         page = self.index.read_bytes().decode("utf-8")
-        self.assertEqual(self._static(page), ("45", "2026-10-31", "2026-10-31", "2026-10-31"))
-        n0, d0, _, _ = self._static(self.home)
+        self.assertEqual(self._static(page), (n1, "2026-10-31", "2026-10-31", "2026-10-31"))
         expected = self.home.replace(
             f'data-as-of="{d0}" {DA_COUNT_SOURCE_MARKER}>{n0}</span>',
-            f'data-as-of="2026-10-31" {DA_COUNT_SOURCE_MARKER}>45</span>',
+            f'data-as-of="2026-10-31" {DA_COUNT_SOURCE_MARKER}>{n1}</span>',
         ).replace(
             f'<time id="record-count-as-of" datetime="{d0}">{d0}</time>',
             '<time id="record-count-as-of" datetime="2026-10-31">2026-10-31</time>',
@@ -1142,7 +1153,7 @@ class RefreshCountTests(unittest.TestCase):
         self.assertEqual(
             lines,
             [
-                f"forecast_count: {n0} -> 45",
+                f"forecast_count: {n0} -> {n1}",
                 f"data-as-of: {d0} -> 2026-10-31",
                 f"<time>: {d0} -> 2026-10-31",
                 "index.html: written",
@@ -1151,17 +1162,21 @@ class RefreshCountTests(unittest.TestCase):
         # The page still meets the homepage tests' form and the gate's regex.
         gate = _GATE_COUNT_RE.search(page)
         assert gate is not None
-        self.assertEqual(gate.group(1), "45")
+        self.assertEqual(gate.group(1), n1)
 
     def test_keeps_crlf_line_ends(self) -> None:
+        n1 = self._other_count()
         self.index.write_bytes(self.home.replace("\n", "\r\n").encode("utf-8"))
-        refresh_count.refresh(self.index, self._payload(), dt.date(2026, 10, 30))
+        payload = self._payload(aggregate_stats__forecast_count=n1)
+        lines = refresh_count.refresh(self.index, payload, dt.date(2026, 10, 30))
+        self.assertEqual(lines[-1], "index.html: written")
         raw = self.index.read_bytes()
         self.assertEqual(raw.count(b"\n"), raw.count(b"\r\n"))
-        self.assertEqual(self._static(raw.decode("utf-8"))[0], "45")
+        self.assertEqual(self._static(raw.decode("utf-8"))[0], str(n1))
 
     def test_dry_run_writes_nothing(self) -> None:
-        lines = refresh_count.refresh(self.index, self._payload(), dt.date(2026, 10, 30), write=False)
+        payload = self._payload(aggregate_stats__forecast_count=self._other_count())
+        lines = refresh_count.refresh(self.index, payload, dt.date(2026, 10, 30), write=False)
         self.assertEqual(self.index.read_bytes().decode("utf-8"), self.home)
         self.assertEqual(lines[-1], "index.html: dry run; nothing written")
 
