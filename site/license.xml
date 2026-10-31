@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Phronesis Register License v1.0 — effective 2026-10-31. -->
+<rsl xmlns="https://rslstandard.org/rsl" max-age="1">
+  <content url="/">
+    <license>
+      <permits type="usage">search ai-index ai-input ai-train</permits>
+      <payment type="attribution"/>
+    </license>
+    <terms>https://phronesisintel.com/license</terms>
+  </content>
+</rsl>

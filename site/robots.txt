@@ -1,42 +1,18 @@
 # robots.txt for phronesisintel.com (Phronesis product site)
-# Last updated: 2026-07-01
+# Last updated: 2026-10-30
 #
-# Phronesis crawl policy - Search-visible, Agent-callable, Training-protected.
-# Content on these pages may be indexed and referenced. Use for AI model
-# training requires a license: support@phronesisintel.com. Agents: call the
-# platform, don't scrape it - start at /llms.txt and
+# Phronesis crawl policy.
+# The Phronesis Register License v1.0 governs this register: reading, quoting, citing, retrieval and training are permitted with attribution and a link; bulk redistribution, mirroring and dataset compilation are not; derivative scoring, ranking or repackaging requires a written license. Terms: https://phronesisintel.com/license
+# Agents: start at /llms.txt and
 # https://api.phronesisintel.com/.well-known/mcp.json.
 
-# Purpose-separated training-class crawlers: blocked pending a license.
-User-agent: GPTBot
-Disallow: /
+License: https://phronesisintel.com/license.xml
 
-User-agent: Google-Extended
-Disallow: /
-
-User-agent: Applebot-Extended
-Disallow: /
-
-User-agent: CCBot
-Disallow: /
-
-User-agent: Bytespider
-Disallow: /
-
-User-agent: meta-externalagent
-Disallow: /
-
-User-agent: anthropic-ai
-Disallow: /
-
-User-agent: cohere-ai
-Disallow: /
-
-# Search-class and agent-class crawlers: welcome on all public surfaces.
-# Content Signals (contentsignals.org): search indexing yes, AI input
-# (reference/grounding) yes, AI training no.
+# Content Signals (contentsignals.org): AI training yes, AI input
+# (reference/grounding) yes, search indexing yes.
 User-agent: *
-Content-Signal: search=yes, ai-input=yes, ai-train=no
+Content-Signal: ai-train=yes, ai-input=yes, search=yes
+Content-Usage: train-ai=y, ai-use=y, search=y
 Allow: /
 
 # Sitemaps

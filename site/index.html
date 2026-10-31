@@ -446,8 +446,8 @@
           <span class="metric-label">Market Memory v1</span>
         </div>
         <div class="metric">
-          <span class="metric-value" data-source="scorecard.aggregate_stats.forecast_count">31</span>
-          <span class="metric-label">Decision Assets on the ledger</span>
+          <span class="metric-value" id="record-count" data-as-of="2026-10-30" data-source="scorecard.aggregate_stats.forecast_count">45</span>
+          <span class="metric-label">records on the register as of <time id="record-count-as-of" datetime="2026-10-30">2026-10-30</time></span>
         </div>
         <div class="metric">
           <span class="metric-value">~Jan 2027</span>
@@ -718,6 +718,36 @@
     </div>
   </div>
 </footer>
+
+<script>
+// The record count above is the scorecard's forecast_count as of its date. This
+// refreshes both from the public scorecard (cached 300 s); if the fetch fails or the
+// payload is not in the expected shape, the static count and date stay as they are.
+(function () {
+  var SOURCE_URL = 'https://api.phronesisintel.com/.well-known/scorecard.json';
+  var count = document.getElementById('record-count');
+  var asOf = document.getElementById('record-count-as-of');
+  if (!count || !asOf || !window.fetch) { return; }
+  fetch(SOURCE_URL, { headers: { 'Accept': 'application/json' } })
+    .then(function (r) {
+      if (!r.ok) { throw new Error('HTTP ' + r.status); }
+      return r.json();
+    })
+    .then(function (data) {
+      var stats = data && data.aggregate_stats;
+      var n = stats ? stats.forecast_count : null;
+      var stamp = data && data.metadata ? data.metadata.generated_at : null;
+      var day = typeof stamp === 'string' ? stamp.slice(0, 10) : '';
+      if (typeof n !== 'number' || n < 0 || Math.floor(n) !== n) { return; }
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) { return; }
+      count.textContent = String(n);
+      count.setAttribute('data-as-of', day);
+      asOf.textContent = day;
+      asOf.setAttribute('datetime', day);
+    })
+    .catch(function () {});
+})();
+</script>
 
 </body>
 </html>

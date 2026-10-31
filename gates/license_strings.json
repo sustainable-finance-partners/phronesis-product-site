@@ -1,0 +1,355 @@
+{
+  "_doc": [
+    "Signed and counsel-approved strings the license set renders (scripts/test_license_set.py).",
+    "Each row is extracted from one line of a source document in the workspace (source + line + extract rule), never typed: run the script with --write-pin and PHRONESIS_WORKSPACE set to the workspace root.",
+    "sha256 is the digest of text; line_sha256 is the digest of the whole source line (UTF-8, LF), so a moved or edited source line fails the source test.",
+    "The tests prove each text equals its source line's extraction (when the workspace is on the machine), still hashes to its digest, and renders exactly where 'renders' says."
+  ],
+  "strings": [
+    {
+      "id": "license.heading",
+      "what": "Register License v1.0 heading (package section 1)",
+      "source": "01_Strategy/Phronesis_Legal_Monthly_Pass_2026_11_Confirm_or_Correct_Package_20261025.md",
+      "line": 32,
+      "extract": {
+        "kind": "blockquote"
+      },
+      "renders": [
+        "site/license.html <h1> and <title>",
+        "site/llms.txt section heading",
+        "site/.well-known/agents.txt section header"
+      ],
+      "text": "**Phronesis Register License v1.0**",
+      "sha256": "1966914da2fafba3b4c745a1972beb4ad0c1dec430ea544ceec3ccc55bbb3a65",
+      "line_sha256": "fbae7f3cea373c96006438f9389d8c571f2ea32666bde3119552f973be06db9b"
+    },
+    {
+      "id": "license.p1",
+      "what": "Register License v1.0 clause 1 (package section 1)",
+      "source": "01_Strategy/Phronesis_Legal_Monthly_Pass_2026_11_Confirm_or_Correct_Package_20261025.md",
+      "line": 34,
+      "extract": {
+        "kind": "blockquote"
+      },
+      "renders": [
+        "site/license.html",
+        "site/llms.txt",
+        "site/.well-known/agents.txt"
+      ],
+      "text": "**1. What this covers.** This license applies to the records, scores, legends, summaries and pages that Phronesis publishes on its public register at phronesisintel.com and api.phronesisintel.com (**\"Published Records\"**). It does not apply to Decision Assets minted at a customer's request, which are governed by the customer's terms and that record's `data_rights`, nor to use of the Phronesis API, which is governed by the Terms of Service.",
+      "sha256": "52ed770fef305393d143a8942058b0c2afb09340d652fd1e2f3f708de5e6208e",
+      "line_sha256": "ef9f54f06eaa55d8eec32b7f9d3759a338c05a6b657b02ea3d45517d4e6ccb73"
+    },
+    {
+      "id": "license.p2",
+      "what": "Register License v1.0 clause 2 (package section 1)",
+      "source": "01_Strategy/Phronesis_Legal_Monthly_Pass_2026_11_Confirm_or_Correct_Package_20261025.md",
+      "line": 36,
+      "extract": {
+        "kind": "blockquote"
+      },
+      "renders": [
+        "site/license.html",
+        "site/llms.txt",
+        "site/.well-known/agents.txt"
+      ],
+      "text": "**2. What you may do, free of charge, with attribution.** You may (a) read Published Records; (b) quote any single Published Record in full and quote or excerpt Published Records in any work, with attribution; (c) cite and link to Published Records; (d) index Published Records for search and use them in search results and in AI-generated answers, with attribution; and (e) use Published Records to train, fine-tune or evaluate machine-learning models, with attribution in your model documentation or data statement, for so long as the machine-readable license declaration published with this register states that such use is permitted. Phronesis may change that declaration at any time for future use.",
+      "sha256": "0fe714b817c83e8a1fc9869c9b62386efb13485a3833a947b9b9321e8c4aa514",
+      "line_sha256": "47971859a7f922471dbb718d13629016d30f482bb4a6e92abd50ba44a18ace86"
+    },
+    {
+      "id": "license.p3",
+      "what": "Register License v1.0 clause 3 (package section 1)",
+      "source": "01_Strategy/Phronesis_Legal_Monthly_Pass_2026_11_Confirm_or_Correct_Package_20261025.md",
+      "line": 38,
+      "extract": {
+        "kind": "blockquote"
+      },
+      "renders": [
+        "site/license.html"
+      ],
+      "text": "**3. Attribution.** Attribution means: \"Phronesis (phronesisintel.com), record {record_id}\", with a link to the record page where a link is possible. For models, attribution means naming the Phronesis register and the declaration version in the model's documentation or data statement.",
+      "sha256": "0bceaadbda2441d9b4185f7bc2fe7ca9ce90ad0d986e679ed5610b5868f2cdf3",
+      "line_sha256": "7e26194f98cc1f5b71170e26aa48510abe82b71076254dac4c2fb7a097d42ccb"
+    },
+    {
+      "id": "license.p4",
+      "what": "Register License v1.0 clause 4 (package section 1)",
+      "source": "01_Strategy/Phronesis_Legal_Monthly_Pass_2026_11_Confirm_or_Correct_Package_20261025.md",
+      "line": 40,
+      "extract": {
+        "kind": "blockquote"
+      },
+      "renders": [
+        "site/license.html"
+      ],
+      "text": "**4. What you may not do without a written license from Phronesis.** You may not (a) copy, mirror or redistribute the register or any substantial part of it; (b) compile Published Records into a dataset for distribution, sale or licensing; (c) build, train or offer a scoring, ranking, calibration or repackaging product or service that is derived from Published Records; (d) remove, alter or obscure attribution, record identifiers, anchors, receipts or legends; or (e) present any number derived from Published Records as a Phronesis score, or use the PHRONESIS name or marks beyond factual attribution. Dataset, benchmark, derivative-product and bulk licenses are available by agreement: ops@phronesisintel.com.",
+      "sha256": "a8b59a2de4d9049038b7f3030d08e6a6b7b9806e8b5387e8e4d1a67cd4c64b42",
+      "line_sha256": "d799420c905575b5a102c26ce12146d085e318a772f0052b321ae1838435866d"
+    },
+    {
+      "id": "license.p5",
+      "what": "Register License v1.0 clause 5 (package section 1)",
+      "source": "01_Strategy/Phronesis_Legal_Monthly_Pass_2026_11_Confirm_or_Correct_Package_20261025.md",
+      "line": 42,
+      "extract": {
+        "kind": "blockquote"
+      },
+      "renders": [
+        "site/license.html"
+      ],
+      "text": "**5. Facts.** Nothing in this license restricts the use of facts as such. The values, dates and outcomes stated in a Published Record are facts. Phronesis claims rights in its expression — its sentences, legends, summaries and scores as computed under its published method — and in the register as a compilation.",
+      "sha256": "d9e5019c00dba8e10768cdf2d4d0b1a073ec8fd24c2e1e3361a5c57ddc43c18b",
+      "line_sha256": "20a5365e0280e59b1b1c5451fd4bd91a5d0fa85737044adfa4d076390190a4f6"
+    },
+    {
+      "id": "license.p6",
+      "what": "Register License v1.0 clause 6 (package section 1)",
+      "source": "01_Strategy/Phronesis_Legal_Monthly_Pass_2026_11_Confirm_or_Correct_Package_20261025.md",
+      "line": 44,
+      "extract": {
+        "kind": "blockquote"
+      },
+      "renders": [
+        "site/license.html"
+      ],
+      "text": "**6. Anchors and verification.** Published Records carry cryptographic anchors and a verification path that anyone may run. A copy is not an original: a Phronesis receipt resolves only at phronesisintel.com, and this license grants no right to issue receipts or to represent any copy or derivative as verified by Phronesis.",
+      "sha256": "a1af98a15a84e88071a9f3bceb65b568636eb7fa5f96d5c20c10138afb54753b",
+      "line_sha256": "6d4f4dc10c8c7b59c248ad77512cb057d33dc97516bebf9e5ca31a712b57f4dd"
+    },
+    {
+      "id": "license.p7",
+      "what": "Register License v1.0 clause 7 (package section 1)",
+      "source": "01_Strategy/Phronesis_Legal_Monthly_Pass_2026_11_Confirm_or_Correct_Package_20261025.md",
+      "line": 46,
+      "extract": {
+        "kind": "blockquote"
+      },
+      "renders": [
+        "site/license.html"
+      ],
+      "text": "**7. Term and changes.** This license applies to a Published Record for as long as Phronesis publishes it under this license. Phronesis may publish a new version of this license or change the machine-readable declaration for future use; a copy lawfully made under an earlier version keeps the rights granted to that copy.",
+      "sha256": "0ffc74b59a1803a69b94b9bb6f0321d5b082009c309606d50d9586b780431993",
+      "line_sha256": "eb5a1e4e35abe46378af7b4e4f9306df9a08134d388e2c98967e7b8836a7cd38"
+    },
+    {
+      "id": "license.p8",
+      "what": "Register License v1.0 clause 8 (package section 1)",
+      "source": "01_Strategy/Phronesis_Legal_Monthly_Pass_2026_11_Confirm_or_Correct_Package_20261025.md",
+      "line": 48,
+      "extract": {
+        "kind": "blockquote"
+      },
+      "renders": [
+        "site/license.html"
+      ],
+      "text": "**8. No warranty; no advice.** Published Records are records of what was stated, when, under which frozen rule, and how it resolved. They are provided as-is for information. They are not advice, and Phronesis makes no warranty about them beyond the verification path they carry. The limitations in the Terms of Service apply.",
+      "sha256": "da7ca89cd4760b64304f58b68ca70222231f62a426acc6da44ca67771d8ffcbf",
+      "line_sha256": "b9bc2f6b25ab1262fda9212e44fd4374ac82253aec796e52d0ee515ebcc84ed5"
+    },
+    {
+      "id": "license.p9",
+      "what": "Register License v1.0 clause 9 (package section 1)",
+      "source": "01_Strategy/Phronesis_Legal_Monthly_Pass_2026_11_Confirm_or_Correct_Package_20261025.md",
+      "line": 50,
+      "extract": {
+        "kind": "blockquote"
+      },
+      "renders": [
+        "site/license.html"
+      ],
+      "text": "**9. Marks.** PHRONESIS and the Phronesis marks are trademarks used by Sustainable Finance Partners, LLC under license. Nothing here grants any right in them except factual attribution.",
+      "sha256": "adc2411c01787870fbff59bde2d38d708b5aaa70de6c721b0877fc9e2f00fbe1",
+      "line_sha256": "3c6b5d9605b921c055124231d07cb0870b33caad3455f966c826e1cffdeaaeaa"
+    },
+    {
+      "id": "license.p10",
+      "what": "Register License v1.0 clause 10 (package section 1)",
+      "source": "01_Strategy/Phronesis_Legal_Monthly_Pass_2026_11_Confirm_or_Correct_Package_20261025.md",
+      "line": 52,
+      "extract": {
+        "kind": "blockquote"
+      },
+      "renders": [
+        "site/license.html"
+      ],
+      "text": "**10. Governing law.** Colorado law governs, consistent with the Terms of Service.",
+      "sha256": "47b88e1afa17fafdc03656f989398bb4497c77754d2976efcf68f84c41d79005",
+      "line_sha256": "d7f4a9d7e2eccf600908b742d0cf5ddac021028508f0cc5535abd52849dfbf23"
+    },
+    {
+      "id": "S.1",
+      "what": "the signed llms.txt / agents.txt access line, directly below License clauses 1-2 (ruling A)",
+      "source": "00_Operating_Model/CCO_DISPATCH_781_TWELVE_RULINGS_A_TO_L_TRAINING_POSTURE_FLIPS_TO_THE_LICENSE_CENSUS_592_MERGE_STRIPE_CRYPTO_CLEARED_GRANTS_RSS_NO_EMAIL_CHANGE_CORPORATE_SITE_GRANT_SAME_HOUR_PUBLISH_20261029.md",
+      "line": 14,
+      "extract": {
+        "kind": "quoted-after",
+        "anchor": "S.1), rendered directly below License ¶1–¶2 verbatim:**",
+        "open": "*\"",
+        "close": "\"*"
+      },
+      "renders": [
+        "site/llms.txt",
+        "site/.well-known/agents.txt",
+        "site/robots.txt header comment"
+      ],
+      "text": "The Phronesis Register License v1.0 governs this register: reading, quoting, citing, retrieval and training are permitted with attribution and a link; bulk redistribution, mirroring and dataset compilation are not; derivative scoring, ranking or repackaging requires a written license. Terms: https://phronesisintel.com/license",
+      "sha256": "54486cf462c53a50b1ae36ce3fa6f9359fe18f6a7afaa41f668df36976788995",
+      "line_sha256": "2de23247b9ff035930bb6f247a77e003a48f1ddb02db5057b6ef1837047b0051"
+    },
+    {
+      "id": "S.2.license",
+      "what": "the signed license version line (ruling C)",
+      "source": "00_Operating_Model/CCO_DISPATCH_781_TWELVE_RULINGS_A_TO_L_TRAINING_POSTURE_FLIPS_TO_THE_LICENSE_CENSUS_592_MERGE_STRIPE_CRYPTO_CLEARED_GRANTS_RSS_NO_EMAIL_CHANGE_CORPORATE_SITE_GRANT_SAME_HOUR_PUBLISH_20261029.md",
+      "line": 26,
+      "extract": {
+        "kind": "quoted-after",
+        "anchor": "(S.2):**",
+        "open": "*\"",
+        "close": "\"*"
+      },
+      "renders": [
+        "site/license.html <p class=\"effective\">"
+      ],
+      "text": "Phronesis Register License v1.0 — effective 2026-10-31.",
+      "sha256": "2c3d8f49d3ac8c14db83b42a903675712d770e028c848cd22019d57b9e7e0ab0",
+      "line_sha256": "6e262ea6271a5698c3608b643abe242fbde8258e92ab95d01c61f5ec24a82be2"
+    },
+    {
+      "id": "S.6",
+      "what": "the signed homepage count label template (ruling I)",
+      "source": "00_Operating_Model/CCO_DISPATCH_781_TWELVE_RULINGS_A_TO_L_TRAINING_POSTURE_FLIPS_TO_THE_LICENSE_CENSUS_592_MERGE_STRIPE_CRYPTO_CLEARED_GRANTS_RSS_NO_EMAIL_CHANGE_CORPORATE_SITE_GRANT_SAME_HOUR_PUBLISH_20261029.md",
+      "line": 35,
+      "extract": {
+        "kind": "quoted-after",
+        "anchor": "**(S.6)**",
+        "open": "*\"",
+        "close": "\"*"
+      },
+      "renders": [
+        "site/index.html metric bar: the count span + its label"
+      ],
+      "text": "{n} records on the register as of {date}",
+      "sha256": "5af888f60f375a1a12eaf6f465e3217b49b7fcd8ec470485f146ab8645c1808f",
+      "line_sha256": "fee9eb5799ec805b959700bb2c1fb2810c53875618923addfb0e2905aeac27db"
+    },
+    {
+      "id": "A.content-signal",
+      "what": "the ruled Content-Signal values (ruling A); the vocabulary is the Content Signals primary's own (ai-train, ai-input, search; yes/no)",
+      "source": "00_Operating_Model/CCO_DISPATCH_781_TWELVE_RULINGS_A_TO_L_TRAINING_POSTURE_FLIPS_TO_THE_LICENSE_CENSUS_592_MERGE_STRIPE_CRYPTO_CLEARED_GRANTS_RSS_NO_EMAIL_CHANGE_CORPORATE_SITE_GRANT_SAME_HOUR_PUBLISH_20261029.md",
+      "line": 13,
+      "extract": {
+        "kind": "quoted-after",
+        "anchor": "the Content-Signal becomes ",
+        "open": "`",
+        "close": "`"
+      },
+      "renders": [
+        "site/robots.txt Content-Signal line"
+      ],
+      "text": "ai-train=yes, ai-input=yes, search=yes",
+      "sha256": "14cb19984f75c24ede58e436f98f3410221715085c6a3e345baf2602bd06436e",
+      "line_sha256": "a0ce9d097e63726b1a6561f2adaed53b3dfa7e20b0a184312ab3971abfe9d05a"
+    },
+    {
+      "id": "782.P1",
+      "what": "the signed agents.txt P1 primitive token (782 §1.2): the token after the arrow on the dispatch line",
+      "source": "00_Operating_Model/CCO_DISPATCH_782_DEPLOY_PLACEHOLDER_FOUND_LIVE_RATIFIED_COPY_RIDES_1031_S7_NGUARD_AGENTS_P1_TOKEN_POST_REPUBLISH_CENSUS_TOOLS_LIST_CUSTOMER_BUCKET_UNAUTH_READ_TOOLS_SIZING_20261030.md",
+      "line": 13,
+      "extract": {
+        "kind": "quoted-after",
+        "anchor": "→ ",
+        "open": "`",
+        "close": "`"
+      },
+      "renders": [
+        "site/.well-known/agents.txt Architecture section, the P1 Primitive line"
+      ],
+      "text": "Primitive: P1=Identity-and-Mandate LIVE (authentication) · FORWARD-STATE (mandate binding)",
+      "sha256": "b43aecf36c099f368ab2b2adb9370249e4d6c3b290509801d04ddbabd5cdfb42",
+      "line_sha256": "2ed060922ee08c8cd3cb9c12386e28e9891cf1011a8764ac7cc85c71dbc981ac"
+    }
+  ],
+  "api_render": {
+    "_doc": [
+      "The API's flag-ON render of its RSL 1.0 document and its aipref Content-Usage value,",
+      "pinned so the site's static declaration is tested against the API's: site/license.xml",
+      "equals rsl_document byte for byte. The pin is the source file's content (its git blob",
+      "id), not a commit: the API pull request is squash-merged, so no branch commit reaches",
+      "main. read_from_commit names where the blob was read, for information only. Written by",
+      "a script from a render of a git-archive export of that commit and from the blob; never",
+      "typed. rendered_sha256 is the digest of the canonical JSON of 'rendered'."
+    ],
+    "repo": "sustainable-finance-partners/phronesis",
+    "path": "mcp_server/legal/register_license.py",
+    "blob": "5badb94254a09ccec84f4d9c1e2b0722be867ec1",
+    "read_from_commit": "cf4784cecb21b8c4f01bb524eb87f81b434f8a96",
+    "functions": "render_rsl_document(), content_usage_value()",
+    "env": "PHRONESIS_REGISTER_LICENSE_V1_ENABLED=true; PHRONESIS_REGISTER_LICENSE_TRAINING_PERMITTED unset (default: permitted)",
+    "rendered": {
+      "rsl_document": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!-- Phronesis Register License v1.0 — effective 2026-10-31. -->\n<rsl xmlns=\"https://rslstandard.org/rsl\" max-age=\"1\">\n  <content url=\"/\">\n    <license>\n      <permits type=\"usage\">search ai-index ai-input ai-train</permits>\n      <payment type=\"attribution\"/>\n    </license>\n    <terms>https://phronesisintel.com/license</terms>\n  </content>\n</rsl>\n",
+      "rsl_permits_usage": [
+        "search",
+        "ai-index",
+        "ai-input",
+        "ai-train"
+      ],
+      "rsl_prohibits_usage": [],
+      "rsl_payment_type": "attribution",
+      "rsl_terms": "https://phronesisintel.com/license",
+      "rsl_content_url": "/",
+      "content_usage": "train-ai=y, ai-use=y, search=y"
+    },
+    "rendered_sha256": "9dfc02793d94fc2a6b0ea0de5e760f64be60e8bf41cf1c9cc1a41aca7dd7f8e6",
+    "source_lines": [
+      {
+        "for": "rsl_permits_usage (without training)",
+        "line": 112,
+        "text": "_RSL_USAGE_WITHOUT_TRAINING: Final[str] = \"search ai-index ai-input\"",
+        "line_sha256": "750a40ff81ea4e0c47783bca0af1471812d79b236e7cf6415356370968b3f8c4"
+      },
+      {
+        "for": "rsl_permits_usage (the training term)",
+        "line": 113,
+        "text": "_RSL_TRAINING_USAGE: Final[str] = \"ai-train\"",
+        "line_sha256": "58dbda29b61b12ca073c4d85c68c8875f0778bdacfd5c129cfe42244460734a5"
+      },
+      {
+        "for": "rsl_content_url",
+        "line": 189,
+        "text": "        '  <content url=\"/\">\\n'",
+        "line_sha256": "92cb5e45f6a2eea94087ca03f436d325d77e7b1e49bf7aa46f4f4ab622459a16"
+      },
+      {
+        "for": "rsl_payment_type",
+        "line": 193,
+        "text": "        '      <payment type=\"attribution\"/>\\n'",
+        "line_sha256": "046751ce11dc55945e9c5c241d3e925b438ad15115c4af4f6c169d7f7534606c"
+      },
+      {
+        "for": "rsl_terms",
+        "line": 89,
+        "text": "REGISTER_LICENSE_URL: Final[str] = \"https://phronesisintel.com/license\"",
+        "line_sha256": "f4dbe930986b7302a114abda318f000f9cfcbc4147191e315f958ccbcf4c3470"
+      },
+      {
+        "for": "content_usage",
+        "line": 149,
+        "text": "    return f\"train-ai={train}, ai-use=y, search=y\"",
+        "line_sha256": "e388d087a4a0a771c0369c8400e3688551b4a4166f70a36f43c09e16a3ff7ce2"
+      },
+      {
+        "for": "rsl_max_age (days)",
+        "line": 109,
+        "text": "RSL_MAX_AGE_DAYS: Final[int] = 1",
+        "line_sha256": "90c6eae88a3fd29f1459a5714c87028b6ec0d8a1b96177c969ac2bc205accc5b"
+      },
+      {
+        "for": "rsl_max_age (the <rsl> element)",
+        "line": 188,
+        "text": "        f'<rsl xmlns=\"{_RSL_NAMESPACE}\" max-age=\"{RSL_MAX_AGE_DAYS}\">\\n'",
+        "line_sha256": "55e99d4a985114a7a5686963408b38ac9746f03ad4e80104c637f711e90425b0"
+      }
+    ]
+  }
+}
