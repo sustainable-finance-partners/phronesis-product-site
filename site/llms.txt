@@ -14,6 +14,8 @@ evaluate, call, and verify Phronesis Decision Assets programmatically. Phronesis
 it returns an action boundary and an auditable record; the agent and its principal keep the
 decision.
 
+Decision Deployment — one design partner at a time: https://phronesisintel.com/deploy (inquiry by the form, or by the MCP tool `engagement_inquiry`).
+
 ## One motion, proven first where the stakes are sharpest
 One motion — the agent calls Phronesis before a consequential action. Proven first on the
 Power-to-Compute Decision Monitor (the energy × compute decisions straining the grid as AI

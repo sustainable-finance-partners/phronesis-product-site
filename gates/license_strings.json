@@ -268,6 +268,43 @@
       "text": "Primitive: P1=Identity-and-Mandate LIVE (authentication) · FORWARD-STATE (mandate binding)",
       "sha256": "b43aecf36c099f368ab2b2adb9370249e4d6c3b290509801d04ddbabd5cdfb42",
       "line_sha256": "2ed060922ee08c8cd3cb9c12386e28e9891cf1011a8764ac7cc85c71dbc981ac"
+    },
+    {
+      "id": "S.9",
+      "what": "the signed /pricing FAQ line that replaces the \"~30-minute inquiry call\" promise (783 §1, note i)",
+      "source": "00_Operating_Model/CCO_DISPATCH_783_782_ABSORBED_DEPLOY_TO_1102_E4A_RESIGNED_AGENT_INTAKE_FIX_ACCEPTED_S7_RESIGNED_CENSUS_RULING_FILE_LEAGUE_FIVE_RULINGS_VENDORS_TWO_NOW_20261031.md",
+      "line": 17,
+      "extract": {
+        "kind": "quoted-after",
+        "anchor": "S.9 (signed) replaces the \"~30-minute inquiry call\" promise:**",
+        "open": "*\"",
+        "close": "\"*"
+      },
+      "renders": [
+        "site/pricing.html FAQ \"How does the Decision Room work?\": the answer's first two sentences"
+      ],
+      "text": "Every inquiry is reviewed by a person. If it fits, we offer a thirty-minute call.",
+      "sha256": "7371f734ca9e1d786c06e69b4ef362c12744c78d32acd670d04347948e19cf35",
+      "line_sha256": "4f95b79bb0d8c75b94de09a15f5879af2accb28505ac6e0ef877a74ec591b84d"
+    },
+    {
+      "id": "S.10",
+      "what": "the signed /deploy discovery line (783 §1, note ii), variant A: the agent-intake fix landed (the form, or the MCP tool)",
+      "source": "00_Operating_Model/CCO_DISPATCH_783_782_ABSORBED_DEPLOY_TO_1102_E4A_RESIGNED_AGENT_INTAKE_FIX_ACCEPTED_S7_RESIGNED_CENSUS_RULING_FILE_LEAGUE_FIVE_RULINGS_VENDORS_TWO_NOW_20261031.md",
+      "line": 17,
+      "extract": {
+        "kind": "quoted-after",
+        "anchor": "with the fix landed — ",
+        "open": "*\"",
+        "close": "\"*"
+      },
+      "renders": [
+        "site/llms.txt: its own paragraph, directly below the opening paragraph",
+        "site/.well-known/agents.txt: the last line of the Surfaces section, as a comment"
+      ],
+      "text": "Decision Deployment — one design partner at a time: https://phronesisintel.com/deploy (inquiry by the form, or by the MCP tool `engagement_inquiry`).",
+      "sha256": "afa9c18692557e2d279d231263244a2673c7b7f193beb2880aca277239cb582f",
+      "line_sha256": "4f95b79bb0d8c75b94de09a15f5879af2accb28505ac6e0ef877a74ec591b84d"
     }
   ],
   "api_render": {

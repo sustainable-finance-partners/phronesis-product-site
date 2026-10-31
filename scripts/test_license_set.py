@@ -22,7 +22,16 @@ from the source documents, and the tests below prove
     the whole robots.txt, line for line;
   * the agents.txt P1 primitive line is the signed 782 §1.2 token (pin ``782.P1``, cut
     from the dispatch line after its arrow), and no other published line carries that
-    token shape.
+    token shape;
+  * the signed ``/deploy`` discovery line (pin ``S.10``, one of the two variants 783
+    :17 signs) is llms.txt's paragraph below its opening paragraph and the last line of
+    agents.txt's Surfaces section, its URL is served by a redirect rule, and the MCP
+    intake tool is named on no other published line;
+  * the /pricing Decision Room answer opens with S.9 (783 :17), and no published file
+    keeps the "~30-minute" call promise;
+  * every e-mail address in the body of every served HTML page sits inside Cloudflare's
+    ``email_off`` markers (783 §6), which parse as comments; a head address is only an
+    attribute value, which the obfuscation leaves alone.
 
 The machine-readable declaration on this host (``site/license.xml``, the RSL 1.0
 document robots.txt names, and the aipref ``Content-Usage`` robots rule) is tested
@@ -180,10 +189,27 @@ def write_pin(workspace: Path) -> None:
 
 _MARK_RE = re.compile(r"\*\*(.+?)\*\*|`([^`]+)`")
 
+#: An e-mail address (the app repo's parity-gate form).
+EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
+#: Cloudflare's markers for a region its Email Address Obfuscation leaves alone (783 §6:
+#: agents read the obfuscated form as "[email protected]"). HTML comments: a reader
+#: never sees them, and the obfuscation is a zone feature, so a Pages preview shows none.
+EMAIL_OFF_OPEN = "<!--email_off-->"
+EMAIL_OFF_CLOSE = "<!--/email_off-->"
+_EMAIL_OFF_REGION_RE = re.compile(
+    re.escape(EMAIL_OFF_OPEN) + r"(.*?)" + re.escape(EMAIL_OFF_CLOSE), re.S
+)
+
+
+def email_off(markup: str) -> str:
+    """``markup`` with every e-mail address in it wrapped in the email_off markers."""
+    return EMAIL_RE.sub(lambda m: f"{EMAIL_OFF_OPEN}{m.group(0)}{EMAIL_OFF_CLOSE}", markup)
+
 
 def render_inline(text: str) -> str:
     """``**bold**`` -> ``<strong>``, ``code`` -> ``<code>``; every other byte is the
-    source's, HTML-escaped (the license text carries no ``&``, ``<`` or ``>``)."""
+    source's, HTML-escaped (the license text carries no ``&``, ``<`` or ``>``), and each
+    e-mail address sits inside the email_off markers (comments: no word changes)."""
     out: list[str] = []
     pos = 0
     for m in _MARK_RE.finditer(text):
@@ -194,7 +220,7 @@ def render_inline(text: str) -> str:
             out.append(f"<code>{html.escape(m.group(2), quote=False)}</code>")
         pos = m.end()
     out.append(html.escape(text[pos:], quote=False))
-    return "".join(out)
+    return email_off("".join(out))
 
 
 def strip_marks(text: str) -> str:
@@ -572,6 +598,8 @@ class PinTests(unittest.TestCase):
                 self.assertIn(need, ids)
         self.assertIn("A.content-signal", ids)
         self.assertIn("782.P1", ids)
+        self.assertIn("S.9", ids)
+        self.assertIn("S.10", ids)
 
     def test_the_p1_token_is_782s_replacement_on_its_source_line(self) -> None:
         # 782 §1.2 :13 names the token it replaces, then one arrow, then the signed
@@ -1272,6 +1300,208 @@ class ClaimStateTests(unittest.TestCase):
                 continue
             found += [(rel, ln) for ln in text.split("\n") if P1_TOKEN_SHAPE in ln]
         self.assertEqual(found, [(".well-known/agents.txt", pinned()["782.P1"])])
+
+
+# ── 783: the /deploy pointer (S.10), the call promise (S.9), e-mail obfuscation ─
+
+#: 783 §1 note ii signs S.10 in two variants on line 17, each the quoted span after its
+#: anchor: A with the agent-intake fix landed, B with S.8 live. The pin is one of them.
+S10_VARIANT_ANCHORS = {"with the fix landed — ": "A", "with S.8 live — ": "B"}
+#: The MCP intake tool's name: published only inside variant A of S.10.
+INTAKE_TOOL = "engagement_inquiry"
+#: The llms.txt paragraph S.10 sits directly below (the file's opening paragraph ends).
+LLMS_OPENING_END = (
+    "it returns an action boundary and an auditable record; the agent and its principal "
+    "keep the\ndecision.\n"
+)
+LLMS_AFTER_S10 = "## One motion, proven first where the stakes are sharpest\n"
+
+
+def agents_surfaces(strings: dict[str, str]) -> str:
+    """The agents.txt Surfaces section, whole: its eight records, then S.10 as a comment."""
+    return (
+        "# --- Surfaces ---\n"
+        "Contact: ops@phronesisintel.com\n"
+        "Spec: https://phronesisintel.com/spec\n"
+        "OpenAPI: https://api.phronesisintel.com/.well-known/openapi.json\n"
+        "Pricing: https://api.phronesisintel.com/.well-known/pricing.json\n"
+        "ACP: https://phronesisintel.com/.well-known/agentic-commerce.json\n"
+        "Scorecard: https://phronesisintel.com/scorecard\n"
+        "Bench: https://api.phronesisintel.com/bench\n"
+        "Verticals: https://phronesisintel.com/verticals\n"
+        f"# {strings['S.10']}\n"
+        "\n"
+    )
+
+
+#: The /pricing Decision Room answer: S.9, then the pricing clause the answer kept
+#: (Offering §7: milestone-priced, credited against the first year of subscription).
+DECISION_ROOM_QUESTION = "<h4>How does the Decision Room work?</h4>"
+DECISION_ROOM_KEPT = (
+    " The engagement is milestone-priced and credited against your first year of subscription."
+)
+#: The retired promise's token (S.9 spells its call "thirty-minute").
+RETIRED_CALL_PROMISE = "30-minute"
+
+
+def published_texts() -> list[tuple[str, str]]:
+    """Every published text file as (path under site/, LF text)."""
+    out: list[tuple[str, str]] = []
+    for path in sorted(SITE.rglob("*")):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(SITE).as_posix()
+        try:
+            out.append((rel, read_site(rel)))
+        except UnicodeDecodeError:
+            continue
+    return out
+
+
+def served_html() -> list[str]:
+    """Every HTML page the host serves (under site/, any depth)."""
+    return sorted(p.relative_to(SITE).as_posix() for p in SITE.rglob("*.html"))
+
+
+class _Comments(HTMLParser):
+    """Collects every comment's text, in document order."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.comments: list[str] = []
+
+    def handle_comment(self, data: str) -> None:
+        self.comments.append(data)
+
+
+class DeployPointerTests(unittest.TestCase):
+    strings: dict[str, str]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.strings = pinned()
+
+    def _row(self) -> dict[str, Any]:
+        row: dict[str, Any] = next(r for r in load_pin()["strings"] if r["id"] == "S.10")
+        return row
+
+    def test_s10_is_one_of_783s_two_variants(self) -> None:
+        row = self._row()
+        self.assertTrue(str(row["source"]).startswith("00_Operating_Model/CCO_DISPATCH_783_"))
+        self.assertEqual(row["line"], 17)
+        self.assertIn(row["extract"]["anchor"], S10_VARIANT_ANCHORS)
+        self.assertEqual((row["extract"]["open"], row["extract"]["close"]), ('*"', '"*'))
+        # Variant A names the MCP tool; variant B does not.
+        variant = S10_VARIANT_ANCHORS[row["extract"]["anchor"]]
+        self.assertEqual(INTAKE_TOOL in row["text"], variant == "A")
+        root = os.environ.get(WORKSPACE_ENV)
+        if not root:
+            self.skipTest(f"{WORKSPACE_ENV} is not set: the source documents are not here")
+        line = _source_lines(Path(root) / row["source"])[int(row["line"]) - 1]
+        self.assertEqual(sha256(line), row["line_sha256"], "the source line moved")
+        both = {
+            anchor: extract(line, {**row["extract"], "anchor": anchor})
+            for anchor in S10_VARIANT_ANCHORS
+        }
+        self.assertEqual(both[row["extract"]["anchor"]], row["text"])
+        self.assertEqual([INTAKE_TOOL in text for text in both.values()], [True, False])
+
+    def test_llms_txt_carries_s10_as_its_own_paragraph_below_the_opening(self) -> None:
+        block = f"{LLMS_OPENING_END}\n{self.strings['S.10']}\n\n{LLMS_AFTER_S10}"
+        text = read_site("llms.txt")
+        self.assertEqual(text.count(block), 1)
+        self.assertEqual(text.split("\n").count(self.strings["S.10"]), 1)
+
+    def test_agents_txt_surfaces_section_ends_with_s10(self) -> None:
+        section = section_until(
+            read_site(".well-known/agents.txt"), "# --- Surfaces ---\n", "# --- "
+        )
+        self.assertEqual(section, agents_surfaces(self.strings))
+
+    def test_s10_url_is_served_by_a_redirect_rule(self) -> None:
+        # The host serves /deploy through _redirects (to the app host's page); S.10's
+        # one URL must keep a rule, or it names a 404.
+        urls = re.findall(r"https://phronesisintel\.com(/\S*?)(?=[\s)])", self.strings["S.10"])
+        self.assertEqual(urls, ["/deploy"])
+        rules = [ln.split() for ln in read_site("_redirects").split("\n")]
+        self.assertIn(["/deploy", "https://api.phronesisintel.com/deploy", "302"], rules)
+
+    def test_the_intake_tool_is_named_only_inside_s10(self) -> None:
+        # Census: under variant A the tool's name is on the two S.10 lines and nowhere
+        # else; under variant B it is on no published line.
+        found = [
+            (rel, ln)
+            for rel, text in published_texts()
+            for ln in text.split("\n")
+            if INTAKE_TOOL in ln
+        ]
+        s10 = self.strings["S.10"]
+        expected = (
+            [(".well-known/agents.txt", f"# {s10}"), ("llms.txt", s10)]
+            if INTAKE_TOOL in s10
+            else []
+        )
+        self.assertEqual(found, expected)
+
+
+class PricingCallPromiseTests(unittest.TestCase):
+    def test_decision_room_answer_is_s9_then_the_kept_pricing_clause(self) -> None:
+        page = read_site("pricing.html")
+        self.assertEqual(page.count(DECISION_ROOM_QUESTION), 1)
+        item = between(page, DECISION_ROOM_QUESTION, "</div>")
+        answer = html.escape(pinned()["S.9"], quote=False) + DECISION_ROOM_KEPT
+        self.assertEqual(item, f"{DECISION_ROOM_QUESTION}\n      <p>{answer}</p>\n    </div>")
+
+    def test_no_published_file_keeps_the_30_minute_call_promise(self) -> None:
+        hits = [rel for rel, text in published_texts() if RETIRED_CALL_PROMISE in text]
+        self.assertEqual(hits, [])
+
+
+class EmailOffTests(unittest.TestCase):
+    def test_every_body_address_is_inside_email_off(self) -> None:
+        for rel in served_html():
+            with self.subTest(page=rel):
+                body = between(read_site(rel), "<body>", "</body>")
+                regions = _EMAIL_OFF_REGION_RE.findall(body)
+                for region in regions:
+                    self.assertTrue(EMAIL_RE.search(region), "a wrapper holds no address")
+                    self.assertNotIn(EMAIL_OFF_OPEN, region, "nested wrappers")
+                outside = _EMAIL_OFF_REGION_RE.sub("", body)
+                self.assertEqual(EMAIL_RE.findall(outside), [])
+                self.assertNotIn(EMAIL_OFF_OPEN, outside, "an unclosed wrapper")
+                self.assertNotIn(EMAIL_OFF_CLOSE, outside, "an unopened wrapper")
+
+    def test_the_wrappers_parse_as_comments(self) -> None:
+        # Each marker the text carries is a comment to an HTML parser (not text, not
+        # inside an attribute value or a script), and the markers alternate open/close.
+        for rel in served_html():
+            with self.subTest(page=rel):
+                page = read_site(rel)
+                parser = _Comments()
+                parser.feed(page)
+                parser.close()
+                marks = [c for c in parser.comments if c in ("email_off", "/email_off")]
+                self.assertEqual(
+                    len(marks), page.count(EMAIL_OFF_OPEN) + page.count(EMAIL_OFF_CLOSE)
+                )
+                self.assertEqual(marks, ["email_off", "/email_off"] * (len(marks) // 2))
+
+    def test_head_addresses_are_attribute_values_only(self) -> None:
+        # The obfuscation rewrites addresses in the page text and mailto links; an
+        # attribute value in the head (the /security description) is served as written.
+        for rel in served_html():
+            with self.subTest(page=rel):
+                head = between(read_site(rel), "<head>", "</head>")
+                bare = re.sub(r'\scontent="[^"]*"', "", head)
+                self.assertEqual(EMAIL_RE.findall(bare), [])
+
+    def test_the_license_address_is_wrapped_inside_clause_4(self) -> None:
+        # The one signed string with an address: the wrapper sits inside the clause, and
+        # the words a reader sees are unchanged (the comment is not text).
+        page = read_site("license.html")
+        self.assertEqual(page.count(f"{EMAIL_OFF_OPEN}ops@phronesisintel.com{EMAIL_OFF_CLOSE}"), 1)
+        self.assertIn(EMAIL_OFF_OPEN, render_inline(pinned()["license.p4"]))
+        self.assertIn("ops@phronesisintel.com.", strip_marks(pinned()["license.p4"]))
 
 
 def main(argv: list[str]) -> int:
