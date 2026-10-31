@@ -7,7 +7,7 @@
   "source_url": "https://api.phronesisintel.com/.well-known/scorecard.json",
   "generated_at": "2026-10-31T19:02:58Z",
   "body_bytes": 250662,
-  "body_sha256": "a9a3a1d8dd4881e170a31f650d841e061bfce2929c8e67dee89e6286c5d56d89",
+  "content_hash": "sha256:a9a3a1d8dd4881e170a31f650d841e061bfce2929c8e67dee89e6286c5d56d89",
   "rule": "forecasts[].proof.status == 'resolved'",
   "resolved_decision_asset_ids": [
     "DA-20260714-001",

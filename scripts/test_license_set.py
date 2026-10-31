@@ -1158,7 +1158,7 @@ class PricingCalibrationAnswerTests(unittest.TestCase):
                 self.assertRegex(da, _DA_ID_RE)
         self.assertEqual(r["source_url"], SCORECARD_URL)
         self.assertEqual(r["rule"], "forecasts[].proof.status == 'resolved'")
-        self.assertRegex(r["body_sha256"], r"^[0-9a-f]{64}$")
+        self.assertRegex(r["content_hash"], r"^sha256:[0-9a-f]{64}$")
         self.assertEqual(r["as_of"], str(r["generated_at"])[:10])
         self.assertEqual({span_as_of, time_attr, time_text}, {r["as_of"]})
 
