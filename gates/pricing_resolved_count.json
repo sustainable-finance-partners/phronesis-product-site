@@ -1,0 +1,24 @@
+{
+  "_doc": [
+    "The resolved-record count site/pricing.html states, with the read it came from (COO dispatch 783 §4 6b: the live resolved count under a data-as-of marker).",
+    "Rule: the records in /.well-known/scorecard.json whose proof.status is 'resolved'; as_of is the UTC date of metadata.generated_at.",
+    "Refreshed by hand (re-run the generator) before a merge; no gate reads this page's count today."
+  ],
+  "source_url": "https://api.phronesisintel.com/.well-known/scorecard.json",
+  "generated_at": "2026-10-31T19:02:58Z",
+  "body_bytes": 250662,
+  "body_sha256": "a9a3a1d8dd4881e170a31f650d841e061bfce2929c8e67dee89e6286c5d56d89",
+  "rule": "forecasts[].proof.status == 'resolved'",
+  "resolved_decision_asset_ids": [
+    "DA-20260714-001",
+    "DA-20260714-002",
+    "DA-20260716-001",
+    "DA-20260729-001",
+    "DA-20261019-001",
+    "DA-20261020-001",
+    "DA-20261021-001",
+    "DA-20261027-002"
+  ],
+  "resolved_count": 8,
+  "as_of": "2026-10-31"
+}

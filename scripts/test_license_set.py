@@ -1074,6 +1074,125 @@ class HomepageCountTests(unittest.TestCase):
                 self.assertIn(needle, body)
 
 
+# ── 784 §5: S.13 and the resolved count on /pricing ──────────────────────────
+
+#: The resolved-record count /pricing states, with the scorecard read it came from.
+RESOLVED_COUNT_PATH = REPO_ROOT / "gates" / "pricing_resolved_count.json"
+#: The two sentences S.13 and the count replace (783 §4 6b); no published file keeps them.
+RETIRED_CALIBRATION_SENTENCES = (
+    "Two records have resolved",
+    "calibration grades appear when a series reaches ten resolutions",
+)
+_RESOLVED_SPAN_RE = re.compile(
+    r'<span id="resolved-count" data-as-of="(\d{4}-\d{2}-\d{2})" '
+    r'data-source="scorecard\.forecasts\.proof\.status=resolved">(\d+)</span> records have '
+    r'resolved as of <time id="resolved-count-as-of" datetime="(\d{4}-\d{2}-\d{2})">'
+    r"(\d{4}-\d{2}-\d{2})</time>\."
+)
+_DA_ID_RE = re.compile(r"DA-\d{8}-\d{3}")
+
+
+def resolved_count_record() -> dict[str, Any]:
+    data: dict[str, Any] = json.loads(RESOLVED_COUNT_PATH.read_text(encoding="utf-8"))
+    return data
+
+
+def calibration_answer(page: str) -> str:
+    """The /pricing answer to "Where is your calibration evidence?", its <p> text as markup."""
+    item = between(page, "<h4>Where is your calibration evidence?</h4>", "</div>")
+    return between(item, "<p>", "</p>")[len("<p>") : -len("</p>")]
+
+
+class PricingCalibrationAnswerTests(unittest.TestCase):
+    """The /pricing calibration answer: the resolved count under a data-as-of marker, then
+    S.13 (783 §4 6b, signed), then the answer's kept closing sentence (784 §5)."""
+
+    page: str
+    record: dict[str, Any]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.page = read_site("pricing.html")
+        cls.record = resolved_count_record()
+
+    def test_s13_is_pinned_from_783_line_34(self) -> None:
+        row = next(r for r in load_pin()["strings"] if r["id"] == "S.13")
+        self.assertTrue(str(row["source"]).startswith("00_Operating_Model/CCO_DISPATCH_783_"))
+        self.assertEqual(row["line"], 34)
+        self.assertEqual(
+            row["extract"],
+            {"kind": "quoted-after", "anchor": "**S.13 (signed):** ", "open": '*"', "close": '"*'},
+        )
+        self.assertEqual(sha256(row["text"]), row["sha256"])
+
+    def test_the_answer_is_the_count_then_s13_then_the_kept_close(self) -> None:
+        r = self.record
+        count = (
+            f'<span id="resolved-count" data-as-of="{r["as_of"]}" '
+            f'data-source="scorecard.forecasts.proof.status=resolved">{r["resolved_count"]}'
+            f"</span> records have resolved as of "
+            f'<time id="resolved-count-as-of" datetime="{r["as_of"]}">{r["as_of"]}</time>.'
+        )
+        expected = (
+            'The public scorecard at <a href="/scorecard">/scorecard</a>. '
+            f"{count} {html.escape(pinned()['S.13'], quote=False)} "
+            "Where a number isn't earned, the page shows a blank we can defend."
+        )
+        self.assertEqual(calibration_answer(self.page), expected)
+
+    def test_one_resolved_count_span_in_the_ruled_form(self) -> None:
+        self.assertEqual(self.page.count('id="resolved-count"'), 1)
+        self.assertEqual(len(_RESOLVED_SPAN_RE.findall(self.page)), 1)
+
+    def test_the_count_is_the_recorded_scorecard_read(self) -> None:
+        r = self.record
+        m = _RESOLVED_SPAN_RE.search(self.page)
+        assert m is not None
+        span_as_of, n, time_attr, time_text = m.group(1), int(m.group(2)), m.group(3), m.group(4)
+        ids = r["resolved_decision_asset_ids"]
+        self.assertEqual(n, r["resolved_count"])
+        self.assertEqual(n, len(ids))
+        self.assertEqual(len(set(ids)), len(ids))
+        for da in ids:
+            with self.subTest(da=da):
+                self.assertRegex(da, _DA_ID_RE)
+        self.assertEqual(r["source_url"], SCORECARD_URL)
+        self.assertEqual(r["rule"], "forecasts[].proof.status == 'resolved'")
+        self.assertRegex(r["body_sha256"], r"^[0-9a-f]{64}$")
+        self.assertEqual(r["as_of"], str(r["generated_at"])[:10])
+        self.assertEqual({span_as_of, time_attr, time_text}, {r["as_of"]})
+
+    def test_the_as_of_is_a_real_date_not_after_today(self) -> None:
+        as_of = dt.date.fromisoformat(self.record["as_of"])
+        self.assertLessEqual(as_of, dt.datetime.now(dt.timezone.utc).date())
+
+    def test_the_homepage_gate_marker_stays_on_the_homepage_alone(self) -> None:
+        # The parity gate reads the homepage's forecast_count span; this count is another
+        # number with its own marker, and must never be read as that one.
+        self.assertNotIn(DA_COUNT_SOURCE_MARKER, self.page)
+        self.assertEqual(read_site("index.html").count(DA_COUNT_SOURCE_MARKER), 1)
+
+    def test_no_published_file_keeps_the_retired_calibration_sentences(self) -> None:
+        found: list[tuple[str, str]] = []
+        for path in sorted(SITE.rglob("*")):
+            if not path.is_file():
+                continue
+            rel = path.relative_to(SITE).as_posix()
+            try:
+                text = read_site(rel)
+            except UnicodeDecodeError:
+                continue
+            found += [(rel, s) for s in RETIRED_CALIBRATION_SENTENCES if s in text]
+        self.assertEqual(found, [])
+
+    def test_the_visible_sentence_reads_count_and_date(self) -> None:
+        r = self.record
+        seen = " ".join(re.sub(r"<[^>]+>", " ", calibration_answer(self.page)).split())
+        self.assertIn(
+            f"{r['resolved_count']} records have resolved as of {r['as_of']} .", seen
+        )
+
+
 #: A scorecard payload in the shape /.well-known/scorecard.json serves (the fields the
 #: refresh reads, plus neighbours it must ignore). Offline: no test touches the network.
 SCORECARD_FIXTURE: dict[str, Any] = {
