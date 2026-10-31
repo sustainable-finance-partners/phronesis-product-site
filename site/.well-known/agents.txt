@@ -1,7 +1,7 @@
 # agents.txt — Phronesis agent discovery manifest
 # Authority: Sustainable Finance Partners, LLC (operator)
 # Spec: https://phronesisintel.com/spec
-# Last updated: 2026-10-30
+# Last updated: 2026-10-31
 
 User-Agent: *
 
@@ -23,6 +23,7 @@ ACP: https://phronesisintel.com/.well-known/agentic-commerce.json
 Scorecard: https://phronesisintel.com/scorecard
 Bench: https://api.phronesisintel.com/bench
 Verticals: https://phronesisintel.com/verticals
+# Decision Deployment — one design partner at a time: https://phronesisintel.com/deploy (inquiry by the form, or by the MCP tool `engagement_inquiry`).
 
 # --- Endpoints ---
 MCP: https://api.phronesisintel.com/mcp
