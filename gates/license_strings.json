@@ -7,6 +7,24 @@
   ],
   "strings": [
     {
+      "id": "S.13",
+      "what": "the signed calibration-grade threshold sentence (783 §4 6b), on the /pricing FAQ 'Where is your calibration evidence?'",
+      "source": "00_Operating_Model/CCO_DISPATCH_783_782_ABSORBED_DEPLOY_TO_1102_E4A_RESIGNED_AGENT_INTAKE_FIX_ACCEPTED_S7_RESIGNED_CENSUS_RULING_FILE_LEAGUE_FIVE_RULINGS_VENDORS_TWO_NOW_20261031.md",
+      "line": 34,
+      "extract": {
+        "kind": "quoted-after",
+        "anchor": "**S.13 (signed):** ",
+        "open": "*\"",
+        "close": "\"*"
+      },
+      "renders": [
+        "site/pricing.html FAQ \"Where is your calibration evidence?\": the sentence after the resolved count"
+      ],
+      "text": "Calibration grades require at least thirty resolved records, pooled across series; until then the scorecard shows the resolved count and each record's score without a grade.",
+      "sha256": "961f132eb505a6164a9614533a804d55afac036cfe3874335cd7124661175e59",
+      "line_sha256": "03896f80c608eee6b20c058b1d36bf5d79b6c033df464e08a1d6194909304275"
+    },
+    {
       "id": "license.heading",
       "what": "Register License v1.0 heading (package section 1)",
       "source": "01_Strategy/Phronesis_Legal_Monthly_Pass_2026_11_Confirm_or_Correct_Package_20261025.md",
