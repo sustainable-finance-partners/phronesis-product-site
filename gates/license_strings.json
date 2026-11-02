@@ -289,12 +289,12 @@
     },
     {
       "id": "S.10",
-      "what": "the signed /deploy discovery line (783 §1, note ii), variant A: the agent-intake fix landed (the form, or the MCP tool)",
+      "what": "the signed /deploy discovery line (783 §1, note ii), variant B: S.8 live (the form only; the agent-intake fix has not landed)",
       "source": "00_Operating_Model/CCO_DISPATCH_783_782_ABSORBED_DEPLOY_TO_1102_E4A_RESIGNED_AGENT_INTAKE_FIX_ACCEPTED_S7_RESIGNED_CENSUS_RULING_FILE_LEAGUE_FIVE_RULINGS_VENDORS_TWO_NOW_20261031.md",
       "line": 17,
       "extract": {
         "kind": "quoted-after",
-        "anchor": "with the fix landed — ",
+        "anchor": "with S.8 live — ",
         "open": "*\"",
         "close": "\"*"
       },
@@ -302,8 +302,8 @@
         "site/llms.txt: its own paragraph, directly below the opening paragraph",
         "site/.well-known/agents.txt: the last line of the Surfaces section, as a comment"
       ],
-      "text": "Decision Deployment — one design partner at a time: https://phronesisintel.com/deploy (inquiry by the form, or by the MCP tool `engagement_inquiry`).",
-      "sha256": "afa9c18692557e2d279d231263244a2673c7b7f193beb2880aca277239cb582f",
+      "text": "Decision Deployment — one design partner at a time: https://phronesisintel.com/deploy (inquiry by the form).",
+      "sha256": "0c09ba7ccd56936d07a9e28158b8887fe27a62e7b54c4e54ab0b735cd6a27f47",
       "line_sha256": "4f95b79bb0d8c75b94de09a15f5879af2accb28505ac6e0ef877a74ec591b84d"
     }
   ],
