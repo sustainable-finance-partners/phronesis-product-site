@@ -1274,13 +1274,22 @@ class RefreshCountTests(unittest.TestCase):
 
 
 class ClaimStateTests(unittest.TestCase):
-    def test_oauth_connector_is_live_on_for_agents(self) -> None:
+    def test_oauth_connector_is_not_claimed_live_while_in_build(self) -> None:
+        # COO §15.10.846 (788 §1.3): the connector is "in build" until its passport is activated
+        # (block A C2-C4 PASS); no surface on this host may call it live or read-only before then.
         page = read_site("for-agents.html")
         self.assertNotIn("<strong>In flight:</strong> the OAuth-consent connector path.", page)
-        self.assertNotIn("OAuth-consent connect path = in flight", page)
-        self.assertIn("OAuth-consent connect path = live", page)
+        self.assertNotIn("OAuth-consent connect path", page)
         live = between(page, "<strong>Live:</strong>", "<strong>Forward (labeled):</strong>")
-        self.assertIn("the OAuth-consent connector path", live)
+        self.assertNotIn("connector", live)
+        llms = read_site("llms.txt")
+        self.assertNotIn("read-only open tier", llms)
+        self.assertEqual(llms.count("- In build: the OAuth-consent connector"), 1)
+        live_line = next(line for line in llms.split("\n") if line.startswith("- Live: the production platform"))
+        self.assertNotIn("connector", live_line)
+        security = read_site("security.html")
+        self.assertNotIn("answers only read-only queries", security)
+        self.assertEqual(security.count("In build: the OAuth-consent connector"), 1)
 
     def test_security_links_the_trust_center_section(self) -> None:
         page = read_site("security.html")
