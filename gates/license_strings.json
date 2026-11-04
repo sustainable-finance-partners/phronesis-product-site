@@ -305,6 +305,26 @@
       "text": "Decision Deployment — one design partner at a time: https://phronesisintel.com/deploy (inquiry by the form).",
       "sha256": "0c09ba7ccd56936d07a9e28158b8887fe27a62e7b54c4e54ab0b735cd6a27f47",
       "line_sha256": "4f95b79bb0d8c75b94de09a15f5879af2accb28505ac6e0ef877a74ec591b84d"
+    },
+    {
+      "id": "S.13",
+      "what": "S.13 v2, the calibration sentence as re-signed in 785:34 (Q-784.10); it replaces every 'Two records have resolved / ten resolutions' line (COO 798 §3.2(a))",
+      "source": "00_Operating_Model/CCO_DISPATCH_785_MONDAY_RELEASED_TWO_SITE_STRINGS_SIGNED_WAVE1_IS_CORRESPONDENCE_F2V3_OF_RECORD_OWNER_PASTES_B_GZIP_PRIMARY_IP_CAP_OPTION1_DA_NOT_RECORD_20261101.md",
+      "line": 34,
+      "extract": {
+        "kind": "quoted-after",
+        "anchor": "**Q-784.10 — S.13 re-signed, with \"scored\" and without promising a grade that no code issues:** ",
+        "open": "*\"",
+        "close": "\"*"
+      },
+      "renders": [
+        "site/pricing.html FAQ \"Where is your calibration evidence?\": between the answer's kept first and last sentences",
+        "site/llms.txt: the summary block's calibration line, before \"Pre-revenue.\"",
+        "site/.well-known/agentic-commerce.json service.description: after the Decision Asset's ten-field list"
+      ],
+      "text": "Phronesis issues no calibration grade today. A grade will require at least thirty scored records, pooled across series; until then the scorecard shows the resolved and scored counts and each record's score.",
+      "sha256": "5072399bbe01cf8f4976ad72a0be108762b59a45fa4f4e08945884d47e5e0962",
+      "line_sha256": "68a645701982537cacbc4bd342c956d8e3b82c26b92df4f3db9c699e5bb27914"
     }
   ],
   "api_render": {
