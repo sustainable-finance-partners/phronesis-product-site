@@ -1586,6 +1586,130 @@ class VerticalsCensusTests(unittest.TestCase):
         self.assertNotIn("enforced at the code layer", page)
 
 
+# ── 802 §0.5-7: the "Primary-source citation always" card is removed from the homepage ──
+
+#: The removed card's heading and the phrase 802 §0.5-7 names beside it.
+REMOVED_CARD_PHRASES = ("Primary-source citation always", "No second-hand citations")
+
+
+class PrimarySourceCardTests(unittest.TestCase):
+    """802 §0.5-7: no published file carries the card; the cards left are numbered 01.. in order."""
+
+    def test_no_published_file_carries_the_card(self) -> None:
+        for rel, text in published_texts():
+            for phrase in REMOVED_CARD_PHRASES:
+                with self.subTest(file=rel, phrase=phrase):
+                    self.assertNotIn(phrase.casefold(), text.casefold())
+
+    def test_the_remaining_cards_count_from_01_without_a_gap(self) -> None:
+        grid = between(read_site("index.html"), '<div class="diff-grid">', "</section>")
+        nums = re.findall(r'<span class="diff-card-num">(\d+)</span>', grid)
+        self.assertEqual(len(nums), 5)
+        self.assertEqual(nums, [f"{n:02d}" for n in range(1, len(nums) + 1)])
+        self.assertEqual(grid.count('<div class="diff-card">'), len(nums))
+        self.assertNotIn("<code>evidence_graph</code> traces to primary sources", grid)
+
+
+# ── 802 §0.5-6: the April first-mint tokens are struck (Copy Set §13 H, computed) ──
+
+#: The first-mint dates 802 §0.5-6 strikes. The register (the API scorecard read on
+#: 2026-11-04) holds no anchored, non-retired record for V3, V7 or V8, so each takes the
+#: §13 H token CATALOGUED with no date, in agents.txt and in agentic-commerce.json.
+STRUCK_FIRST_MINTS = {"V3": "2026-04-26", "V7": "2026-04-28", "V8": "2026-04-27"}
+CATALOGUED_LINES = (
+    "Vertical: V3=Healthcare CATALOGUED (HIPAA Safe Harbor)",
+    "Vertical: V7=Space-Space-Economy CATALOGUED",
+    "Vertical: V8=Robotics CATALOGUED",
+)
+CATALOGUED_SLUGS = ("healthcare", "space", "robotics")
+
+
+class FirstMintTokenTests(unittest.TestCase):
+    """802 §0.5-6: V3, V7 and V8 are catalogued with no first-mint date on any published file."""
+
+    def test_agents_txt_lines_take_catalogued(self) -> None:
+        lines = read_site(".well-known/agents.txt").split("\n")
+        for line in CATALOGUED_LINES:
+            with self.subTest(line=line):
+                self.assertEqual(lines.count(line), 1)
+
+    def test_no_published_file_keeps_a_struck_date(self) -> None:
+        for rel, text in published_texts():
+            for vertical, date in STRUCK_FIRST_MINTS.items():
+                with self.subTest(file=rel, vertical=vertical):
+                    self.assertNotIn(f"FIRST-MINT-{date}", text)
+                    self.assertNotIn(f'"first_mint_attested": "{date}"', text)
+
+    def test_agentic_commerce_catalogues_the_three_as_slugs(self) -> None:
+        service = json.loads(read_site(".well-known/agentic-commerce.json"))["service"]
+        catalogued = service["catalogued"]
+        for slug in CATALOGUED_SLUGS:
+            with self.subTest(slug=slug):
+                self.assertEqual(catalogued.count(slug), 1)
+                self.assertFalse(any(isinstance(e, dict) and slug in e for e in catalogued))
+
+
+# ── 802 §0.5-12 (801 §1 C4): manifest hygiene on the agent JSON this host serves ──
+
+#: agentic-commerce.json's former $schema: on 2026-11-04 the https URL failed the TLS
+#: handshake (two clients) and the http URL returned 404, so the field is dropped.
+DROPPED_SCHEMA_URL = "https://schemas.agentic-commerce.org/v1/manifest.json"
+#: Internal identifiers C4 strips from agent-facing JSON (the codenames themselves are
+#: held by the taxonomy-leaks gate on every published file).
+INTERNAL_KEYS = frozenset({"ring", "themis_cluster"})
+INTERNAL_TEXT_RE = re.compile(r"\bSprint\s+\d|Lesson\s*#|§\s*15\.10|\bLedger\s+§?\s*15\.", re.I)
+
+
+def _keys_and_strings(node: Any) -> tuple[list[str], list[str]]:
+    keys: list[str] = []
+    strings: list[str] = []
+    stack = [node]
+    while stack:
+        item = stack.pop()
+        if isinstance(item, dict):
+            keys.extend(item)
+            strings.extend(item)
+            stack.extend(item.values())
+        elif isinstance(item, list):
+            stack.extend(item)
+        elif isinstance(item, str):
+            strings.append(item)
+    return keys, strings
+
+
+class AgentJsonHygieneTests(unittest.TestCase):
+    """801 §1 C4 on this host: no unresolvable $schema; no internal identifier in served JSON."""
+
+    def test_agentic_commerce_has_no_schema_field(self) -> None:
+        self.assertNotIn("$schema", json.loads(read_site(".well-known/agentic-commerce.json")))
+
+    def test_no_published_file_names_the_dropped_schema(self) -> None:
+        for rel, text in published_texts():
+            with self.subTest(file=rel):
+                self.assertNotIn(DROPPED_SCHEMA_URL, text)
+
+    def test_served_json_carries_no_internal_identifier(self) -> None:
+        served = sorted(p.relative_to(SITE).as_posix() for p in SITE.rglob("*.json"))
+        self.assertIn(".well-known/agentic-commerce.json", served)
+        for rel in served:
+            keys, strings = _keys_and_strings(json.loads(read_site(rel)))
+            with self.subTest(file=rel):
+                self.assertEqual(sorted(INTERNAL_KEYS.intersection(keys)), [])
+                self.assertEqual([s for s in strings if INTERNAL_TEXT_RE.search(s)], [])
+
+
+class SiteLlmsParityTests(unittest.TestCase):
+    """803 §B: the site llms.txt carries no retired line the API copy has already dropped."""
+
+    def test_no_retired_llms_lines(self) -> None:
+        body = read_site("llms.txt")
+        for retired in ("transport-appropriate projection", "~Jan 2027", "honest-empty until",
+                        "ten resolved records per series"):
+            with self.subTest(line=retired):
+                self.assertNotIn(retired, body)
+        self.assertIn("Every endpoint is served over both MCP and REST.", body)
+
+
 def main(argv: list[str]) -> int:
     if argv[1:] == ["--write-pin"]:
         root = os.environ.get(WORKSPACE_ENV)
