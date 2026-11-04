@@ -1,13 +1,14 @@
 {
   "surface": "evals",
-  "updated": "2026-06-02",
+  "updated": "2026-11-04",
   "bench": "Decision Quality Bench",
   "discipline": "honest-empty and published at exact status — where a number is not earned, a defensible blank is shown; never a fabricated metric",
   "scorecard": "https://api.phronesisintel.com/scorecard.json",
   "calibration_ledger": {
-    "decision_assets": 20,
+    "decision_assets": 23,
     "each_pre_registered_against": "a falsifiable resolution rule",
-    "first_calibration_signal": "~2027-01"
+    "calibration_grade": "not_issued",
+    "condition": "thirty_scored_records_pooled"
   },
   "modules": {
     "measurable_now": [
@@ -17,9 +18,9 @@
       { "id": "P-BASE", "name": "Baseline presence + resolution rule", "status": "measurable", "definition": "a paired baseline is frozen at mint and a proper resolution rule is set" }
     ],
     "resolution_activated": [
-      { "id": "P-CAL", "name": "Calibration", "status": "honest_empty", "activates": "as outcomes resolve", "first_signal": "~2027-01" },
-      { "id": "P-ACT", "name": "Action-boundary correctness", "status": "honest_empty", "activates": "as outcomes resolve", "first_signal": "~2027-01" },
-      { "id": "P-BBL", "name": "Baseline-beating", "status": "honest_empty", "activates": "as outcomes resolve", "first_signal": "~2027-01" }
+      { "id": "P-CAL", "name": "Calibration", "status": "honest_empty", "activates": "as outcomes resolve", "calibration_grade": "not_issued", "condition": "thirty_scored_records_pooled" },
+      { "id": "P-ACT", "name": "Action-boundary correctness", "status": "honest_empty", "activates": "as outcomes resolve", "calibration_grade": "not_issued", "condition": "thirty_scored_records_pooled" },
+      { "id": "P-BBL", "name": "Baseline-beating", "status": "honest_empty", "activates": "as outcomes resolve", "calibration_grade": "not_issued", "condition": "thirty_scored_records_pooled" }
     ]
   },
   "note": "the Bench means something before a single forecast resolves: the measurable-now modules are live; the calibration modules are honest-empty until the corpus resolves"

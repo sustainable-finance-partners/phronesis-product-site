@@ -1710,6 +1710,268 @@ class SiteLlmsParityTests(unittest.TestCase):
         self.assertIn("Every endpoint is served over both MCP and REST.", body)
 
 
+# ── 803 §D-9 (ruling 9) primary-source residue; §D-10 (ruling 10) V4's date slot ──
+
+#: The homepage P3 card as the base tree (34b4ac8, index.html:553) rendered it. 803
+#: ruling 9 removes "every mint primary-source-cited"; the edit deletes that word and the
+#: serial comma it left, and adds none.
+P3_CARD_BEFORE = (
+    "The Decision Asset substrate — every mint primary-source-cited, time-stamped, "
+    "and rendered on the public scorecard."
+)
+P3_REMOVED_WORD = "primary-source-cited"
+
+#: A saved copy of https://api.phronesisintel.com/.well-known/scorecard.json. Optional:
+#: with it, the register-derived values below are re-derived from the file; without it,
+#: those tests are skipped and say so (no test touches the network).
+SCORECARD_FILE_ENV = "PHRONESIS_SCORECARD_FILE"
+
+#: The API catalog's subject for each applied vertical (``_VERTICAL_METADATA`` in
+#: mcp_server/discovery/route.py; re-read from the app repository when PHRONESIS_API_TREE
+#: is set). 803 ruling 9: the vertical of a record is ``value.intake_payload.subject``.
+VERTICAL_SUBJECTS = {
+    "V1": "energy",
+    "V2": "compute",
+    "V3": "healthcare",
+    "V4": "climate",
+    "V5": "regulatory",
+    "V6": "supply_chain",
+    "V7": "space",
+    "V8": "robotics",
+    "V9": "ai_agi",
+    "V10": "physics_materials",
+    "V11": "longevity",
+    "V12": "quantum",
+}
+
+#: The first anchored, non-retired record per vertical (anchored: a non-empty
+#: ``proof.anchor_verified_by``; retired: ``proof.retirement`` set), by ``created_at``, as
+#: the API scorecard served it on 2026-11-04 (generated_at 2026-11-04T19:24:36Z, 50
+#: records). Only V1 and V4 hold one; every other vertical has none.
+FIRST_ANCHORED_RECORDS = {
+    "V1": ("FC-20260714-001", "2026-07-14"),
+    "V4": ("FC-20260714-002", "2026-07-14"),
+}
+
+#: The anchored, non-retired Decision Assets on the register created on or before
+#: evals.json's "updated" date (the same read): 23 (24 records carry a Decision Asset;
+#: DA-20260711-001 is retired).
+EVALS_DECISION_ASSETS = 23
+EVALS_UPDATED = "2026-11-04"
+
+#: The API's §13 H token prefix (``AGENTS_TXT_FIRST_MINT_PREFIX`` in
+#: mcp_server/claim_state_copy.py); the token is the prefix, then the ISO date.
+FIRST_MINT_PREFIX = "CATALOGUED-FIRST-MINT-"
+V4_AGENTS_LABEL = "Climate-Physical-Risk"
+V4_SLUG = "climate-physical-risk"
+
+#: The April values 803 ruling 9 strikes from /verticals.
+STRUCK_VERTICALS_VALUES = (
+    "Cost / forecast",
+    "first-mint",
+    "First-mint",
+    "Production since 2026-04",
+    "$0.0133",
+    "$0.0084",
+    "$0.0149",
+    "$0.0151",
+    "~$0.013",
+)
+
+
+def _words(text: str) -> list[str]:
+    return re.findall(r"[^\s,]+", text)
+
+
+def _is_deletion_of(new: str, old: str) -> bool:
+    """Whether ``new`` is ``old`` with characters deleted and none added or moved."""
+    rest = iter(old)
+    return all(ch in rest for ch in new)
+
+
+def _scorecard_file(case: unittest.TestCase) -> dict[str, Any]:
+    path = os.environ.get(SCORECARD_FILE_ENV)
+    if not path:
+        case.skipTest(f"{SCORECARD_FILE_ENV} is not set: no saved scorecard here")
+    data: dict[str, Any] = json.loads(Path(str(path)).read_text(encoding="utf-8"))
+    return data
+
+
+def _anchored_non_retired(record: dict[str, Any]) -> bool:
+    proof = record.get("proof") or {}
+    return bool(proof.get("anchor_verified_by")) and not proof.get("retirement")
+
+
+def first_anchored_records(payload: dict[str, Any]) -> dict[str, tuple[str, str]]:
+    """Vertical id -> (record key, UTC date) of its first anchored, non-retired record."""
+    first: dict[str, tuple[str, str]] = {}
+    by_subject = {subject: vid for vid, subject in VERTICAL_SUBJECTS.items()}
+    for record in sorted(payload["forecasts"], key=lambda r: (str(r["created_at"]), r["key"])):
+        if not _anchored_non_retired(record):
+            continue
+        subject = ((record.get("value") or {}).get("intake_payload") or {}).get("subject")
+        vid = by_subject.get(str(subject))
+        if vid is not None and vid not in first:
+            first[vid] = (str(record["key"]), str(record["created_at"])[:10])
+    return first
+
+
+def _api_file(case: unittest.TestCase, path: str) -> str:
+    root = os.environ.get(API_TREE_ENV)
+    if not root:
+        case.skipTest(f"{API_TREE_ENV} is not set: no clone of the app repository here")
+    rev = os.environ.get(API_REV_ENV) or "HEAD"
+    return _git(root, "show", f"{rev}:{path}").decode("utf-8")
+
+
+class PrimarySourceResidueTests(unittest.TestCase):
+    """803 ruling 9: no mint is claimed primary-source-cited; the mint path does not require it."""
+
+    def test_no_published_file_claims_every_mint_is_cited(self) -> None:
+        for rel, text in published_texts():
+            with self.subTest(file=rel):
+                self.assertNotIn(P3_REMOVED_WORD, text.casefold())
+
+    def test_the_p3_card_only_lost_the_claim(self) -> None:
+        card = between(read_site("index.html"), '<span class="p-prefix">P3</span>', "</div>")
+        (text,) = texts_of(card, "p")
+        self.assertTrue(_is_deletion_of(text, P3_CARD_BEFORE))
+        self.assertEqual(_words(text), [w for w in _words(P3_CARD_BEFORE) if w != P3_REMOVED_WORD])
+
+    def test_agentic_commerce_states_no_required_citation(self) -> None:
+        # The mint path writes an empty primary_sources list and grades it E0 (app repo:
+        # mcp_server/decision_asset/mint.py); no code refuses a mint without a source.
+        discipline = json.loads(read_site(".well-known/agentic-commerce.json"))["discipline"]
+        self.assertIs(discipline["primary_source_citation_required"], False)
+
+
+class VerticalsFirstRecordTests(unittest.TestCase):
+    """803 ruling 9: /verticals dates are the register's first anchored, non-retired records."""
+
+    def test_no_struck_april_value_on_the_page(self) -> None:
+        page = read_site("verticals.html")
+        for value in STRUCK_VERTICALS_VALUES:
+            with self.subTest(value=value):
+                self.assertNotIn(value, page)
+
+    def test_each_production_date_is_its_verticals_first_anchored_record(self) -> None:
+        page = read_site("verticals.html")
+        articles = page.split('<article class="vertical-deep" id="v')[1:]
+        self.assertEqual(len(articles), 13)
+        seen: dict[str, list[str]] = {}
+        for article in articles:
+            body = article.split("</article>", 1)[0]
+            num = re.search(r'<span class="vertical-deep-num">V#(\d+)</span>', body)
+            assert num is not None
+            dates = re.findall(r"Production since (\d{4}-\d{2}-\d{2})", body)
+            if dates:
+                seen[f"V{num.group(1)}"] = dates
+        self.assertEqual(seen, {"V1": [FIRST_ANCHORED_RECORDS["V1"][1]]})
+        self.assertEqual(page.count('<div class="vertical-meta">'), 1)
+        self.assertEqual(page.count('<div class="vertical-meta-item">'), 1)
+
+    def test_the_dates_are_the_registers(self) -> None:
+        payload = _scorecard_file(self)
+        self.assertEqual(first_anchored_records(payload), FIRST_ANCHORED_RECORDS)
+
+    def test_the_subjects_are_the_api_catalogs(self) -> None:
+        source = _api_file(self, "mcp_server/discovery/route.py")
+        block = between(source, "_VERTICAL_METADATA: tuple", "\n)\n")
+        pairs = re.findall(r'"id": "(V\d+)",.*?"subject": "([a-z_]+)",', block, flags=re.S)
+        self.assertEqual(dict(pairs), VERTICAL_SUBJECTS)
+        self.assertEqual(len(pairs), len(VERTICAL_SUBJECTS))
+
+
+class V4DateSlotTests(unittest.TestCase):
+    """803 ruling 10: V4 takes the §13 H date slot keyed to its first anchored record."""
+
+    def test_agents_txt_v4_line_takes_the_date(self) -> None:
+        lines = read_site(".well-known/agents.txt").split("\n")
+        key, date = FIRST_ANCHORED_RECORDS["V4"]
+        self.assertEqual(key, "FC-20260714-002")
+        self.assertEqual(
+            lines.count(f"Vertical: V4={V4_AGENTS_LABEL} {FIRST_MINT_PREFIX}{date}"), 1
+        )
+        dated = [ln for ln in lines if ln.startswith("Vertical:") and FIRST_MINT_PREFIX in ln]
+        self.assertEqual(len(dated), 1)
+
+    def test_agentic_commerce_attests_v4_with_the_same_date(self) -> None:
+        catalogued = json.loads(read_site(".well-known/agentic-commerce.json"))["service"][
+            "catalogued"
+        ]
+        date = FIRST_ANCHORED_RECORDS["V4"][1]
+        self.assertEqual(catalogued.count({V4_SLUG: {"first_mint_attested": date}}), 1)
+        self.assertNotIn(V4_SLUG, catalogued)
+        self.assertEqual(
+            [e for e in catalogued if isinstance(e, dict)],
+            [{V4_SLUG: {"first_mint_attested": date}}],
+        )
+
+    def test_the_token_form_is_the_apis(self) -> None:
+        copy = _api_file(self, "mcp_server/claim_state_copy.py")
+        prefix = re.findall(r'^AGENTS_TXT_FIRST_MINT_PREFIX: Final\[str\] = "([^"]+)"$', copy, re.M)
+        self.assertEqual(prefix, [FIRST_MINT_PREFIX])
+        route = _api_file(self, "mcp_server/discovery/route.py")
+        self.assertIn('return f"{AGENTS_TXT_FIRST_MINT_PREFIX}{first_mint}"', route)
+        self.assertIn(f'"agents_txt_label": "{V4_AGENTS_LABEL}",', route)
+
+
+class EvalsConditionTests(unittest.TestCase):
+    """803 ruling 9: evals.json states the S.13 v2 condition without a date."""
+
+    data: dict[str, Any]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.data = json.loads(read_site("evals.json"))
+
+    def test_no_dated_signal_remains(self) -> None:
+        text = read_site("evals.json")
+        self.assertNotIn("2027-01", text)
+        keys, _ = _keys_and_strings(self.data)
+        self.assertEqual(
+            sorted({"first_signal", "first_calibration_signal"}.intersection(keys)), []
+        )
+
+    def test_the_pins_are_cut_from_803_line_30(self) -> None:
+        for pin in ("803.D9.calibration_grade", "803.D9.condition"):
+            row = next(r for r in load_pin()["strings"] if r["id"] == pin)
+            with self.subTest(pin=pin):
+                self.assertTrue(
+                    str(row["source"]).startswith("00_Operating_Model/CCO_DISPATCH_803_")
+                )
+                self.assertEqual(row["line"], 30)
+
+    def test_the_four_take_the_signed_condition(self) -> None:
+        strings = pinned()
+        expected = {
+            "calibration_grade": strings["803.D9.calibration_grade"],
+            "condition": strings["803.D9.condition"],
+        }
+        holders = [self.data["calibration_ledger"], *self.data["modules"]["resolution_activated"]]
+        self.assertEqual(len(holders), 4)
+        for holder in holders:
+            with self.subTest(holder=holder.get("id", "calibration_ledger")):
+                self.assertEqual({k: holder.get(k) for k in expected}, expected)
+
+    def test_decision_assets_is_the_pinned_read(self) -> None:
+        ledger = self.data["calibration_ledger"]
+        self.assertEqual(self.data["updated"], EVALS_UPDATED)
+        self.assertEqual(ledger["decision_assets"], EVALS_DECISION_ASSETS)
+
+    def test_decision_assets_is_the_registers_count(self) -> None:
+        payload = _scorecard_file(self)
+        updated = self.data["updated"]
+        count = sum(
+            1
+            for r in payload["forecasts"]
+            if _anchored_non_retired(r)
+            and (r.get("proof") or {}).get("decision_asset_id")
+            and str(r["created_at"])[:10] <= updated
+        )
+        self.assertEqual(self.data["calibration_ledger"]["decision_assets"], count)
+
+
 def main(argv: list[str]) -> int:
     if argv[1:] == ["--write-pin"]:
         root = os.environ.get(WORKSPACE_ENV)

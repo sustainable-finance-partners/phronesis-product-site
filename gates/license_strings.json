@@ -325,6 +325,44 @@
       "text": "Phronesis issues no calibration grade today. A grade will require at least thirty scored records, pooled across series; until then the scorecard shows the resolved and scored counts and each record's score.",
       "sha256": "5072399bbe01cf8f4976ad72a0be108762b59a45fa4f4e08945884d47e5e0962",
       "line_sha256": "68a645701982537cacbc4bd342c956d8e3b82c26b92df4f3db9c699e5bb27914"
+    },
+    {
+      "id": "803.D9.calibration_grade",
+      "what": "the evals.json calibration-grade value 803 §D-9 ruling 9 signs in place of the four '~2027-01' dates (the S.13 v2 condition without a date)",
+      "source": "00_Operating_Model/CCO_DISPATCH_803_802_HANDBACK_RULED_REPUBLISH_LIVE_ACCEPTED_BAKEOFF_RULES_ELEVEN_RULINGS_DA0716_OPTION_A_RULE_30_6_STOPPED_SITE_LLMS_TXT_DISCREPANCY_20261104.md",
+      "line": 30,
+      "extract": {
+        "kind": "quoted-after",
+        "anchor": "`calibration_grade:",
+        "open": " ",
+        "close": "`"
+      },
+      "renders": [
+        "site/evals.json calibration_ledger.calibration_grade",
+        "site/evals.json modules.resolution_activated[*].calibration_grade"
+      ],
+      "text": "not_issued",
+      "sha256": "2423f4664ac8e095f3dffb7792909c4c97c770a84277974d1a3e43d8c21682ad",
+      "line_sha256": "8e47fa63961faaa556bb0c2957940dabb5fea1505e39e8db291a935cebf4222f"
+    },
+    {
+      "id": "803.D9.condition",
+      "what": "the evals.json condition value 803 §D-9 ruling 9 signs beside calibration_grade (S.13 v2: thirty scored records, pooled across series)",
+      "source": "00_Operating_Model/CCO_DISPATCH_803_802_HANDBACK_RULED_REPUBLISH_LIVE_ACCEPTED_BAKEOFF_RULES_ELEVEN_RULINGS_DA0716_OPTION_A_RULE_30_6_STOPPED_SITE_LLMS_TXT_DISCREPANCY_20261104.md",
+      "line": 30,
+      "extract": {
+        "kind": "quoted-after",
+        "anchor": "`condition:",
+        "open": " ",
+        "close": "`"
+      },
+      "renders": [
+        "site/evals.json calibration_ledger.condition",
+        "site/evals.json modules.resolution_activated[*].condition"
+      ],
+      "text": "thirty_scored_records_pooled",
+      "sha256": "b65da94b39df05865c2b86fc0c5408fadb6d8e08b2e242bacb5b39c6233721b1",
+      "line_sha256": "8e47fa63961faaa556bb0c2957940dabb5fea1505e39e8db291a935cebf4222f"
     }
   ],
   "api_render": {
