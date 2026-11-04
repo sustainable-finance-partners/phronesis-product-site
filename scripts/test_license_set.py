@@ -1513,6 +1513,63 @@ class EmailOffTests(unittest.TestCase):
         self.assertIn("ops@phronesisintel.com.", strip_marks(pinned()["license.p4"]))
 
 
+# ── 785:34 / 798 §3.2(a): S.13 v2 on /pricing, llms.txt and agentic-commerce.json ──
+
+#: The lines S.13 v2 replaces (785:34); no published file keeps them.
+RETIRED_CALIBRATION_SENTENCES = (
+    "Two records have resolved",
+    "calibration grades appear when a series reaches ten resolutions",
+    "ten resolved records per series",
+    "honest-empty until ten resolutions",
+)
+
+
+class CalibrationS13Tests(unittest.TestCase):
+    """S.13 v2 verbatim, where 785:34 names it, with no typed count beside it."""
+
+    s13: str
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.s13 = pinned()["S.13"]
+
+    def test_s13_is_pinned_from_785_line_34(self) -> None:
+        row = next(r for r in load_pin()["strings"] if r["id"] == "S.13")
+        self.assertTrue(str(row["source"]).startswith("00_Operating_Model/CCO_DISPATCH_785_"))
+        self.assertEqual(row["line"], 34)
+        self.assertEqual(sha256(row["text"]), row["sha256"])
+        self.assertTrue(self.s13.startswith("Phronesis issues no calibration grade today."))
+        self.assertFalse(any(ch.isdigit() for ch in self.s13))  # no typed count
+
+    def test_pricing_answer_is_s13_between_the_kept_sentences(self) -> None:
+        page = read_site("pricing.html")
+        item = between(page, "<h4>Where is your calibration evidence?</h4>", "</div>")
+        expected = (
+            '<p>The public scorecard at <a href="/scorecard">/scorecard</a>. '
+            f"{self.s13} Where a number isn't earned, the page shows a blank we can defend.</p>"
+        )
+        self.assertIn(expected, item)
+
+    def test_llms_txt_states_s13_once_as_the_calibration_line(self) -> None:
+        lines = read_site("llms.txt").split("\n")
+        self.assertEqual(lines.count(f"> {self.s13} Pre-revenue."), 1)
+
+    def test_agentic_commerce_states_s13_after_the_ten_field_list(self) -> None:
+        data = json.loads(read_site(".well-known/agentic-commerce.json"))
+        description = data["service"]["description"]
+        self.assertIn(f"settlement hook + audit receipt). {self.s13} Forecasting is", description)
+        self.assertIn("calibration record + baseline comparison", description)
+
+    def test_no_published_file_keeps_a_retired_line(self) -> None:
+        for path in sorted(SITE.rglob("*")):
+            if not path.is_file() or path.suffix not in {".html", ".txt", ".json", ".xml", ".md"}:
+                continue
+            body = path.read_bytes().decode("utf-8", errors="replace")
+            for sentence in RETIRED_CALIBRATION_SENTENCES:
+                with self.subTest(file=path.relative_to(SITE).as_posix(), line=sentence):
+                    self.assertNotIn(sentence, body)
+
+
 def main(argv: list[str]) -> int:
     if argv[1:] == ["--write-pin"]:
         root = os.environ.get(WORKSPACE_ENV)
