@@ -1698,6 +1698,18 @@ class AgentJsonHygieneTests(unittest.TestCase):
                 self.assertEqual([s for s in strings if INTERNAL_TEXT_RE.search(s)], [])
 
 
+class SiteLlmsParityTests(unittest.TestCase):
+    """803 §B: the site llms.txt carries no retired line the API copy has already dropped."""
+
+    def test_no_retired_llms_lines(self) -> None:
+        body = read_site("llms.txt")
+        for retired in ("transport-appropriate projection", "~Jan 2027", "honest-empty until",
+                        "ten resolved records per series"):
+            with self.subTest(line=retired):
+                self.assertNotIn(retired, body)
+        self.assertIn("Every endpoint is served over both MCP and REST.", body)
+
+
 def main(argv: list[str]) -> int:
     if argv[1:] == ["--write-pin"]:
         root = os.environ.get(WORKSPACE_ENV)
