@@ -1570,6 +1570,22 @@ class CalibrationS13Tests(unittest.TestCase):
                     self.assertNotIn(sentence, body)
 
 
+class VerticalsCensusTests(unittest.TestCase):
+    """798 §3.2(c): /verticals cites no April first mint and no "HIPAA … code layer" claim."""
+
+    def test_no_first_mint_label_and_the_three_are_catalogued(self) -> None:
+        page = read_site("verticals.html")
+        self.assertNotIn("first mint attested", page)
+        self.assertGreaterEqual(
+            page.count('<span class="vertical-deep-status catalogued">Catalogued</span>'), 3
+        )
+
+    def test_no_code_layer_enforcement_claim(self) -> None:
+        page = read_site("verticals.html")
+        self.assertNotIn("enforcement at the code layer", page)
+        self.assertNotIn("enforced at the code layer", page)
+
+
 def main(argv: list[str]) -> int:
     if argv[1:] == ["--write-pin"]:
         root = os.environ.get(WORKSPACE_ENV)
