@@ -1,7 +1,7 @@
 # agents.txt — Phronesis agent discovery manifest
 # Authority: Sustainable Finance Partners, LLC (operator)
 # Spec: https://phronesisintel.com/spec
-# Last updated: 2026-10-31
+# Last updated: 2026-11-04
 
 User-Agent: *
 
@@ -70,12 +70,12 @@ Pricing-Model: decision_asset_lifecycle
 Vertical: V0=AI-Industrial-Mobilization-Situational-Awareness meta-vertical LIVE
 Vertical: V1=Energy-Transition SERIES-LIVE
 Vertical: V2=Computing-AI-Infrastructure SERIES-LIVE proving-first
-Vertical: V3=Healthcare CATALOGUED-FIRST-MINT-2026-04-26 (HIPAA Safe Harbor)
+Vertical: V3=Healthcare CATALOGUED (HIPAA Safe Harbor)
 Vertical: V4=Climate-Physical-Risk CATALOGUED
 Vertical: V5=Regulatory CATALOGUED
 Vertical: V6=Supply-Chain CATALOGUED
-Vertical: V7=Space-Space-Economy CATALOGUED-FIRST-MINT-2026-04-28
-Vertical: V8=Robotics CATALOGUED-FIRST-MINT-2026-04-27
+Vertical: V7=Space-Space-Economy CATALOGUED
+Vertical: V8=Robotics CATALOGUED
 Vertical: V9=AI-AGI-Compute CATALOGUED
 Vertical: V10=Physics-Materials-Discovery CATALOGUED
 Vertical: V11=Longevity-Human-Health CATALOGUED
