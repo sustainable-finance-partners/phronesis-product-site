@@ -19,7 +19,8 @@
     "series_live": ["energy", "computing-ai-infrastructure"],
     "catalogued": ["healthcare", {"climate-physical-risk": {"first_mint_attested": "2026-07-14"}}, "regulatory", "supply-chain", "space", "robotics", "ai-agi-compute", "physics-materials-discovery", "longevity-human-health", "quantum-computing", "general-any-consequential-decision"],
     "verticals_pre_launch": [],
-    "primitives_live": ["p1-identity-and-mandate", "p2-reputation-and-track-record", "p3-forecast-and-evidence", "p6-market-state-telemetry"],
+    "primitives_live": ["p1-identity-and-mandate", "p3-forecast-and-evidence"],
+    "primitives_defined": ["p6-market-state-telemetry"],
     "primitives_planned": ["p4-coordination-and-negotiation", "p5-outcome-conditional"]
   },
   "endpoints": {

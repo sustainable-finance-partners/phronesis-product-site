@@ -1,1 +1,3 @@
 * text=auto
+# Byte copies a test hashes: never converted at checkout (a Windows clone writes CRLF).
+tests/fixtures/** -text

@@ -464,6 +464,38 @@ jobs:
       - name: License-set string tests
         run: python3 ../scripts/test_license_set.py
 
+  homepage-status-strings:
+    # COO dispatch 809 §7: the home page's status strings (the register's label, the
+    # primitive-status sentence, the register-derived vertical badges, one JSON-LD
+    # Offer) render the strings generated from the byte copy of 809 in
+    # tests/fixtures/dispatch_809_sources/; the generated module equals the generator's
+    # output; scripts/refresh_count.py derives the badges offline from fixture payloads.
+    runs-on: ubuntu-latest
+    name: Home page status strings render 809 exactly
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: The generated module equals the generator's output
+        run: python3 ../scripts/gen_status_copy_text.py --check
+
+      - name: Status-string tests
+        run: python3 ../scripts/test_status_strings.py
+
+  homepage-counts-not-above-the-register:
+    # COO dispatch 809 §9 (the fallback while no build command refreshes the page): the
+    # static count and the thirteen badges are at most the live register's numbers.
+    # A page behind the register passes with WARN lines; a refused read (an outage
+    # envelope) fails, and a re-run after the API answers clears it.
+    runs-on: ubuntu-latest
+    name: Home page counts are not above the live register
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Static count and badges against /.well-known/scorecard.json
+        run: python3 ../scripts/refresh_count.py --check
+
   internal-taxonomy-leak-check:
     # Per CC_4_7_POSITIONING_RECUT_AND_SITES_FIX_DISPATCH_20260525.md D3.AC-3
     # (Ledger §15.10.92) — customer-facing copy must not leak internal
