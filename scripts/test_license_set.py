@@ -1108,6 +1108,9 @@ SCORECARD_FIXTURE: dict[str, Any] = {
     "status": "ok",
     "aggregate_stats": {"forecast_count": 45, "resolved_count": 0},
     "metadata": {"generated_at": "2026-10-30T04:54:10Z", "version": "fixture"},
+    # The rows the count is made over (the command line also refreshes the vertical
+    # badges from them, 809 §7; scripts/test_status_strings.py tests that refresh).
+    "forecasts": [{"value": {"intake_payload": {"subject": "energy"}}}] * 45,
 }
 
 

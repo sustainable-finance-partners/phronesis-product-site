@@ -78,6 +78,7 @@ REPO_ONLY_ROOT = frozenset(
         "README.md",
         "gates",
         "scripts",
+        "tests",
         PUBLISH_DIR,
     }
 )
@@ -130,6 +131,7 @@ LIVE_404_PATHS = (
     "/.github/workflows/algo-protection-gate.yml",
     "/gates/vendor_names.json",
     "/scripts/site_gates.py",
+    "/tests/fixtures/dispatch_809_sources/README.md",
 )
 #: Root entries the live check has no path for: git's own metadata is never
 #: pushed to the host, and the publish folder is what the host serves.
@@ -736,6 +738,10 @@ REQUIRED_LEAK_RULES = frozenset(
         "claim-live-on-production",
         "claim-vertical-line-live",
         "claim-agentic-commerce-verticals-live",
+        # the home page's retired claim-state (COO dispatch 809 §7)
+        "claim-home-vertical-live-badge",
+        "claim-home-jsonld-vertical-offer",
+        "claim-home-in-production",
     }
 )
 
@@ -813,6 +819,17 @@ _RECURRENCE_SCOPED = (
         "site/verticals.html",
         "Cross-cutting Themis-Regulatory substrate layer at architecture level.",
     ),
+    # what COO dispatch 809 §7 retired on the home page, each seeded into it
+    ("site/index.html", '<span class="vertical-status live">Live</span>'),
+    (
+        "site/index.html",
+        '{ "@type": "Offer", "itemOffered": { "@type": "Service", "name": '
+        '"Phronesis Energy", "description": "Energy transition Decision Assets. '
+        'LIVE." }}',
+    ),
+    ("site/index.html", '"hasOfferCatalog": { "@type": "OfferCatalog" }'),
+    ("site/index.html", '<span class="metric-value">In production</span>'),
+    ("site/index.html", "P1, P2, P3, P6 live on production today"),
 )
 #: The recurrence floor, held in code so that no edit of the list can pass one
 #: silently (a rule dropped, a tier turned to report, a scope moved, a file

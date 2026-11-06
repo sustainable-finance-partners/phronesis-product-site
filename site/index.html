@@ -57,16 +57,13 @@
   "provider": { "@type": "Organization", "name": "Sustainable Finance Partners, LLC" },
   "serviceType": "Decision-assurance substrate for agentic commerce — the layer an agent calls before it acts: consumes intent, identity, and payment rails and renders an auditable action boundary via the Decision Asset atomic product",
   "areaServed": "Worldwide",
-  "hasOfferCatalog": {
-    "@type": "OfferCatalog",
-    "name": "Phronesis Verticals",
-    "itemListElement": [
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Energy", "description": "Energy transition Decision Assets. LIVE." }},
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Computing + AI Infrastructure", "description": "Phronesis Grid-Compute Decision Assets — the NOW proving market. LIVE." }},
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Healthcare", "description": "HIPAA Safe Harbor disease incidence + population health Decision Assets. LIVE." }},
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Space", "description": "Launch cadence, IPO probability, orbital infrastructure Decision Assets. LIVE." }},
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Phronesis Robotics", "description": "Humanoid + autonomous-system deployment Decision Assets. LIVE." }}
-    ]
+  "offers": {
+    "@type": "Offer",
+    "name": "Phronesis API",
+    "description": "Read the record free.",
+    "price": "0",
+    "priceCurrency": "USD",
+    "url": "https://api.phronesisintel.com"
   }
 }
 </script>
@@ -383,6 +380,9 @@
   border-color: white;
   color: white;
 }
+/* Vertical badges: register-derived records, or catalogued */
+.vertical-status.records { color: var(--color-pulse-text); font-weight: 600; }
+.vertical-status.catalogued { color: var(--color-whisper); }
 </style>
 </head>
 
@@ -442,12 +442,12 @@
 
       <div class="metric-bar">
         <div class="metric">
-          <span class="metric-value">In production</span>
+          <span class="metric-value">Live</span>
           <span class="metric-label">Market Memory v1</span>
         </div>
         <div class="metric">
-          <span class="metric-value" id="record-count" data-as-of="2026-10-30" data-source="scorecard.aggregate_stats.forecast_count">45</span>
-          <span class="metric-label">records on the register as of <time id="record-count-as-of" datetime="2026-10-30">2026-10-30</time></span>
+          <span class="metric-value" id="record-count" data-as-of="2026-11-06" data-source="scorecard.aggregate_stats.forecast_count">52</span>
+          <span class="metric-label">records on the register as of <time id="record-count-as-of" datetime="2026-11-06">2026-11-06</time></span>
         </div>
         <div class="metric">
           <span class="metric-value">~Jan 2027</span>
@@ -569,7 +569,7 @@
       </div>
     </div>
 
-    <p class="section-lead" style="margin-top: var(--space-8); font-size: var(--text-sm); color: var(--color-whisper);">P1, P2, P3, P6 live on production today (P2 honest-empty — UNRATED until the observation substrate ships). P4 and P5 are planned — named per public-roadmap discipline, not over-promised as shipped.</p>
+    <p class="section-lead" style="margin-top: var(--space-8); font-size: var(--text-sm); color: var(--color-whisper);">P3 live; P1 identity live, mandate verification planned; P2 honest-empty (UNRATED until the observation substrate ships); P6 defined ; P4 and P5 planned.</p>
   </div>
 </section>
 
@@ -626,20 +626,20 @@
     <h2 class="section-title">Twelve verticals on one substrate — the breadth that becomes the moat.</h2>
     <p class="section-lead">Twelve applied verticals stood up on the shared substrate — energy; computing &amp; AI infrastructure; healthcare; climate; regulatory; supply chains; space; robotics; AI/AGI; physics &amp; materials; longevity; quantum — with V#0 the meta-vertical above them. The per-vertical layer specializes the prompt library and the data plane. The calibration substance concentrates where decisions resolve first — today, grid-compute. The breadth isn't twelve products; it's one motion accumulating a cross-archetype record no single-vertical tool can match.</p>
 
-    <ul class="vertical-list">
-      <li class="vertical-item"><span class="vertical-num">V#0</span><span class="vertical-name">AI Industrial Mobilization &amp; Situational Awareness <em>(meta-vertical)</em></span><span class="vertical-status live">Live</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#1</span><span class="vertical-name">Energy Transition</span><span class="vertical-status live">Live</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#2</span><span class="vertical-name">Computing + AI Infrastructure <em>(proving first)</em></span><span class="vertical-status live">Live</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#3</span><span class="vertical-name">Healthcare (HIPAA Safe Harbor)</span><span class="vertical-status live">Live</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#4</span><span class="vertical-name">Climate Physical Risk</span><span class="vertical-status live">Live</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#5</span><span class="vertical-name">Regulatory</span><span class="vertical-status live">Live</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#6</span><span class="vertical-name">Supply-Chain</span><span class="vertical-status live">Live</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#7</span><span class="vertical-name">Space + Space Economy</span><span class="vertical-status live">Live</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#8</span><span class="vertical-name">Robotics</span><span class="vertical-status live">Live</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#9</span><span class="vertical-name">AI/AGI &amp; Compute</span><span class="vertical-status live">Live</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#10</span><span class="vertical-name">Physics &amp; Materials Discovery</span><span class="vertical-status live">Live</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#11</span><span class="vertical-name">Longevity &amp; Human Health</span><span class="vertical-status live">Live</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#12</span><span class="vertical-name">Quantum Computing</span><span class="vertical-status live">Live</span></li>
+    <ul class="vertical-list" id="vertical-records" data-as-of="2026-11-06" data-source="scorecard.forecasts.subject">
+      <li class="vertical-item"><span class="vertical-num">V#0</span><span class="vertical-name">AI Industrial Mobilization &amp; Situational Awareness <em>(meta-vertical)</em></span><span class="vertical-status catalogued" data-vertical="V#0">catalogued</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#1</span><span class="vertical-name">Energy Transition</span><span class="vertical-status records" data-vertical="V#1">37 records</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#2</span><span class="vertical-name">Computing + AI Infrastructure <em>(proving first)</em></span><span class="vertical-status catalogued" data-vertical="V#2">catalogued</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#3</span><span class="vertical-name">Healthcare (HIPAA Safe Harbor)</span><span class="vertical-status records" data-vertical="V#3">1 records</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#4</span><span class="vertical-name">Climate Physical Risk</span><span class="vertical-status records" data-vertical="V#4">2 records</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#5</span><span class="vertical-name">Regulatory</span><span class="vertical-status records" data-vertical="V#5">5 records</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#6</span><span class="vertical-name">Supply-Chain</span><span class="vertical-status records" data-vertical="V#6">1 records</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#7</span><span class="vertical-name">Space + Space Economy</span><span class="vertical-status records" data-vertical="V#7">1 records</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#8</span><span class="vertical-name">Robotics</span><span class="vertical-status records" data-vertical="V#8">1 records</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#9</span><span class="vertical-name">AI/AGI &amp; Compute</span><span class="vertical-status catalogued" data-vertical="V#9">catalogued</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#10</span><span class="vertical-name">Physics &amp; Materials Discovery</span><span class="vertical-status records" data-vertical="V#10">1 records</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#11</span><span class="vertical-name">Longevity &amp; Human Health</span><span class="vertical-status records" data-vertical="V#11">1 records</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#12</span><span class="vertical-name">Quantum Computing</span><span class="vertical-status records" data-vertical="V#12">1 records</span></li>
     </ul>
 
     <div style="text-align: center; margin-top: var(--space-8);">
