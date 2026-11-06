@@ -1,8 +1,10 @@
 """The homepage status strings, verbatim (GENERATED - never edit by hand).
 
 Extracted programmatically, never retyped, by ``scripts/gen_status_copy_text.py`` from the
-byte copy ``tests/fixtures/dispatch_809_sources/dispatch_809_20261106.md`` of COO dispatch
-809 (2026-11-06, pin ``c7271feef01379d7``), section 7:
+byte copies ``tests/fixtures/dispatch_809_sources/dispatch_809_20261106.md`` of COO dispatch
+809 (2026-11-06, pin ``c7271feef01379d7``) and
+``tests/fixtures/dispatch_810_sources/dispatch_810_20261106.md`` of COO dispatch 810 v2
+(2026-11-06, pin ``6812b2b25843eef7``). From 809, section 7:
 
 * line 39 (the rule): the three status words ``STATUS_LIVE``, ``STATUS_DEFINED`` and
   ``STATUS_PLANNED``, and the two register-derived vertical badges ``VERTICAL_RECORDS``
@@ -13,10 +15,15 @@ byte copy ``tests/fixtures/dispatch_809_sources/dispatch_809_20261106.md`` of CO
   (``METRIC_LIVE``); the ``:572`` primitive-status sentence as signed, its P6 slot open
   (``PRIMITIVES_STATUS_SIGNED``).
 
-``PRIMITIVES_STATUS`` is the signed sentence with its one ``P6_SLOT`` replaced by
-``P6_STATUS``, the word the code supports (``STATUS_DEFINED``: no callable market-state
-surface on the app's ``origin/main``; see the generator's docstring). Every other byte is
-809's. ``scripts/test_status_strings.py`` re-derives every constant and asserts equality.
+From 810, section 4 line 25 (product site #45): the third vertical badge
+``VERTICAL_SERIES_LIVE``, the singular ``VERTICAL_RECORD_ONE``, the re-signed P6 piece
+``P6_RESIGNED`` and the P6 card's ``P6_CARD_DESCRIPTION``.
+
+``PRIMITIVES_STATUS`` is 809's signed sentence with its P6 piece (``P6`` and ``P6_SLOT`` and
+`` ;``) replaced by ``P6_RESIGNED``, which is ``P6`` and ``P6_STATUS`` (the word the code
+supports, ``STATUS_DEFINED``: no callable market-state surface on the app's
+``origin/main``; see the generator's docstring) and a semicolon. Every other byte is 809's.
+``scripts/test_status_strings.py`` re-derives every constant and asserts equality.
 """
 
 from __future__ import annotations
@@ -26,6 +33,8 @@ from typing import Final
 __all__ = [
     "METRIC_LIVE",
     "METRIC_RETIRED",
+    "P6_CARD_DESCRIPTION",
+    "P6_RESIGNED",
     "P6_SLOT",
     "P6_STATUS",
     "PRIMITIVES_STATUS",
@@ -35,6 +44,8 @@ __all__ = [
     "STATUS_PLANNED",
     "VERTICAL_CATALOGUED",
     "VERTICAL_RECORDS",
+    "VERTICAL_RECORD_ONE",
+    "VERTICAL_SERIES_LIVE",
 ]
 
 #: 809:39 - **live** (callable today)
@@ -61,9 +72,19 @@ PRIMITIVES_STATUS_SIGNED: Final[str] = (
 P6_SLOT: Final[str] = "{live | defined}"
 #: the word the code supports for P6: STATUS_DEFINED, cut at 809:39
 P6_STATUS: Final[str] = "defined"
-#: the sentence the page renders: the signed one, P6_SLOT -> P6_STATUS
+#: 810:25 - a third vertical badge state **"series live"**
+VERTICAL_SERIES_LIVE: Final[str] = "series live"
+#: 810:25 - (b) pluralise *"1 record"*
+VERTICAL_RECORD_ONE: Final[str] = "1 record"
+#: 810:25 - (c) the signed string is re-signed (no space)
+P6_RESIGNED: Final[str] = "P6 defined;"
+#: 810:25 - (e) the P6 card description
+P6_CARD_DESCRIPTION: Final[str] = (
+    "Market-State Telemetry — defined; no feed is served today."
+)
+#: the sentence the page renders: 809's, its P6 piece -> P6_RESIGNED
 PRIMITIVES_STATUS: Final[str] = (
     "P3 live; P1 identity live, mandate verification planned; P2 honest-empty "
-    "(UNRATED until the observation substrate ships); P6 defined ; P4 and P5 "
+    "(UNRATED until the observation substrate ships); P6 defined; P4 and P5 "
     "planned."
 )

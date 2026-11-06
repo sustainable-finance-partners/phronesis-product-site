@@ -10,36 +10,47 @@ values, the ones crawlers and the parity gate read, right before a merge (and, o
 owner sets it, as the Pages build command).
 
 The vertical list carries one badge per vertical (V#0-V#12), register-derived (COO
-dispatch 809 §7): ``"{n} records"`` where the register holds n > 0 records for the
-vertical, else ``"catalogued"`` (both strings from ``status_copy_text``, generated from
-809's bytes). n counts the records the register count is made over (the rows of
-``forecasts`` whose ``record_class`` is absent or ``forecast``; their number must equal
-``forecast_count``, or the script refuses) whose ``value.intake_payload.subject`` is the
-vertical's subject (:data:`VERTICAL_SUBJECTS`). The list's ``data-as-of`` is the count's
-date. A record whose subject names no vertical is counted on no badge and printed.
+dispatch 809 §7, 810 §4). Each badge takes the first of three forms that applies, all
+strings from ``status_copy_text``, generated from 809's and 810's bytes:
+
+* ``"{n} records"`` where the register holds n > 1 records for the vertical, and
+  ``"1 record"`` where it holds one;
+* ``"series live"`` where it holds none and the API's ``/v1/catalog`` lists the vertical
+  ``SERIES_LIVE`` (810 §4 (a): V#2 today), so the homepage agrees with ``agents.txt``;
+* else ``"catalogued"``.
+
+n counts the records the register count is made over (the rows of ``forecasts`` whose
+``record_class`` is absent or ``forecast``; their number must equal ``forecast_count``, or
+the script refuses) whose ``value.intake_payload.subject`` is the vertical's subject
+(:data:`VERTICAL_SUBJECTS`). V#k is the catalog's ``Vk`` (k = 1-12); V#0, the
+meta-vertical, is not in the catalog. The list's ``data-as-of`` is the count's date. A
+record whose subject names no vertical is counted on no badge and printed.
 
 It reads ``https://api.phronesisintel.com/.well-known/scorecard.json`` and takes
 ``aggregate_stats.forecast_count`` (a non-negative integer), the UTC date of
 ``metadata.generated_at`` (the same two fields, and the same rule, as the inline
-script) and ``forecasts``. It rewrites the span's digits, its ``data-as-of``, the
+script) and ``forecasts``. It reads ``https://api.phronesisintel.com/v1/catalog`` for
+each vertical's ``status``. It rewrites the span's digits, its ``data-as-of``, the
 ``<time>`` element's ``datetime`` and text, the vertical list's ``data-as-of`` and the
 thirteen badges' class and text in ``site/index.html``, and no other byte. It prints
 each old value and its new value.
 
-It refuses, and leaves the file untouched, when the payload is not in that shape (an
-outage envelope with an empty ``aggregate_stats`` included), when the date is not a
+It refuses, and leaves the file untouched, when either payload is not in that shape
+(an outage envelope with an empty ``aggregate_stats`` included), when the date is not a
 real date or is later than today (UTC), or when the markup is not found exactly once.
 
 ``--check`` writes nothing: it compares the static page with the live register and
-fails when the page states a number above it (the count, or any badge) or an as-of
-after it; a page behind the register passes with WARN lines (the CI fallback COO
-dispatch 809 §9 names, for when no build command refreshes the page).
+catalog. It fails when the page states a number above the register (the count, or any
+badge), an as-of after it, or "series live" for a vertical the catalog does not list
+``SERIES_LIVE``. A page behind them passes with WARN lines (the CI fallback COO dispatch
+809 §9 names, for when no build command refreshes the page).
 
 Usage:
   python3 scripts/refresh_count.py              # fetch, rewrite site/index.html
   python3 scripts/refresh_count.py --dry-run    # fetch, print, write nothing
   python3 scripts/refresh_count.py --check      # fetch, fail on an overclaim
-  python3 scripts/refresh_count.py --from-file scorecard.json   # no network
+  python3 scripts/refresh_count.py --from-file scorecard.json --catalog-file catalog.json
+                                                 # no network
 
 Exit status: 0 written (or already current; with --check, no overclaim), 1 refused
 (with --check, an overclaim), 2 usage. Standard library only.
@@ -60,11 +71,19 @@ _HERE = Path(__file__).resolve().parent
 if str(_HERE) not in sys.path:  # isolated mode (-I) drops the script's directory
     sys.path.insert(0, str(_HERE))
 
-from status_copy_text import VERTICAL_CATALOGUED, VERTICAL_RECORDS  # noqa: E402
+from status_copy_text import (  # noqa: E402
+    VERTICAL_CATALOGUED,
+    VERTICAL_RECORD_ONE,
+    VERTICAL_RECORDS,
+    VERTICAL_SERIES_LIVE,
+)
 
 REPO_ROOT = _HERE.parent
 INDEX = REPO_ROOT / "site" / "index.html"
 SCORECARD_URL = "https://api.phronesisintel.com/.well-known/scorecard.json"
+CATALOG_URL = "https://api.phronesisintel.com/v1/catalog"
+#: The catalog's status for a vertical with a live series (``/v1/catalog``).
+CATALOG_SERIES_LIVE = "SERIES_LIVE"
 TIMEOUT_S = 20
 
 #: The count span as the page renders it: the gate's marker last, the digits its text.
@@ -102,9 +121,14 @@ VERTICAL_SUBJECTS: tuple[tuple[str, str | None], ...] = (
 #: The ``record_class`` values the register count is made over: absent (today's rows)
 #: and ``forecast`` (809 §5); ``capability_test`` and ``withdrawn`` leave every count.
 COUNTED_CLASSES: tuple[str | None, ...] = (None, "forecast")
-#: The two badge forms, by the CSS class each carries on the page.
+#: The three badge forms, by the CSS class each carries on the page.
 RECORDS_CLASS = "records"
+SERIES_LIVE_CLASS = "series-live"
 CATALOGUED_CLASS = "catalogued"
+#: Each badge's vertical id in ``/v1/catalog``: V#k is ``Vk``; V#0 is not in the catalog.
+CATALOG_IDS: dict[str, str | None] = {
+    vid: (None if vid == "V#0" else "V" + vid[2:]) for vid, _ in VERTICAL_SUBJECTS
+}
 
 #: The vertical list's opening tag: its as-of date, and the source the badges read.
 LIST_RE = re.compile(
@@ -113,7 +137,7 @@ LIST_RE = re.compile(
 )
 #: One badge: its class, its vertical, its text.
 BADGE_RE = re.compile(
-    r'(<span class="vertical-status )(records|catalogued)(" data-vertical=")'
+    r'(<span class="vertical-status )(records|series-live|catalogued)(" data-vertical=")'
     r'(V#\d+)(">)([^<]*)(</span>)'
 )
 #: Every badge on the page carries this, whatever its form.
@@ -168,6 +192,31 @@ def read_payload(data: Any, today: dt.date) -> tuple[int, str]:
     return n, day
 
 
+def series_live(catalog: Any) -> frozenset[str]:
+    """The badges whose vertical ``/v1/catalog`` lists ``SERIES_LIVE``, or :class:`Refused`.
+
+    ``None`` (no catalog was read) is no vertical: a page built without the catalog
+    shows no "series live" badge, and a check without it passes none.
+    """
+    if catalog is None:
+        return frozenset()
+    verticals = catalog.get("verticals") if isinstance(catalog, dict) else None
+    if not isinstance(verticals, list):
+        raise Refused("the catalog payload has no verticals list")
+    status: dict[str, Any] = {}
+    for entry in verticals:
+        if not isinstance(entry, dict) or not isinstance(entry.get("id"), str):
+            raise Refused("a catalog vertical is not an object with a string id")
+        if "status" not in entry:
+            raise Refused(f"catalog vertical {entry['id']} has no status")
+        status[entry["id"]] = entry["status"]
+    return frozenset(
+        vid
+        for vid, cid in CATALOG_IDS.items()
+        if cid is not None and status.get(cid) == CATALOG_SERIES_LIVE
+    )
+
+
 def vertical_counts(data: Any, total: int) -> tuple[dict[str, int], dict[str, int]]:
     """``(records per badge, records per subject that names no vertical)``.
 
@@ -205,12 +254,20 @@ def vertical_counts(data: Any, total: int) -> tuple[dict[str, int], dict[str, in
     return per_badge, unmapped
 
 
-def badge(n: int) -> tuple[str, str]:
-    """``(css class, text)`` of a badge for a vertical with ``n`` records."""
+def badge(n: int, series: bool = False) -> tuple[str, str]:
+    """``(css class, text)`` of a badge for a vertical with ``n`` records.
+
+    ``series``: the catalog lists the vertical ``SERIES_LIVE``. It shows only when the
+    register holds none of its records; a count, when there is one, is the badge.
+    """
     if VERTICAL_RECORDS.count("{n}") != 1:
         raise Refused(f"the records form {VERTICAL_RECORDS!r} does not carry one {{n}}")
+    if n == 1:
+        return RECORDS_CLASS, VERTICAL_RECORD_ONE
     if n > 0:
         return RECORDS_CLASS, VERTICAL_RECORDS.replace("{n}", str(n))
+    if series:
+        return SERIES_LIVE_CLASS, VERTICAL_SERIES_LIVE
     return CATALOGUED_CLASS, VERTICAL_CATALOGUED
 
 
@@ -236,7 +293,10 @@ def rewrite(page: str, n: int, day: str) -> tuple[str, list[tuple[str, str, str]
 
 
 def rewrite_verticals(
-    page: str, per_badge: Mapping[str, int], day: str
+    page: str,
+    per_badge: Mapping[str, int],
+    day: str,
+    series: frozenset[str] = frozenset(),
 ) -> tuple[str, list[tuple[str, str, str]]]:
     """The page with the list's as-of and the thirteen badges replaced, and the changes."""
     lists = list(LIST_RE.finditer(page))
@@ -254,7 +314,7 @@ def rewrite_verticals(
     edits = [(opening, f"{opening.group(1)}{day}{opening.group(3)}")]
     changes = [("vertical data-as-of", opening.group(2), day)]
     for m in badges:
-        css, text = badge(per_badge[m.group(4)])
+        css, text = badge(per_badge[m.group(4)], m.group(4) in series)
         old = m.group(6)
         edits.append(
             (
@@ -276,12 +336,18 @@ def _splice(page: str, edits: list[tuple[re.Match[str], str]]) -> str:
 
 
 def refresh(
-    index: Path, data: Any, today: dt.date, write: bool = True, verticals: bool = False
+    index: Path,
+    data: Any,
+    today: dt.date,
+    write: bool = True,
+    verticals: bool = False,
+    catalog: Any = None,
 ) -> list[str]:
     """Rewrite ``index`` from ``data``; return the printed lines. Raises :class:`Refused`.
 
     The count always; the vertical list too when ``verticals`` (the command line always
-    passes it). Nothing is written unless every rewrite succeeds.
+    passes it), its "series live" badges from ``catalog`` (``/v1/catalog``). Nothing is
+    written unless every rewrite succeeds.
     """
     n, day = read_payload(data, today)
     raw = index.read_bytes()
@@ -294,7 +360,9 @@ def refresh(
         )
     if verticals:
         per_badge, unmapped = vertical_counts(data, n)
-        new_page, vchanges = rewrite_verticals(new_page, per_badge, day)
+        new_page, vchanges = rewrite_verticals(
+            new_page, per_badge, day, series_live(catalog)
+        )
         lines += [f"{what}: {old} -> {new}" for what, old, new in vchanges]
         if unmapped:
             listed = ", ".join(f"{s} {k}" for s, k in unmapped.items())
@@ -310,9 +378,14 @@ def refresh(
 
 
 def _badge_count(match: re.Match[str]) -> int:
-    """The number a badge states: 0 for the catalogued form, n for the records form."""
+    """The number a badge states: 0 for the catalogued and series-live forms, n for the
+    records form ("1 record" is 1)."""
     if match.group(2) == CATALOGUED_CLASS and match.group(6) == VERTICAL_CATALOGUED:
         return 0
+    if match.group(2) == SERIES_LIVE_CLASS and match.group(6) == VERTICAL_SERIES_LIVE:
+        return 0
+    if match.group(2) == RECORDS_CLASS and match.group(6) == VERTICAL_RECORD_ONE:
+        return 1
     head, tail = VERTICAL_RECORDS.split("{n}")
     stated = match.group(6)
     digits = (
@@ -328,19 +401,23 @@ def _badge_count(match: re.Match[str]) -> int:
     return int(digits)
 
 
-def check(index: Path, data: Any, today: dt.date) -> tuple[bool, list[str]]:
-    """``(no overclaim, lines)``: the static page against the live register.
+def check(
+    index: Path, data: Any, today: dt.date, catalog: Any = None
+) -> tuple[bool, list[str]]:
+    """``(no overclaim, lines)``: the static page against the live register and catalog.
 
     Every number the page states (the count and each badge) must be at most the live
-    one, and its as-of no later than the live date; a page behind the register is a
-    WARN line, never a failure (a refresh brings it current). Raises :class:`Refused`
-    when the payload or the markup is not in the expected shape.
+    one, and its as-of no later than the live date. A "series live" badge must name a
+    vertical ``catalog`` lists ``SERIES_LIVE``. A page behind them is a WARN line, never a
+    failure (a refresh brings it current). Raises :class:`Refused` when a payload or the
+    markup is not in the expected shape.
     """
     n, day = read_payload(data, today)
     per_badge, _ = vertical_counts(data, n)
+    series = series_live(catalog)
     page = index.read_bytes().decode("utf-8")
     rewrite(page, n, day)  # the markup is found exactly once, or Refused
-    rewrite_verticals(page, per_badge, day)
+    rewrite_verticals(page, per_badge, day, series)
     span = SPAN_RE.search(page)
     assert span is not None  # rewrite() found it
     stated = [("forecast_count", int(span.group(4)), n)]
@@ -357,10 +434,21 @@ def check(index: Path, data: Any, today: dt.date) -> tuple[bool, list[str]]:
         over.append(
             f"OVERCLAIM as-of: the page states {span.group(2)}, the register {day}"
         )
+    for m in BADGE_RE.finditer(page):
+        if m.group(2) == SERIES_LIVE_CLASS and m.group(4) not in series:
+            over.append(
+                f"OVERCLAIM {m.group(4)}: the page states {VERTICAL_SERIES_LIVE!r}, "
+                "the catalog does not list it SERIES_LIVE"
+            )
     behind = [
         f"WARN {what}: the page states {s}, the register {live}"
         for what, s, live in stated
         if s < live
+    ]
+    behind += [
+        f"WARN {m.group(4)}: the page states {m.group(6)!r}, the catalog lists it SERIES_LIVE"
+        for m in BADGE_RE.finditer(page)
+        if m.group(2) == CATALOGUED_CLASS and m.group(4) in series
     ]
     lines = over + behind
     if over:
@@ -379,6 +467,7 @@ def main(argv: list[str]) -> int:
     write = True
     checking = False
     source: Path | None = None
+    catalog_source: Path | None = None
     while args:
         arg = args.pop(0)
         if arg == "--dry-run":
@@ -387,6 +476,8 @@ def main(argv: list[str]) -> int:
             checking = True
         elif arg == "--from-file" and args:
             source = Path(args.pop(0))
+        elif arg == "--catalog-file" and args:
+            catalog_source = Path(args.pop(0))
         else:
             print(__doc__)
             return 2
@@ -396,12 +487,20 @@ def main(argv: list[str]) -> int:
             data = json.loads(source.read_text(encoding="utf-8"))
         else:
             data = fetch()
+        # From a file the catalog is optional (no file: no "series live" badge);
+        # from the network it is read with the scorecard, and a refused read refuses.
+        if catalog_source is not None:
+            catalog = json.loads(catalog_source.read_text(encoding="utf-8"))
+        elif source is None:
+            catalog = fetch(CATALOG_URL)
+        else:
+            catalog = None
         if checking:
-            ok, lines = check(INDEX, data, today)
+            ok, lines = check(INDEX, data, today, catalog)
             for line in lines:
                 print(line)
             return 0 if ok else 1
-        lines = refresh(INDEX, data, today, write=write, verticals=True)
+        lines = refresh(INDEX, data, today, write=write, verticals=True, catalog=catalog)
     except Refused as exc:
         print(f"REFUSED: {exc}; {INDEX.name} is unchanged")
         return 1
