@@ -1620,7 +1620,7 @@ class PrimarySourceCardTests(unittest.TestCase):
 #: §13 H token CATALOGUED with no date, in agents.txt and in agentic-commerce.json.
 STRUCK_FIRST_MINTS = {"V3": "2026-04-26", "V7": "2026-04-28", "V8": "2026-04-27"}
 CATALOGUED_LINES = (
-    "Vertical: V3=Healthcare CATALOGUED (HIPAA Safe Harbor)",
+    "Vertical: V3=Healthcare CATALOGUED",
     "Vertical: V7=Space-Space-Economy CATALOGUED",
     "Vertical: V8=Robotics CATALOGUED",
 )

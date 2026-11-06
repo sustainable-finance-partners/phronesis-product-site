@@ -742,6 +742,9 @@ REQUIRED_LEAK_RULES = frozenset(
         "claim-home-vertical-live-badge",
         "claim-home-jsonld-vertical-offer",
         "claim-home-in-production",
+        "claim-agents-v0-live",
+        "claim-agents-p6-live",
+        "claim-agentic-commerce-p2-p6-live",
     }
 )
 

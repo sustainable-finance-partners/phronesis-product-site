@@ -287,7 +287,7 @@
       "files": ["site/.well-known/agents.txt"],
       "why": "a bare LIVE token on an applied vertical's agents.txt line; the §13 H tokens are SERIES-LIVE, CATALOGUED-FIRST-MINT-{date} and CATALOGUED",
       "fixtures": ["Vertical: V4=Climate-Physical-Risk LIVE", "Vertical: V3=Healthcare LIVE (HIPAA Safe Harbor)", "Vertical: V13=General any-consequential-decision LIVE", "Vertical: V4=Climate-Physical-Risk Live"],
-      "near_misses": ["Vertical: V1=Energy-Transition SERIES-LIVE", "Vertical: V2=Computing-AI-Infrastructure SERIES-LIVE proving-first", "Vertical: V7=Space-Space-Economy CATALOGUED-FIRST-MINT-2026-04-28", "Vertical: V0=AI-Industrial-Mobilization-Situational-Awareness meta-vertical LIVE"]
+      "near_misses": ["Vertical: V1=Energy-Transition SERIES-LIVE", "Vertical: V2=Computing-AI-Infrastructure SERIES-LIVE proving-first", "Vertical: V7=Space-Space-Economy CATALOGUED-FIRST-MINT-2026-04-28", "Vertical: V0=AI-Industrial-Mobilization-Situational-Awareness meta-vertical CATALOGUED"]
     },
     {
       "id": "claim-nationality-exclusion",
@@ -337,13 +337,33 @@
       "near_misses": ["<span class=\"metric-value\">Live</span>", "Production since 2026-05-25"]
     },
     {
-      "id": "report-agents-v0-live",
-      "tier": "report",
+      "id": "claim-agents-v0-live",
+      "tier": "fail",
       "regex": "^Vertical:\\s*V0=.*(?<![-A-Za-z])LIVE(?![-A-Za-z])",
       "flags": "m",
       "files": ["site/.well-known/agents.txt"],
-      "why": "the V#0 meta-vertical line still reads LIVE; §13 H gives tokens for V1-V13 only",
-      "fixtures": ["Vertical: V0=AI-Industrial-Mobilization-Situational-Awareness meta-vertical LIVE"]
+      "why": "a bare LIVE token on the V#0 meta-vertical agents.txt line; V#0 has no callable surface and no record on the register, so its token is CATALOGUED (809 §7)",
+      "fixtures": ["Vertical: V0=AI-Industrial-Mobilization-Situational-Awareness meta-vertical LIVE"],
+      "near_misses": ["Vertical: V0=AI-Industrial-Mobilization-Situational-Awareness meta-vertical CATALOGUED"]    },
+    {
+      "id": "claim-agents-p6-live",
+      "tier": "fail",
+      "regex": "^Primitive:\\s*P6=.*(?<![-A-Za-z])LIVE(?![-A-Za-z])",
+      "flags": "im",
+      "files": ["site/.well-known/agents.txt"],
+      "why": "a bare LIVE token on the P6 Market-State-Telemetry agents.txt line; P6 has no callable surface on the app's origin/main, so its status word is defined (809 §7)",
+      "fixtures": ["Primitive: P6=Market-State-Telemetry LIVE"],
+      "near_misses": ["Primitive: P6=Market-State-Telemetry defined", "Primitive: P3=Forecast-and-Evidence LIVE (Decision Asset substrate)"]
+    },
+    {
+      "id": "claim-agentic-commerce-p2-p6-live",
+      "tier": "fail",
+      "regex": "\"primitives_live\"\\s*:\\s*\\[[^\\]]*p[26]-",
+      "flags": "i",
+      "files": ["site/.well-known/agentic-commerce.json"],
+      "why": "P2 (honest-empty, UNRATED) and P6 (no callable surface) are not live primitives; primitives_live lists P1 and P3 only (809 §7)",
+      "fixtures": ["\"primitives_live\": [\"p1-identity-and-mandate\", \"p6-market-state-telemetry\"]", "\"primitives_live\": [\"p2-reputation-and-track-record\"]"],
+      "near_misses": ["\"primitives_live\": [\"p1-identity-and-mandate\", \"p3-forecast-and-evidence\"]", "\"primitives_defined\": [\"p6-market-state-telemetry\"]"]
     }
   ],
   "pending": [

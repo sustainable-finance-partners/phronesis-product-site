@@ -403,6 +403,75 @@ ROWS: list[dict[str, Any]] = [
 TODAY = dt.date(2026, 11, 6)
 
 
+class StatusRuleResidueTests(unittest.TestCase):
+    """809 7's general rule on what the first round missed, and the /verticals deletions."""
+
+    def test_p6_is_defined_in_agents_txt_not_live(self) -> None:
+        lines = read_site(".well-known/agents.txt").split("\n")
+        self.assertEqual(
+            lines.count(f"Primitive: P6=Market-State-Telemetry {text.STATUS_DEFINED}"), 1
+        )
+        self.assertFalse([ln for ln in lines if ln.startswith("Primitive: P6=") and "LIVE" in ln])
+
+    def test_v0_takes_the_catalogued_token_not_live(self) -> None:
+        lines = read_site(".well-known/agents.txt").split("\n")
+        v0 = [ln for ln in lines if ln.startswith("Vertical: V0=")]
+        self.assertEqual(len(v0), 1)
+        self.assertTrue(v0[0].endswith(" meta-vertical CATALOGUED"), v0)
+        self.assertNotIn("LIVE", v0[0])
+
+    def test_healthcare_carries_no_hipaa_safe_harbor_claim(self) -> None:
+        agents = read_site(".well-known/agents.txt")
+        self.assertEqual(agents.split("\n").count("Vertical: V3=Healthcare CATALOGUED"), 1)
+        home = read_site("index.html")
+        self.assertEqual(
+            home.count(
+                '<span class="vertical-name">Healthcare</span>'
+                '<span class="vertical-status records" data-vertical="V#3">'
+            ),
+            1,
+        )
+        self.assertNotIn("HIPAA Safe Harbor", home)
+        self.assertNotIn("HIPAA Safe Harbor", agents)
+
+    def test_agentic_commerce_lists_only_p1_and_p3_live_and_p6_defined(self) -> None:
+        service = json.loads(read_site(".well-known/agentic-commerce.json"))["service"]
+        self.assertEqual(
+            service["primitives_live"],
+            ["p1-identity-and-mandate", "p3-forecast-and-evidence"],
+        )
+        self.assertEqual(service["primitives_defined"], ["p6-market-state-telemetry"])
+        self.assertEqual(
+            service["primitives_planned"],
+            ["p4-coordination-and-negotiation", "p5-outcome-conditional"],
+        )
+
+    def test_the_p6_card_is_styled_defined_not_as_a_live_card(self) -> None:
+        home = read_site("index.html")
+        self.assertEqual(
+            home.count(
+                '<div class="primitive-card defined">\n        <span class="p-prefix">P6</span>'
+            ),
+            1,
+        )
+        self.assertEqual(home.count(".primitive-card.defined .p-prefix::after {"), 1)
+        self.assertIn('content: " · defined";', home)
+
+    def test_verticals_page_has_no_first_archetype_minted_claim(self) -> None:
+        page = read_site("verticals.html")
+        self.assertNotIn("archetype minted", page)
+        for kept in (
+            '<span class="archetype-id">H1</span> US disease incidence per 100k by demographic '
+            "and region (e.g., Type 2 diabetes)</li>",
+            '<span class="archetype-id">C1</span> SpaceX IPO probability by Q4 2027 '
+            "(52% canonical p50)</li>",
+            '<span class="archetype-id">R1</span> Humanoid robot industry deployment cadence by '
+            "region and customer-segment</li>",
+        ):
+            with self.subTest(kept=kept):
+                self.assertEqual(page.count(kept), 1)
+
+
 class VerticalRefreshTests(unittest.TestCase):
     home: str
 

@@ -342,9 +342,17 @@
   margin: 0;
   font-size: var(--text-sm);
 }
-.primitive-card.planned {
+.primitive-card.planned,
+.primitive-card.defined {
   background: rgba(255, 255, 255, 0.5);
   border-style: dashed;
+}
+.primitive-card.defined .p-prefix::after {
+  content: " · defined";
+  color: var(--color-whisper);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
 }
 .primitive-card.planned .p-prefix::after {
   content: " · planned";
@@ -562,7 +570,7 @@
         <h3>Outcome-Conditional</h3>
         <p>Contingent engagement: the fee scales with forecast accuracy via escrow + scored settlement; integrates with the pre-transaction Mandate Risk control point.</p>
       </div>
-      <div class="primitive-card">
+      <div class="primitive-card defined">
         <span class="p-prefix">P6</span>
         <h3>Market-State Telemetry</h3>
         <p>Present-tense market truth agents route on — the agentic-marketplace microstructure feed.</p>
@@ -630,7 +638,7 @@
       <li class="vertical-item"><span class="vertical-num">V#0</span><span class="vertical-name">AI Industrial Mobilization &amp; Situational Awareness <em>(meta-vertical)</em></span><span class="vertical-status catalogued" data-vertical="V#0">catalogued</span></li>
       <li class="vertical-item"><span class="vertical-num">V#1</span><span class="vertical-name">Energy Transition</span><span class="vertical-status records" data-vertical="V#1">37 records</span></li>
       <li class="vertical-item"><span class="vertical-num">V#2</span><span class="vertical-name">Computing + AI Infrastructure <em>(proving first)</em></span><span class="vertical-status catalogued" data-vertical="V#2">catalogued</span></li>
-      <li class="vertical-item"><span class="vertical-num">V#3</span><span class="vertical-name">Healthcare (HIPAA Safe Harbor)</span><span class="vertical-status records" data-vertical="V#3">1 records</span></li>
+      <li class="vertical-item"><span class="vertical-num">V#3</span><span class="vertical-name">Healthcare</span><span class="vertical-status records" data-vertical="V#3">1 records</span></li>
       <li class="vertical-item"><span class="vertical-num">V#4</span><span class="vertical-name">Climate Physical Risk</span><span class="vertical-status records" data-vertical="V#4">2 records</span></li>
       <li class="vertical-item"><span class="vertical-num">V#5</span><span class="vertical-name">Regulatory</span><span class="vertical-status records" data-vertical="V#5">5 records</span></li>
       <li class="vertical-item"><span class="vertical-num">V#6</span><span class="vertical-name">Supply-Chain</span><span class="vertical-status records" data-vertical="V#6">1 records</span></li>
