@@ -32,10 +32,10 @@
     "pricing_machine_readable": "https://api.phronesisintel.com/.well-known/pricing.json"
   },
   "authentication": {
-    "supported_methods": ["ap2_mandate", {"stripe_spt": "in_build"}, "bearer_jwt"],
+    "supported_methods": [{"ap2_mandate": "planned"}, {"stripe_spt": "in_build"}, "bearer_jwt"],
     "agent_paths": {
       "path_a_autonomous_agent": {
-        "description": "Agents authenticate with an Authority Credential; an AP2 mandate, where presented, is recorded as evidence of delegated authority (Terms §4.3).",
+        "description": "Agents authenticate with an Authority Credential; an AP2 mandate is recorded as unverified context where presented; mandate verification is planned (Terms §4.3).",
         "mandate_types_required": ["intent_mandate", "cart_mandate"],
         "mandate_format": "verifiable_credential_signed_by_principal",
         "authorization_budget_seconds": 5
@@ -83,7 +83,8 @@
     "timestamp_discipline": true
   },
   "trust_stack": {
-    "layer_1_authorization": "ap2_mandate_verification",
+    "layer_1_authorization": "ap2_mandate_recorded_unverified",
+    "layer_1_authorization_availability": "planned",
     "layer_2_orchestration": "phronesis_orchestration_layer",
     "layer_3_settlement": "stripe_spt_execution",
     "layer_3_settlement_availability": "in_build",

@@ -88,6 +88,9 @@ RULES_810: tuple[tuple[str, str, int], ...] = (
     ("VERTICAL_RECORD_ONE", r'\(b\) pluralise \*"([^"]+)"\*', 25),
     ("P6_RESIGNED", r're-signed as \*"([^"]+)"\*\*\*', 25),
     ("P6_CARD_DESCRIPTION", r'the P6 card description:\*\* \*"([^"]+)"\*', 25),
+    # 810 §4 "Corporate #24" (line 26): the AP2 claim-state, applied by 811 §4 to this site's
+    # manifest, agents.txt and spec wherever an AP2 mandate was said to be evidence or verified.
+    ("AP2_CLAIM_STATE", r'an AP2 mandate is \*"([^"]+)"\*', 26),
 )
 #: 810's list of the three badge words (checked against the forms, not written).
 THREE_WORDS_RULE = r'the three words: \*"(.+?)"\*;'
@@ -110,6 +113,7 @@ WHERE: dict[str, str] = {
     "VERTICAL_RECORD_ONE": '810:25 - (b) pluralise *"1 record"*',
     "P6_RESIGNED": "810:25 - (c) the signed string is re-signed (no space)",
     "P6_CARD_DESCRIPTION": "810:25 - (e) the P6 card description",
+    "AP2_CLAIM_STATE": "810:26 - an AP2 mandate is ... (the claim-state; 811 section 4)",
 }
 
 
@@ -246,6 +250,7 @@ ORDER = (
     "VERTICAL_RECORD_ONE",
     "P6_RESIGNED",
     "P6_CARD_DESCRIPTION",
+    "AP2_CLAIM_STATE",
     "PRIMITIVES_STATUS",
 )
 

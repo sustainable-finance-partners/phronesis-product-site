@@ -150,18 +150,7 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
 <h2>Error semantics</h2>
 <p>Errors are structured with stable machine-recoverable codes. Sixteen-code enumeration covers the canonical failure modes:</p>
 
-<pre><code>{
-  "error": {
-    "code": "MANDATE_INVALID_SIGNATURE",
-    "message": "AP2 mandate signature verification failed",
-    "category": "auth",
-    "retryable": false,
-    "documentation_url": "https://phronesisintel.com/spec#errors",
-    "request_id": "req_01HXYZA1B2C3D4E5F6G7H8J9K0"
-  }
-}</code></pre>
-
-<p>Code categories: <code>auth</code> (mandate or JWT failure) · <code>validation</code> (request shape error) · <code>rate_limit</code> (per-tenant or per-mandate limit hit) · <code>circuit</code> (downstream circuit-breaker tripped) · <code>substrate</code> (canonical-correctness violation) · <code>billing</code> (charge failure) · <code>not_found</code> · <code>internal</code>. Retryable errors include <code>rate_limit</code> and <code>circuit</code>; all others are non-retryable.</p>
+<p>Code categories: <code>auth</code> (JWT failure) · <code>validation</code> (request shape error) · <code>rate_limit</code> (per-tenant or per-mandate limit hit) · <code>circuit</code> (downstream circuit-breaker tripped) · <code>substrate</code> (canonical-correctness violation) · <code>billing</code> (charge failure) · <code>not_found</code> · <code>internal</code>. Retryable errors include <code>rate_limit</code> and <code>circuit</code>; all others are non-retryable.</p>
 
 <h2>Meter events and pricing</h2>
 <p>Forecast minting fires a Stripe meter event at the moment of canonical persistence to the ledger (in build). Meter event amounts are reported with sub-cent precision (Decimal lift, no float). The published per-call price and the inference cost-attestation component are both in <a href="/pricing.json">/pricing.json</a>.</p>
