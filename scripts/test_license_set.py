@@ -1524,11 +1524,13 @@ RETIRED_CALIBRATION_SENTENCES = (
     "calibration grades appear when a series reaches ten resolutions",
     "ten resolved records per series",
     "honest-empty until ten resolutions",
+    # 785:34's S.13 v2 text, re-signed by COO 813 §2.3 (813:20).
+    "pooled across series;",
 )
 
 
 class CalibrationS13Tests(unittest.TestCase):
-    """S.13 v2 verbatim, where 785:34 names it, with no typed count beside it."""
+    """S.13 v2 verbatim (813:20, re-signing 785:34), where 785:34 names it, with no typed count."""
 
     s13: str
 
@@ -1536,10 +1538,11 @@ class CalibrationS13Tests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.s13 = pinned()["S.13"]
 
-    def test_s13_is_pinned_from_785_line_34(self) -> None:
+    def test_s13_is_pinned_from_813_line_20(self) -> None:
         row = next(r for r in load_pin()["strings"] if r["id"] == "S.13")
-        self.assertTrue(str(row["source"]).startswith("00_Operating_Model/CCO_DISPATCH_785_"))
-        self.assertEqual(row["line"], 34)
+        self.assertTrue(str(row["source"]).startswith("00_Operating_Model/CCO_DISPATCH_813_"))
+        self.assertEqual(row["line"], 20)
+        self.assertIn("under any proper scoring rule, with calibration stated per rule family", self.s13)
         self.assertEqual(sha256(row["text"]), row["sha256"])
         self.assertTrue(self.s13.startswith("Phronesis issues no calibration grade today."))
         self.assertFalse(any(ch.isdigit() for ch in self.s13))  # no typed count
