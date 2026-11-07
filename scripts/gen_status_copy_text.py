@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate ``scripts/status_copy_text.py`` from the byte copy of COO dispatch 809.
+"""Generate ``scripts/status_copy_text.py`` from the byte copies of COO dispatches 809 and 810.
 
 The homepage status strings are signed in dispatch 809 §7 (2026-11-06). They are never
 retyped: this script cuts each one from its line of the byte copy in
@@ -14,6 +14,21 @@ OpenAPI document. The only code that names P6 is a seed-question label
 (``mcp_server/decision_asset/market_memory_cohort.py:55``). A published taxonomy entry
 with no callable surface is "defined" (809 §7 line 39), so :data:`P6_STATUS` is the
 extracted word ``defined``; the word itself is still cut from the source, never typed.
+
+COO dispatch 810 §4 (line 25 of the copy in ``tests/fixtures/dispatch_810_sources/``) adds
+the strings product site #45 renders, cut the same way:
+
+* a third vertical badge, ``VERTICAL_SERIES_LIVE``;
+* the singular form, ``VERTICAL_RECORD_ONE``;
+* the P6 piece of the primitive-status sentence, re-signed without the space before its
+  semicolon (``P6_RESIGNED``);
+* the P6 card's description (``P6_CARD_DESCRIPTION``).
+
+810's list of the three badge words must be exactly 809's two forms with the new one between
+them, and the singular must be the plural's ``n = 1`` form less its final ``s``. Otherwise
+the generator refuses. ``PRIMITIVES_STATUS`` is 809's signed sentence with its P6 piece
+(``P6 {live | defined} ;``) replaced by 810's re-signed one, which must be ``P6`` and the P6
+word and a semicolon.
 
 Usage:
   python3 scripts/gen_status_copy_text.py           # write the module
@@ -35,6 +50,13 @@ SOURCE = (
     / "fixtures"
     / "dispatch_809_sources"
     / "dispatch_809_20261106.md"
+)
+SOURCE_810 = (
+    REPO_ROOT
+    / "tests"
+    / "fixtures"
+    / "dispatch_810_sources"
+    / "dispatch_810_20261106.md"
 )
 MODULE = REPO_ROOT / "scripts" / "status_copy_text.py"
 
@@ -60,6 +82,17 @@ RULES: tuple[tuple[str, str, int], ...] = (
     ),
 )
 
+#: (constant, the rule, its line in dispatch 810): §4 "Product site #45".
+RULES_810: tuple[tuple[str, str, int], ...] = (
+    ("VERTICAL_SERIES_LIVE", r'a third vertical badge state \*\*"([^"]+)"\*\*', 25),
+    ("VERTICAL_RECORD_ONE", r'\(b\) pluralise \*"([^"]+)"\*', 25),
+    ("P6_RESIGNED", r're-signed as \*"([^"]+)"\*\*\*', 25),
+    ("P6_CARD_DESCRIPTION", r'the P6 card description:\*\* \*"([^"]+)"\*', 25),
+)
+#: 810's list of the three badge words (checked against the forms, not written).
+THREE_WORDS_RULE = r'the three words: \*"(.+?)"\*;'
+THREE_WORDS_SEPARATOR = '" \u00b7 "'
+
 #: The slot in the signed primitive-status sentence: ``P6 {<word> | <word>}``.
 SLOT_RE = re.compile(r"P6 (\{([a-z]+) \| ([a-z]+)\})")
 
@@ -73,6 +106,10 @@ WHERE: dict[str, str] = {
     "METRIC_RETIRED": '809:41 - the :445 label as served ("In production")',
     "METRIC_LIVE": '809:41 - :445 ... -> *"Live"* if it labels the API/register',
     "PRIMITIVES_STATUS_SIGNED": "809:41 - the :572 sentence as signed, its P6 slot open",
+    "VERTICAL_SERIES_LIVE": '810:25 - a third vertical badge state **"series live"**',
+    "VERTICAL_RECORD_ONE": '810:25 - (b) pluralise *"1 record"*',
+    "P6_RESIGNED": "810:25 - (c) the signed string is re-signed (no space)",
+    "P6_CARD_DESCRIPTION": "810:25 - (e) the P6 card description",
 }
 
 
@@ -94,8 +131,8 @@ def extract(raw: str, rule: str) -> tuple[int, str]:
     return hits[0]
 
 
-def constants(raw: str) -> dict[str, str]:
-    """Every constant of the module, cut from ``raw`` (the dispatch's text)."""
+def constants(raw: str, raw_810: str) -> dict[str, str]:
+    """Every constant of the module, cut from ``raw`` (809's text) and ``raw_810`` (810's)."""
     out: dict[str, str] = {}
     for name, rule, line in RULES:
         number, text = extract(raw, rule)
@@ -113,8 +150,25 @@ def constants(raw: str) -> dict[str, str]:
     out["P6_SLOT"] = slot.group(1)
     # The code decides the word (module docstring): no callable surface -> "defined".
     out["P6_STATUS"] = out["STATUS_DEFINED"]
+    for name, rule, line in RULES_810:
+        number, text = extract(raw_810, rule)
+        if number != line:
+            raise ExtractionError(f"{name}: found on 810 line {number}, expected {line}")
+        out[name] = text
+    _, listed = extract(raw_810, THREE_WORDS_RULE)
+    words = listed.split(THREE_WORDS_SEPARATOR)
+    forms = [out["VERTICAL_RECORDS"], out["VERTICAL_SERIES_LIVE"], out["VERTICAL_CATALOGUED"]]
+    if words != forms:
+        raise ExtractionError(f"810's three badge words {words} are not the forms {forms}")
+    if out["VERTICAL_RECORD_ONE"] + "s" != out["VERTICAL_RECORDS"].replace("{n}", "1"):
+        raise ExtractionError("the singular form is not the plural's n = 1 form less its s")
+    if out["P6_RESIGNED"] != f"P6 {out['P6_STATUS']};":
+        raise ExtractionError(f"the re-signed P6 piece {out['P6_RESIGNED']!r} is not P6 <word>;")
+    signed_piece = f"P6 {out['P6_SLOT']} ;"
+    if out["PRIMITIVES_STATUS_SIGNED"].count(signed_piece) != 1:
+        raise ExtractionError(f"809's sentence does not carry {signed_piece!r} once")
     out["PRIMITIVES_STATUS"] = out["PRIMITIVES_STATUS_SIGNED"].replace(
-        out["P6_SLOT"], out["P6_STATUS"], 1
+        signed_piece, out["P6_RESIGNED"], 1
     )
     return out
 
@@ -146,8 +200,10 @@ def _assign(name: str, text: str) -> list[str]:
 HEADER = '''"""The homepage status strings, verbatim (GENERATED - never edit by hand).
 
 Extracted programmatically, never retyped, by ``scripts/gen_status_copy_text.py`` from the
-byte copy ``tests/fixtures/dispatch_809_sources/dispatch_809_20261106.md`` of COO dispatch
-809 (2026-11-06, pin ``c7271feef01379d7``), section 7:
+byte copies ``tests/fixtures/dispatch_809_sources/dispatch_809_20261106.md`` of COO dispatch
+809 (2026-11-06, pin ``c7271feef01379d7``) and
+``tests/fixtures/dispatch_810_sources/dispatch_810_20261106.md`` of COO dispatch 810 v2
+(2026-11-06, pin ``6812b2b25843eef7``). From 809, section 7:
 
 * line 39 (the rule): the three status words ``STATUS_LIVE``, ``STATUS_DEFINED`` and
   ``STATUS_PLANNED``, and the two register-derived vertical badges ``VERTICAL_RECORDS``
@@ -158,10 +214,15 @@ byte copy ``tests/fixtures/dispatch_809_sources/dispatch_809_20261106.md`` of CO
   (``METRIC_LIVE``); the ``:572`` primitive-status sentence as signed, its P6 slot open
   (``PRIMITIVES_STATUS_SIGNED``).
 
-``PRIMITIVES_STATUS`` is the signed sentence with its one ``P6_SLOT`` replaced by
-``P6_STATUS``, the word the code supports (``STATUS_DEFINED``: no callable market-state
-surface on the app's ``origin/main``; see the generator's docstring). Every other byte is
-809's. ``scripts/test_status_strings.py`` re-derives every constant and asserts equality.
+From 810, section 4 line 25 (product site #45): the third vertical badge
+``VERTICAL_SERIES_LIVE``, the singular ``VERTICAL_RECORD_ONE``, the re-signed P6 piece
+``P6_RESIGNED`` and the P6 card's ``P6_CARD_DESCRIPTION``.
+
+``PRIMITIVES_STATUS`` is 809's signed sentence with its P6 piece (``P6`` and ``P6_SLOT`` and
+`` ;``) replaced by ``P6_RESIGNED``, which is ``P6`` and ``P6_STATUS`` (the word the code
+supports, ``STATUS_DEFINED``: no callable market-state surface on the app's
+``origin/main``; see the generator's docstring) and a semicolon. Every other byte is 809's.
+``scripts/test_status_strings.py`` re-derives every constant and asserts equality.
 """
 
 from __future__ import annotations
@@ -181,6 +242,10 @@ ORDER = (
     "PRIMITIVES_STATUS_SIGNED",
     "P6_SLOT",
     "P6_STATUS",
+    "VERTICAL_SERIES_LIVE",
+    "VERTICAL_RECORD_ONE",
+    "P6_RESIGNED",
+    "P6_CARD_DESCRIPTION",
     "PRIMITIVES_STATUS",
 )
 
@@ -200,7 +265,7 @@ def render(values: dict[str, str]) -> str:
             )
         else:
             lines.append(
-                "#: the sentence the page renders: the signed one, P6_SLOT -> P6_STATUS"
+                "#: the sentence the page renders: 809's, its P6 piece -> P6_RESIGNED"
             )
         lines += _assign(name, values[name])
     return "\n".join(lines) + "\n"
@@ -212,7 +277,8 @@ def main(argv: list[str]) -> int:
         print(__doc__)
         return 2
     raw = SOURCE.read_bytes().decode("utf-8")
-    text = render(constants(raw))
+    raw_810 = SOURCE_810.read_bytes().decode("utf-8")
+    text = render(constants(raw, raw_810))
     if args == ["--check"]:
         current = MODULE.read_bytes().decode("utf-8").replace("\r\n", "\n")
         if current != text:

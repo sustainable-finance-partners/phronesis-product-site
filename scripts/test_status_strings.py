@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-"""The homepage status strings render COO dispatch 809 §7 exactly, and the vertical
-badges are register-derived.
+"""The homepage status strings render COO dispatches 809 §7 and 810 §4 exactly, and the
+vertical badges are register-derived.
 
 * The byte copy of dispatch 809 (``tests/fixtures/dispatch_809_sources/``) still hashes
   to its recorded digest, and its README records the same bytes and digest.
 * Every constant of ``status_copy_text`` is re-derived from that copy by an extraction
   independent of the generator's, and the module equals the generator's output.
-* The P6 word is the one the code supports (``defined``), put into the signed sentence's
-  one slot; every other byte of the sentence is 809's.
+* The P6 word is the one the code supports (``defined``). The signed sentence's P6 piece
+  is 810's re-signed ``P6 defined;``, and every other byte of the sentence is 809's.
+* The byte copy of dispatch 810 (``tests/fixtures/dispatch_810_sources/``) hashes to its
+  digest, and the four strings its line 25 signs are re-derived from it: the "series live"
+  badge, the singular "1 record", the re-signed P6 piece and the P6 card's description.
 * The home page renders them: the register's label (``Live``), the primitive-status
   sentence, the thirteen badges in the register-derived forms, and one JSON-LD ``Offer``
   (the API, free reads; no mint offer while the price list shows every mint in build).
@@ -55,6 +58,11 @@ APPARATUS = Path(
     r"\Sustainable Finance Partners Business Apparatus\00_Operating_Model"
 )
 ORIGINAL_GLOB = "CCO_DISPATCH_809_*.md"
+SOURCES_810 = REPO_ROOT / "tests" / "fixtures" / "dispatch_810_sources"
+D810 = SOURCES_810 / "dispatch_810_20261106.md"
+D810_BYTES = 9288
+D810_SHA256 = "6812b2b25843eef76f5388a67ed21a71ba51c418b3f5ad386a19dbe3a8794361"
+ORIGINAL_GLOB_810 = "CCO_DISPATCH_810_*.md"
 API_TREE_ENV = "PHRONESIS_API_TREE"
 API_REV_ENV = "PHRONESIS_API_REV"
 #: The visible hero line the JSON-LD Offer's description is taken from (no new copy).
@@ -68,6 +76,32 @@ def read_site(rel: str) -> str:
 
 def source_line(number: int) -> str:
     return D809.read_bytes().decode("utf-8").split("\n")[number - 1]
+
+
+def source_line_810(number: int) -> str:
+    return D810.read_bytes().decode("utf-8").split("\n")[number - 1]
+
+
+def _both_sources() -> tuple[str, str]:
+    return D809.read_bytes().decode("utf-8"), D810.read_bytes().decode("utf-8")
+
+
+#: (constant, its lettered item in 810 line 25, the item's one quoted string).
+ITEMS_810: tuple[tuple[str, str], ...] = (
+    ("VERTICAL_SERIES_LIVE", "(a)"),
+    ("VERTICAL_RECORD_ONE", "(b)"),
+    ("P6_RESIGNED", "(c)"),
+    ("P6_CARD_DESCRIPTION", "(e)"),
+)
+
+
+def item_810(letter: str) -> str:
+    """The text of one lettered item of 810 line 25, up to the next item."""
+    line = source_line_810(25)
+    start = line.index(f" {letter} ") + len(letter) + 2
+    nxt = [line.find(f" ({c}) ", start) for c in "abcdef"]
+    ends = [i for i in nxt if i > start]
+    return line[start : min(ends)] if ends else line[start:]
 
 
 def quoted(segment: str) -> list[str]:
@@ -165,30 +199,93 @@ class SourceTests(unittest.TestCase):
         self.assertTrue(old.startswith("P1, P2, P3, P6 live on production today"))
         self.assertEqual(new, text.PRIMITIVES_STATUS_SIGNED)
 
-    def test_the_p6_word_fills_the_one_slot_and_nothing_else_moves(self) -> None:
+    def test_the_p6_piece_is_810s_and_nothing_else_moves(self) -> None:
         signed = text.PRIMITIVES_STATUS_SIGNED
         self.assertEqual(signed.count(text.P6_SLOT), 1)
         self.assertEqual(
             text.P6_SLOT, "{" + f"{text.STATUS_LIVE} | {text.STATUS_DEFINED}" + "}"
         )
         self.assertEqual(text.P6_STATUS, text.STATUS_DEFINED)
-        before, after = signed.split(text.P6_SLOT)
-        self.assertEqual(text.PRIMITIVES_STATUS, before + text.P6_STATUS + after)
+        # 809 signed "P6 {live | defined} ;"; 810 re-signs the piece "P6 defined;".
+        piece = f"P6 {text.P6_SLOT} ;"
+        self.assertEqual(signed.count(piece), 1)
+        self.assertEqual(text.P6_RESIGNED, f"P6 {text.P6_STATUS};")
+        before, after = signed.split(piece)
+        self.assertEqual(text.PRIMITIVES_STATUS, before + text.P6_RESIGNED + after)
+        self.assertNotIn(" ;", text.PRIMITIVES_STATUS)
 
     def test_the_module_is_the_generators_output(self) -> None:
         module = (REPO_ROOT / "scripts" / "status_copy_text.py").read_bytes()
-        expected = gen.render(gen.constants(D809.read_bytes().decode("utf-8")))
+        expected = gen.render(gen.constants(*_both_sources()))
         self.assertEqual(module.decode("utf-8").replace("\r\n", "\n"), expected)
 
     def test_a_rule_that_does_not_match_once_refuses(self) -> None:
-        raw = D809.read_bytes().decode("utf-8")
+        raw, raw_810 = _both_sources()
         with self.assertRaises(gen.ExtractionError):
-            gen.constants(raw.replace("Three status words: ", "Status words: ", 1))
+            gen.constants(raw.replace("Three status words: ", "Status words: ", 1), raw_810)
         doubled = raw.replace(
             source_line(41), source_line(41) + "\n" + source_line(41), 1
         )
         with self.assertRaises(gen.ExtractionError):
-            gen.constants(doubled)
+            gen.constants(doubled, raw_810)
+        line = source_line_810(25)
+        for name, broken in {
+            "810 line doubled": raw_810.replace(line, line + "\n" + line, 1),
+            "a third badge renamed": raw_810.replace(
+                '**"series live"** —', '**"series-live"** —', 1
+            ),
+            "the three words out of order": raw_810.replace(
+                '"series live" · "catalogued"*', '"catalogued" · "series live"*', 1
+            ),
+            "a singular that is not the plural's": raw_810.replace(
+                '*"1 record"*', '*"1 recorded"*', 1
+            ),
+            "a P6 piece that is not P6 <word>;": raw_810.replace(
+                '*"P6 defined;"***', '*"P6 live;"***', 1
+            ),
+        }.items():
+            with self.subTest(case=name):
+                self.assertNotEqual(broken, raw_810)
+                with self.assertRaises(gen.ExtractionError):
+                    gen.constants(raw, broken)
+
+    def test_the_810_copy_is_the_bytes_the_strings_were_cut_from(self) -> None:
+        raw = D810.read_bytes()
+        self.assertEqual(len(raw), D810_BYTES)
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), D810_SHA256)
+        self.assertNotIn(b"\r", raw)
+        self.assertEqual(
+            hashlib.sha256(raw.replace(b"\r\n", b"\n")).hexdigest()[:16],
+            "6812b2b25843eef7",
+        )
+        readme = (SOURCES_810 / "README.md").read_text(encoding="utf-8")
+        row = f"| `{D810.name}` |"
+        self.assertEqual(readme.count(row), 1)
+        line = next(x for x in readme.splitlines() if x.startswith(row))
+        self.assertIn(f"| {D810_BYTES} | `{D810_SHA256}` |", line)
+
+    def test_the_810_strings_are_line_25s(self) -> None:
+        self.assertTrue(source_line_810(25).startswith("- **Product site #45 (after #44):**"))
+        for name, letter in ITEMS_810:
+            with self.subTest(constant=name):
+                found = quoted(item_810(letter).split("—", 1)[0] if letter == "(a)" else item_810(letter))
+                self.assertEqual(found[0], getattr(text, name))
+        # The three words, in 810's order, are 809's two forms with the new one between.
+        words = quoted(item_810("(a)").split("the three words: ", 1)[1])
+        self.assertEqual(
+            words,
+            [text.VERTICAL_RECORDS, text.VERTICAL_SERIES_LIVE, text.VERTICAL_CATALOGUED],
+        )
+
+    @unittest.skipUnless(
+        APPARATUS.is_dir(), "the OneDrive original is on the desk only"
+    )
+    def test_the_810_original_is_the_copys_bytes(self) -> None:
+        originals = sorted(APPARATUS.glob(ORIGINAL_GLOB_810))
+        self.assertEqual(len(originals), 1, originals)
+        self.assertEqual(
+            hashlib.sha256(originals[0].read_bytes()).hexdigest(), D810_SHA256
+        )
 
     @unittest.skipUnless(
         APPARATUS.is_dir(), "the OneDrive original is on the desk only"
@@ -275,6 +372,7 @@ class HomepageTests(unittest.TestCase):
         parser.feed(self.home)
         self.assertEqual(parser.paragraphs.count(text.PRIMITIVES_STATUS), 1)
         self.assertNotIn(text.P6_SLOT, self.home)
+        self.assertNotIn("P6 defined ;", self.home)  # 809's bytes, re-signed by 810
         self.assertNotIn("live on production", self.home.casefold())
 
     def _badges(self) -> list[re.Match[str]]:
@@ -294,9 +392,14 @@ class HomepageTests(unittest.TestCase):
             with self.subTest(vertical=m.group(4)):
                 if m.group(2) == refresh_count.CATALOGUED_CLASS:
                     self.assertEqual(m.group(6), text.VERTICAL_CATALOGUED)
+                elif m.group(2) == refresh_count.SERIES_LIVE_CLASS:
+                    self.assertEqual(m.group(6), text.VERTICAL_SERIES_LIVE)
+                    self.assertIn(m.group(4), ("V#1", "V#2"))  # agents.txt's SERIES-LIVE
                 else:
                     self.assertEqual(m.group(2), refresh_count.RECORDS_CLASS)
-                    self.assertIsNotNone(records.fullmatch(m.group(6)))
+                    if m.group(6) != text.VERTICAL_RECORD_ONE:
+                        self.assertIsNotNone(records.fullmatch(m.group(6)))
+                        self.assertNotEqual(m.group(6), text.VERTICAL_RECORDS.replace("{n}", "1"))
         self.assertEqual(
             badges[0].group(6), text.VERTICAL_CATALOGUED
         )  # V#0: no subject
@@ -315,7 +418,11 @@ class HomepageTests(unittest.TestCase):
         self.assertLessEqual(total, int(span.group(4)))
 
     def test_the_badge_classes_are_styled(self) -> None:
-        for css in (refresh_count.RECORDS_CLASS, refresh_count.CATALOGUED_CLASS):
+        for css in (
+            refresh_count.RECORDS_CLASS,
+            refresh_count.SERIES_LIVE_CLASS,
+            refresh_count.CATALOGUED_CLASS,
+        ):
             with self.subTest(css=css):
                 self.assertEqual(self.home.count(f".vertical-status.{css} {{"), 1)
 
@@ -446,6 +553,16 @@ class StatusRuleResidueTests(unittest.TestCase):
             ["p4-coordination-and-negotiation", "p5-outcome-conditional"],
         )
 
+    def test_the_p6_card_carries_810s_description(self) -> None:
+        home = read_site("index.html")
+        card = home.split('<span class="p-prefix">P6</span>', 1)[1].split("</div>", 1)[0]
+        self.assertEqual(
+            card,
+            "\n        <h3>Market-State Telemetry</h3>\n"
+            f"        <p>{text.P6_CARD_DESCRIPTION}</p>\n      ",
+        )
+        self.assertNotIn("microstructure feed", home)
+
     def test_the_p6_card_is_styled_defined_not_as_a_live_card(self) -> None:
         home = read_site("index.html")
         self.assertEqual(
@@ -470,6 +587,15 @@ class StatusRuleResidueTests(unittest.TestCase):
         ):
             with self.subTest(kept=kept):
                 self.assertEqual(page.count(kept), 1)
+
+
+#: ``/v1/catalog`` in its served shape: V1 and V2 SERIES_LIVE, every other CATALOGUED.
+CATALOG: dict[str, Any] = {
+    "verticals": [
+        {"id": f"V{n}", "status": "SERIES_LIVE" if n in (1, 2) else "CATALOGUED"}
+        for n in range(1, 14)
+    ]
+}
 
 
 class VerticalRefreshTests(unittest.TestCase):
@@ -539,9 +665,7 @@ class VerticalRefreshTests(unittest.TestCase):
         self.assertEqual(
             badges["V#1"], ("records", text.VERTICAL_RECORDS.replace("{n}", "3"))
         )
-        self.assertEqual(
-            badges["V#4"], ("records", text.VERTICAL_RECORDS.replace("{n}", "1"))
-        )
+        self.assertEqual(badges["V#4"], ("records", text.VERTICAL_RECORD_ONE))
         for vid in ("V#0", "V#2", "V#3", "V#12"):
             self.assertEqual(badges[vid], ("catalogued", text.VERTICAL_CATALOGUED))
         self.assertIn(
@@ -627,7 +751,7 @@ class VerticalRefreshTests(unittest.TestCase):
         # page tests cannot see), and a register that lost a record.
         page = self.index.read_bytes().decode("utf-8")
         edited = page.replace(
-            'data-vertical="V#4">' + text.VERTICAL_RECORDS.replace("{n}", "1"),
+            'data-vertical="V#4">' + text.VERTICAL_RECORD_ONE,
             'data-vertical="V#4">' + text.VERTICAL_RECORDS.replace("{n}", "2"),
             1,
         )
@@ -678,6 +802,93 @@ class VerticalRefreshTests(unittest.TestCase):
                 for p in (current, lost)
             ]
         self.assertEqual(codes, [0, 1])
+
+    def test_series_live_shows_only_on_a_catalogued_series_with_no_record(self) -> None:
+        refresh_count.refresh(
+            self.index, _payload(ROWS), TODAY, verticals=True, catalog=CATALOG
+        )
+        badges = self._texts(self.index.read_bytes().decode("utf-8"))
+        # V#2: SERIES_LIVE, no record. V#1: SERIES_LIVE with three: the count shows.
+        self.assertEqual(badges["V#2"], ("series-live", text.VERTICAL_SERIES_LIVE))
+        self.assertEqual(
+            badges["V#1"], ("records", text.VERTICAL_RECORDS.replace("{n}", "3"))
+        )
+        for vid in ("V#0", "V#3", "V#12"):
+            self.assertEqual(badges[vid], ("catalogued", text.VERTICAL_CATALOGUED))
+        ok, lines = refresh_count.check(self.index, _payload(ROWS), TODAY, CATALOG)
+        self.assertTrue(ok)
+        self.assertEqual(
+            lines, ["index.html: OK, current with the register as of 2026-11-06"]
+        )
+
+    def test_check_fails_series_live_the_catalog_does_not_list(self) -> None:
+        refresh_count.refresh(
+            self.index, _payload(ROWS), TODAY, verticals=True, catalog=CATALOG
+        )
+        demoted = {
+            "verticals": [
+                {**v, "status": "CATALOGUED"} if v["id"] == "V2" else v
+                for v in CATALOG["verticals"]
+            ]
+        }
+        for name, catalog in {"no catalog read": None, "V2 catalogued": demoted}.items():
+            with self.subTest(case=name):
+                ok, lines = refresh_count.check(self.index, _payload(ROWS), TODAY, catalog)
+                self.assertFalse(ok)
+                self.assertIn(
+                    "OVERCLAIM V#2: the page states 'series live', "
+                    "the catalog does not list it SERIES_LIVE",
+                    lines,
+                )
+        # A catalogued badge on a series the catalog lists live is a page behind it.
+        refresh_count.refresh(self.index, _payload(ROWS), TODAY, verticals=True)
+        ok, lines = refresh_count.check(self.index, _payload(ROWS), TODAY, CATALOG)
+        self.assertTrue(ok)
+        self.assertIn(
+            "WARN V#2: the page states 'catalogued', the catalog lists it SERIES_LIVE",
+            lines,
+        )
+
+    def test_a_catalog_in_another_shape_refuses_and_writes_nothing(self) -> None:
+        for name, catalog in {
+            "not an object": [],
+            "no verticals": {"series_live": 2},
+            "a vertical with no id": {"verticals": [{"status": "SERIES_LIVE"}]},
+            "a vertical with no status": {"verticals": [{"id": "V2"}]},
+        }.items():
+            with self.subTest(case=name):
+                with self.assertRaises(refresh_count.Refused):
+                    refresh_count.refresh(
+                        self.index, _payload(ROWS), TODAY, verticals=True, catalog=catalog
+                    )
+                self.assertEqual(self.index.read_bytes().decode("utf-8"), self.home)
+
+    def test_the_catalog_ids_are_the_badges_numbers(self) -> None:
+        self.assertEqual(refresh_count.CATALOG_IDS["V#0"], None)
+        for n in range(1, 13):
+            self.assertEqual(refresh_count.CATALOG_IDS[f"V#{n}"], f"V{n}")
+
+    def test_the_command_line_reads_a_catalog_file(self) -> None:
+        source = self.dir / "scorecard.json"
+        source.write_text(json.dumps(_payload(ROWS)), encoding="utf-8")
+        catalog = self.dir / "catalog.json"
+        catalog.write_text(json.dumps(CATALOG), encoding="utf-8")
+        with (
+            mock.patch.object(refresh_count, "INDEX", self.index),
+            mock.patch("builtins.print"),
+        ):
+            rc = refresh_count.main(
+                ["refresh_count.py", "--from-file", str(source), "--catalog-file", str(catalog)]
+            )
+            check_rc = refresh_count.main(
+                ["refresh_count.py", "--check", "--from-file", str(source)]
+            )
+        self.assertEqual(rc, 0)
+        self.assertEqual(
+            self._texts(self.index.read_bytes().decode("utf-8"))["V#2"][1],
+            text.VERTICAL_SERIES_LIVE,
+        )
+        self.assertEqual(check_rc, 1)  # no catalog read: the series-live badge is unsupported
 
     def test_the_command_line_refreshes_the_badges(self) -> None:
         source = self.dir / "scorecard.json"

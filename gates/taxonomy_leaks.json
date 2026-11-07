@@ -277,7 +277,7 @@
       "files": ["site/index.html", "site/verticals.html"],
       "why": "a per-card 'Live on production' status, retired on /verticals (Copy Set §13 E); on the home page the primitive-status sentence that carried it is the one COO dispatch 809 §7 signs",
       "fixtures": ["<span class=\"value\">Live on production</span>", "P1, P2, P3, P6 live on production today (P2 honest-empty)"],
-      "near_misses": ["<span class=\"value\">Production since 2026-04-24</span>", "P3 live; P1 identity live, mandate verification planned; P2 honest-empty (UNRATED until the observation substrate ships); P6 defined ; P4 and P5 planned."]
+      "near_misses": ["<span class=\"value\">Production since 2026-04-24</span>", "P3 live; P1 identity live, mandate verification planned; P2 honest-empty (UNRATED until the observation substrate ships); P6 defined; P4 and P5 planned."]
     },
     {
       "id": "claim-vertical-line-live",
@@ -313,9 +313,9 @@
       "regex": "class=\"vertical-status[^\"]*\"[^>]*>\\s*Live\\s*<",
       "flags": "i",
       "files": ["site/index.html"],
-      "why": "a bare 'Live' badge on the home page's vertical list, retired by COO dispatch 809 §7: each badge is register-derived, '{n} records' or 'catalogued' (scripts/refresh_count.py)",
+      "why": "a bare 'Live' badge on the home page's vertical list, retired by COO dispatch 809 §7: each badge is register-derived, '{n} records', 'series live' or 'catalogued' (COO dispatch 810 §4; scripts/refresh_count.py)",
       "fixtures": ["<span class=\"vertical-status live\">Live</span>", "<span class=\"vertical-status records\" data-vertical=\"V#1\">LIVE</span>"],
-      "near_misses": ["<span class=\"vertical-status records\" data-vertical=\"V#1\">37 records</span>", "<span class=\"vertical-status catalogued\" data-vertical=\"V#0\">catalogued</span>", "<span class=\"metric-value\">Live</span>"]
+      "near_misses": ["<span class=\"vertical-status records\" data-vertical=\"V#1\">37 records</span>", "<span class=\"vertical-status catalogued\" data-vertical=\"V#0\">catalogued</span>", "<span class=\"vertical-status series-live\" data-vertical=\"V#2\">series live</span>", "<span class=\"metric-value\">Live</span>"]
     },
     {
       "id": "claim-home-jsonld-vertical-offer",
