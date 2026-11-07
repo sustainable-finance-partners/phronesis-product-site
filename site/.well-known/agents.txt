@@ -37,7 +37,7 @@ Bench-JSON: https://api.phronesisintel.com/.well-known/bench.json
 # The Phronesis Register License v1.0 governs this register: reading, quoting, citing, retrieval and training are permitted with attribution and a link; bulk redistribution, mirroring and dataset compilation are not; derivative scoring, ranking or repackaging requires a written license. Terms: https://phronesisintel.com/license
 
 # --- Authentication ---
-# Path A (autonomous agents):  Agents authenticate with an Authority Credential; an AP2 mandate, where presented, is recorded as evidence of delegated authority (Terms §4.3).
+# Path A (autonomous agents):  Agents authenticate with an Authority Credential; an AP2 mandate is recorded as unverified context where presented; mandate verification is planned (Terms §4.3).
 #                              Intent Mandate + Cart Mandate as Verifiable Credentials
 # Path B (agents-for-humans):  Stripe SPT (Shared Payment Token) bound to AP2 Cart Mandate (in build)
 # Path C (humans):             Bearer JWT, subscription tiers

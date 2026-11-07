@@ -910,6 +910,49 @@ class VerticalRefreshTests(unittest.TestCase):
         self.assertTrue(any(line.startswith("V#1: ") for line in out))
 
 
+class Ap2ClaimStateTests(unittest.TestCase):
+    """COO 811 §4 with 810 §4's claim-state: no surface says an AP2 mandate is verified, is
+    evidence, or authorizes layer 1. The API stores a presented mandate id as context
+    (mcp_server/decision_asset/mint.py:215-219), and its verification is a 501 stub
+    (mcp_server/tools/billing_charge.py:57-65). No mandate parse or format error path exists,
+    so the spec's auth category reads "JWT failure"."""
+
+    def test_the_claim_state_is_810_line_26s(self) -> None:
+        segment = source_line_810(26).split("an AP2 mandate is ", 1)[1]
+        self.assertEqual(quoted(segment.split("*;", 1)[0] + "*")[0], text.AP2_CLAIM_STATE)
+
+    def test_the_manifest_records_a_mandate_unverified(self) -> None:
+        manifest = json.loads(read_site(".well-known/agentic-commerce.json"))
+        auth = manifest["authentication"]
+        self.assertEqual(auth["supported_methods"][0], {"ap2_mandate": "planned"})
+        self.assertEqual(
+            auth["agent_paths"]["path_a_autonomous_agent"]["description"],
+            "Agents authenticate with an Authority Credential; an AP2 mandate is "
+            f"{text.AP2_CLAIM_STATE} (Terms \u00a74.3).",
+        )
+        trust = manifest["trust_stack"]
+        self.assertEqual(trust["layer_1_authorization"], "ap2_mandate_recorded_unverified")
+        self.assertEqual(trust["layer_1_authorization_availability"], "planned")
+
+    def test_agents_txt_says_the_same(self) -> None:
+        agents = read_site(".well-known/agents.txt")
+        self.assertEqual(agents.count(f"an AP2 mandate is {text.AP2_CLAIM_STATE} (Terms"), 1)
+
+    def test_no_surface_says_a_mandate_is_evidence_or_verified(self) -> None:
+        for rel in (".well-known/agentic-commerce.json", ".well-known/agents.txt", "spec.html"):
+            page = read_site(rel)
+            for gone in (
+                "recorded as evidence of delegated authority",
+                "ap2_mandate_verification",
+                "MANDATE_INVALID_SIGNATURE",
+                "signature verification failed",
+                "(mandate or JWT failure)",
+            ):
+                with self.subTest(file=rel, text=gone):
+                    self.assertNotIn(gone, page)
+        self.assertEqual(read_site("spec.html").count("<code>auth</code> (JWT failure)"), 1)
+
+
 def main(argv: list[str]) -> int:
     if argv[1:]:
         print(__doc__)

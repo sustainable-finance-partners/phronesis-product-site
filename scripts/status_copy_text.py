@@ -31,6 +31,7 @@ from __future__ import annotations
 from typing import Final
 
 __all__ = [
+    "AP2_CLAIM_STATE",
     "METRIC_LIVE",
     "METRIC_RETIRED",
     "P6_CARD_DESCRIPTION",
@@ -81,6 +82,11 @@ P6_RESIGNED: Final[str] = "P6 defined;"
 #: 810:25 - (e) the P6 card description
 P6_CARD_DESCRIPTION: Final[str] = (
     "Market-State Telemetry — defined; no feed is served today."
+)
+#: 810:26 - an AP2 mandate is ... (the claim-state; 811 section 4)
+AP2_CLAIM_STATE: Final[str] = (
+    "recorded as unverified context where presented; mandate verification is "
+    "planned"
 )
 #: the sentence the page renders: 809's, its P6 piece -> P6_RESIGNED
 PRIMITIVES_STATUS: Final[str] = (
