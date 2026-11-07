@@ -952,6 +952,16 @@ class Ap2ClaimStateTests(unittest.TestCase):
                     self.assertNotIn(gone, page)
         self.assertEqual(read_site("spec.html").count("<code>auth</code> (JWT failure)"), 1)
 
+    def test_the_spec_auth_line_states_the_claim_state(self) -> None:
+        """COO 812 §1: of the four AP2 lines 811 listed, only the Auth line said a mandate is
+        bound to the caller today; it takes the claim-state. The other three describe the
+        flow as forward-state and stand."""
+        spec = read_site("spec.html")
+        self.assertEqual(spec.count(f"AP2 mandate: {text.AP2_CLAIM_STATE}.</div>"), 1)
+        self.assertNotIn("delegated-authority evidence bound to the authenticated caller", spec)
+        self.assertEqual(spec.count("FORWARD-STATE example"), 1)
+        self.assertEqual(spec.count("is <strong>FORWARD-STATE</strong>"), 1)
+
 
 def main(argv: list[str]) -> int:
     if argv[1:]:
