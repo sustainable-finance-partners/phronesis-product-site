@@ -912,10 +912,10 @@ class VerticalRefreshTests(unittest.TestCase):
 
 class Ap2ClaimStateTests(unittest.TestCase):
     """COO 811 §4 with 810 §4's claim-state: no surface says an AP2 mandate is verified, is
-    evidence, or authorizes layer 1. The API stores a presented mandate id as context
-    (mcp_server/decision_asset/mint.py:215-219), and its verification is a 501 stub
-    (mcp_server/tools/billing_charge.py:57-65). No mandate parse or format error path exists,
-    so the spec's auth category reads "JWT failure"."""
+    evidence, or authorizes layer 1. The API stores a presented mandate id as context only,
+    its verification is not implemented, and it has no mandate parse or format error path,
+    so the spec's auth category reads "JWT failure" (the code citations are in the CCO's
+    handback to the COO; the API repository is private)."""
 
     def test_the_claim_state_is_810_line_26s(self) -> None:
         segment = source_line_810(26).split("an AP2 mandate is ", 1)[1]
