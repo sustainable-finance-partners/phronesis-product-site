@@ -6,7 +6,7 @@
 > the identity and payment rails and consumes them; it certifies the one thing they can't —
 > whether the action was defensible. The atomic product is the Decision Asset. Market Memory —
 > the resolved-outcome calibration ledger — is the moat. Every endpoint is served over both MCP and REST.
-> Phronesis issues no calibration grade today. A grade will require at least thirty scored records, pooled across series; until then the scorecard shows the resolved and scored counts and each record's score. Pre-revenue.
+> Phronesis issues no calibration grade today. A grade will require at least thirty scored records under any proper scoring rule, with calibration stated per rule family. Until then the scorecard shows the resolved and scored counts and each record's score. Pre-revenue.
 
 Phronesis is built for AI agents as much as humans. The transports carry semantic parity: an MCP server
 and a REST API, both passing through the same deny-by-default action gate. Agents discover,

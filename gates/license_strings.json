@@ -308,12 +308,12 @@
     },
     {
       "id": "S.13",
-      "what": "S.13 v2, the calibration sentence as re-signed in 785:34 (Q-784.10); it replaces every 'Two records have resolved / ten resolutions' line (COO 798 §3.2(a))",
-      "source": "00_Operating_Model/CCO_DISPATCH_785_MONDAY_RELEASED_TWO_SITE_STRINGS_SIGNED_WAVE1_IS_CORRESPONDENCE_F2V3_OF_RECORD_OWNER_PASTES_B_GZIP_PRIMARY_IP_CAP_OPTION1_DA_NOT_RECORD_20261101.md",
-      "line": 34,
+      "what": "S.13 v2, the calibration sentence as re-signed in 813:20 (§2.3, one clause tightened; it replaced 785:34's text); it replaces every 'Two records have resolved / ten resolutions' line (COO 798 §3.2(a))",
+      "source": "00_Operating_Model/CCO_DISPATCH_813_812_HANDBACK_7_RULED_FOURTEEN_SIGNED_CONVENTION_E_SCORER_620_ACCEPTED_TWO_METRIC_IDS_BRIER_FLIPS_S13_V2_BYTES_SIGNED_OPENAPI_NOTE_SIGNED_597_REBASE_THEN_STRINGS_20261107.md",
+      "line": 20,
       "extract": {
         "kind": "quoted-after",
-        "anchor": "**Q-784.10 — S.13 re-signed, with \"scored\" and without promising a grade that no code issues:** ",
+        "anchor": "**(S.13 v2) The bytes, SIGNED — one clause tightened** (the semicolon fragment becomes a clause): ",
         "open": "*\"",
         "close": "\"*"
       },
@@ -322,9 +322,9 @@
         "site/llms.txt: the summary block's calibration line, before \"Pre-revenue.\"",
         "site/.well-known/agentic-commerce.json service.description: after the Decision Asset's ten-field list"
       ],
-      "text": "Phronesis issues no calibration grade today. A grade will require at least thirty scored records, pooled across series; until then the scorecard shows the resolved and scored counts and each record's score.",
-      "sha256": "5072399bbe01cf8f4976ad72a0be108762b59a45fa4f4e08945884d47e5e0962",
-      "line_sha256": "68a645701982537cacbc4bd342c956d8e3b82c26b92df4f3db9c699e5bb27914"
+      "text": "Phronesis issues no calibration grade today. A grade will require at least thirty scored records under any proper scoring rule, with calibration stated per rule family. Until then the scorecard shows the resolved and scored counts and each record's score.",
+      "sha256": "b5bc85302336e7926f07a0a392e7a97f28a0b91b15680f4de423f677634ef50f",
+      "line_sha256": "1fcf5e61613a2e9c4bff799412f6bb425e2469b302ecee7b5186d9002ff78aa3"
     },
     {
       "id": "803.D9.calibration_grade",
