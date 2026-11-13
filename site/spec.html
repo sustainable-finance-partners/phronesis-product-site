@@ -71,15 +71,13 @@
 <article class="legal-content">
 
 <h2>Quick start</h2>
-<p>Three minutes from zero to your first minted forecast (assuming you've obtained a JWT from your principal):</p>
+<p>The public record is read with no credential:</p>
 
-<pre><code>curl -X POST https://api.phronesisintel.com/v1/decision/forecast \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $PHRONESIS_JWT" \
-  -H "Idempotency-Key: $(uuidgen)" \
-  -d @request.json   # structured-forecast body per the request schema in the canonical OpenAPI spec</code></pre>
+<pre><code>curl -s https://api.phronesisintel.com/v1/catalog
+curl -s https://api.phronesisintel.com/.well-known/scorecard.json
+curl -s https://api.phronesisintel.com/audit/&lt;decision-asset-id&gt;</code></pre>
 
-<p>The response includes the canonical FC-ID, the canonical-quantile estimates, the issue timestamp, and the cost-attestation in dollars-and-cents. Every value persisted to the ledger; every value visible on the public scorecard.</p>
+<p>The forecast route, <code>POST /v1/decision/forecast</code>, is listed under Endpoints. Closed to outside callers.</p>
 
 <h2>Endpoints</h2>
 
@@ -87,7 +85,7 @@
   <div class="endpoint">
     <span class="endpoint-method post">POST</span>
     <span class="endpoint-path">/v1/decision/forecast</span>
-    <span class="endpoint-desc">Emit a canonical Decision-API forecast output. Idempotency-Key header required. JWT-gated.</span>
+    <span class="endpoint-desc">Emit a canonical Decision-API forecast output. Idempotency-Key header required. Closed to outside callers.</span>
   </div>
   <div class="endpoint">
     <span class="endpoint-method get">GET</span>
@@ -121,20 +119,7 @@
   <li><strong>Store hashes and references</strong>, never reusable bearer material.</li>
   <li><strong>The receipt states</strong> what was authenticated, what authority was presented, which policy version ran, and what boundary resulted.</li>
 </ol>
-<p><strong>Claim state:</strong> step 1 is live at the gate today. Mandate verification-and-binding at the gate (steps 2 onward for AP2 material) is <strong>FORWARD-STATE</strong> — mandate material is consumed as evidence input today, not accepted as authentication. The example below documents the forward-state wire shape and is not yet accepted:</p>
-
-<pre><code>POST /v1/decision/forecast HTTP/1.1  (FORWARD-STATE example — not accepted today)
-Host: api.phronesisintel.com
-Content-Type: application/json
-Idempotency-Key: 01HXYZA1B2C3D4E5F6G7H8J9K0
-Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
-
-{
-  "vertical": "V1",
-  "archetype": "E1",
-  "subject": "ERCOT_summer_capacity_factor_2027",
-  "horizon": "2027-Q3"
-}</code></pre>
+<p><strong>Claim state:</strong> step 1 is live at the gate today. Mandate verification-and-binding at the gate (steps 2 onward for AP2 material) is <strong>FORWARD-STATE</strong> — mandate material is consumed as evidence input today, not accepted as authentication.</p>
 
 <h3>Agentic commerce (agents acting for humans) — FORWARD-STATE</h3>
 <p>The Stripe Agentic Commerce Suite flow (Shared Payment Token bound to an AP2 Cart Mandate at issuance) is a documented forward-state. Per-request settlement is in build. When it is live, agents will pay per request through Stripe — cards via Shared Payment Tokens, or USDC over x402 or Stripe's Machine Payments Protocol. Until then, per-request purchases are not available.</p>
@@ -161,7 +146,7 @@ Authorization: AP2-Mandate &lt;base64-encoded-VC-bundle&gt;
 <pre><code>// MCP tools (from tools/list)
 {
   "tools": [
-    { "name": "forecast_submit",        "description": "Submit a structured forecast for canonical persistence" },
+    { "name": "forecast_submit",        "description": "Closed to outside callers. Submit a structured forecast for canonical persistence" },
     { "name": "bench_query",            "description": "Query the Decision Quality Bench" },
     { "name": "score_action_boundary",  "description": "Assess an action against the boundary matrix" },
     { "name": "health_check",           "description": "Service health" }

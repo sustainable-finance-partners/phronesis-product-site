@@ -40,16 +40,9 @@ Add the Phronesis MCP server to your agent's MCP configuration:
 https://api.phronesisintel.com/mcp
 ```
 
-## 4. Request a forecast (JWT-gated)
+## 4. Decision forecast — Closed to outside callers.
 
 `POST /v1/decision/forecast` returns a canonical decision-forecast: point forecast + p10/p50/p90 uncertainty band + assumptions + alternatives + sensitivity + counterfactuals + sources + cost attestation + an `audit_trail_id`.
-
-```
-curl -s -X POST https://api.phronesisintel.com/v1/decision/forecast \
-  -H "Authorization: Bearer $PHRONESIS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{ "point_forecast": {...}, "uncertainty_band": {...}, "assumptions": [...] }'
-```
 
 A JWT is issued at onboarding — see `/v1/onboarding/disclosure`.
 
@@ -66,4 +59,4 @@ The Trust Receipt returns the cost attestation + audit trail for a forecast. The
 
 Paste this to your agent after installing the Skills:
 
-> Use the Phronesis Skills to forecast in the energy-transition verticals. Discover the surface via `/v1/catalog`, request structured forecasts via `POST /v1/decision/forecast`, and always verify a forecast via its Trust Receipt and the calibration leaderboard before acting on it. Agents trust evidence, not claims.
+> Use the Phronesis Skills to forecast in the energy-transition verticals. Discover the surface via `/v1/catalog`, and always verify a forecast via its Trust Receipt and the calibration leaderboard before acting on it. Agents trust evidence, not claims.
