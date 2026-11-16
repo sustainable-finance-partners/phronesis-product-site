@@ -959,7 +959,10 @@ class Ap2ClaimStateTests(unittest.TestCase):
         spec = read_site("spec.html")
         self.assertEqual(spec.count(f"AP2 mandate: {text.AP2_CLAIM_STATE}.</div>"), 1)
         self.assertNotIn("delegated-authority evidence bound to the authenticated caller", spec)
-        self.assertEqual(spec.count("FORWARD-STATE example"), 1)
+        # LA-17 (W-A3 §7): the FORWARD-STATE request example, a text that told a reader
+        # to call the closed forecast route, left the page; the Auth line's claim-state
+        # and the Agentic-commerce heading stand.
+        self.assertNotIn("FORWARD-STATE example", spec)
         self.assertEqual(spec.count("is <strong>FORWARD-STATE</strong>"), 1)
 
 

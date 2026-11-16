@@ -32,7 +32,7 @@ V#13 General — any consequential decision, in any domain: the caller brings th
 - [MCP server](https://api.phronesisintel.com/mcp): Model Context Protocol transport with semantic parity to REST.
 - [Catalog](https://api.phronesisintel.com/v1/catalog): the vertical inventory + per-vertical archetypes (public).
 - [Pricing](https://api.phronesisintel.com/v1/pricing): tier surface (public).
-- [Decision API](https://api.phronesisintel.com/v1/decision/forecast): POST a proposed action + context; receive a Decision Asset — forecast distribution, evidence graph, evidence-maturity, an action boundary, and a content-addressed Decision Receipt. JWT-gated.
+- [Decision API](https://api.phronesisintel.com/v1/decision/forecast): POST a proposed action + context; receive a Decision Asset — forecast distribution, evidence graph, evidence-maturity, an action boundary, and a content-addressed Decision Receipt. Closed to outside callers.
 
 ## Verification
 - [Decision Quality Bench / Scorecard](https://api.phronesisintel.com/scorecard.json): measurable today — identifiability (P-ID), immutability (P-IMM), evidence-maturity (P-EVD), baseline-presence (P-BASE). Calibration (P-CAL), action-boundary correctness (P-ACT), baseline-beating (P-BBL) activate as outcomes resolve. Where a number isn't earned, the Bench shows a blank it can defend — not a manufactured score.
