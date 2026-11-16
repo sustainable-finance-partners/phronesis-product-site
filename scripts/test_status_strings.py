@@ -13,7 +13,7 @@ vertical badges are register-derived.
   badge, the singular "1 record", the re-signed P6 piece and the P6 card's description.
 * The home page renders them: the register's label (``Live``), the primitive-status
   sentence, the thirteen badges in the register-derived forms, and one JSON-LD ``Offer``
-  (the API, free reads; no mint offer while the price list shows every mint in build).
+  (the API, free reads; no paid offer while the agent schedule shows every row planned).
 * ``scripts/refresh_count.py`` derives the badges offline from a fixture payload: the
   rows the register count is made over, by subject, refusing when they do not number
   ``forecast_count`` or the markup is not found once each.
@@ -66,7 +66,7 @@ ORIGINAL_GLOB_810 = "CCO_DISPATCH_810_*.md"
 API_TREE_ENV = "PHRONESIS_API_TREE"
 API_REV_ENV = "PHRONESIS_API_REV"
 #: The visible hero line the JSON-LD Offer's description is taken from (no new copy).
-HERO_READ_LINE = "Read the record free. Minting from $1"
+HERO_READ_LINE = "Read the record free. Decision Room on inquiry."
 
 
 def read_site(rel: str) -> str:
@@ -443,35 +443,36 @@ class HomepageTests(unittest.TestCase):
         self.assertEqual(offer["url"], "https://api.phronesisintel.com")
         pricing = json.loads(read_site("pricing.json"))
         self.assertEqual(offer["priceCurrency"], pricing["currency"])
-        free_reads = [
-            row
-            for row in pricing["agent_schedule"]
-            if row["request"].startswith("read_") and row.get("availability") == "live"
+        # The free reads are the one live tier (Discovery), at the Offer's price.
+        live_tiers = [
+            tier for tier in pricing["tiers"] if tier.get("claim_state") == "live"
         ]
+        self.assertEqual([tier["id"] for tier in live_tiers], ["discovery"])
         self.assertEqual(
-            [str(row["price_usd"]) for row in free_reads], [offer["price"]]
+            [str(tier["price_usd_month"]) for tier in live_tiers], [offer["price"]]
         )
         # The description is the page's own hero line, not new copy.
         self.assertTrue(HERO_READ_LINE.startswith(offer["description"]))
         self.assertIn(HERO_READ_LINE, self.home)
+        self.assertNotIn("Minting from", self.home)  # the hero line's cut sentence
         self.assertNotIn("LIVE.", json.dumps(blocks))
 
-    def test_no_mint_offer_while_the_price_list_shows_minting_in_build(self) -> None:
+    def test_no_paid_offer_while_the_agent_schedule_shows_every_row_planned(self) -> None:
         pricing = json.loads(read_site("pricing.json"))
-        mints = [
-            r for r in pricing["agent_schedule"] if r["request"].startswith("mint_")
-        ]
-        self.assertTrue(mints)
-        live = [r["request"] for r in mints if r.get("availability") == "live"]
-        # 809 §7: "minting where the price list shows it live". If this fails, a mint
-        # row went live: the API Offer gains it (and this test its expectation).
-        self.assertEqual(live, [])
+        rows = pricing["agent_schedule"]
+        self.assertTrue(rows)
+        # No row of the agent schedule is live and none is a mint. If this fails, a row
+        # went live: the API Offer gains it (and this test its expectation).
+        self.assertEqual([r["availability"] for r in rows], ["planned"] * len(rows))
+        mints = [r["request"] for r in rows if r["request"].startswith("mint_")]
+        self.assertEqual(mints, [])
         for tier in pricing["tiers"]:
-            avail = tier.get("includes", {}).get(
-                "mints_standard_per_month_availability"
-            )
             with self.subTest(tier=tier["id"]):
-                self.assertIn(avail, (None, "in_build"))
+                self.assertNotIn(
+                    "mints_standard_per_month_availability", tier.get("includes", {})
+                )
+                if tier.get("price_usd_month", 0) > 0:
+                    self.assertEqual(tier.get("claim_state"), "planned")
 
 
 # ── the refresh, offline ──────────────────────────────────────────────────────
