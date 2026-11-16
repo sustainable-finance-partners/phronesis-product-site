@@ -1,6 +1,6 @@
 {
   "surface": "pricing",
-  "updated": "2026-10-10",
+  "updated": "2026-11-16",
   "operator": {
     "legal_name": "Sustainable Finance Partners, LLC",
     "trade_name": "Phronesis",
@@ -13,30 +13,22 @@
       "id": "discovery",
       "name": "Discovery",
       "price_usd_month": 0,
-      "includes": {
-        "api_reads_per_month": 100
-      },
+      "includes": {},
       "claim_state": "live"
     },
     {
       "id": "record",
       "name": "Record",
       "price_usd_month": 49,
-      "includes": {
-        "mints_standard_per_month": 5,
-        "mints_standard_per_month_availability": "in_build"
-      },
-      "claim_state": "live"
+      "includes": {},
+      "claim_state": "planned"
     },
     {
       "id": "practice",
       "name": "Practice",
       "price_usd_month": 499,
-      "includes": {
-        "mints_standard_per_month": 50,
-        "mints_standard_per_month_availability": "in_build"
-      },
-      "claim_state": "live"
+      "includes": {},
+      "claim_state": "planned"
     },
     {
       "id": "decision_room",
@@ -45,61 +37,32 @@
     },
     {
       "id": "outcome_conditional",
-      "claim_state": "PLANNED"
+      "claim_state": "planned"
     }
   ],
   "agent_schedule": [
     {
-      "request": "read_public_asset_digest_or_index_snapshot",
-      "scheme": "exact",
-      "price_usd": 0,
-      "availability": "live"
-    },
-    {
-      "request": "read_party_scoped_or_unresolved_asset",
+      "request": "signed_receipt_for_record",
       "scheme": "exact",
       "price_usd": 0.05,
-      "availability": "in_build"
+      "availability": "planned"
     },
     {
-      "request": "mint_standard",
+      "request": "signed_score_for_resolved_record",
       "scheme": "exact",
-      "price_usd": 1.0,
-      "resolution_fee_usd": 0.5,
-      "availability": "in_build"
+      "price_usd": 0.05,
+      "availability": "planned"
     },
     {
-      "request": "mint_deep",
-      "scheme": "upto",
-      "price_usd": 25.0,
-      "resolution_fee_usd": 5.0,
-      "availability": "in_build"
-    },
-    {
-      "request": "mint_strategic",
-      "scheme": "upto",
-      "price_usd": 100.0,
-      "resolution_fee_usd": 50.0,
-      "availability": "in_build"
-    },
-    {
-      "request": "passport_read_digest",
+      "request": "forecast_on_record",
       "scheme": "exact",
-      "price_usd": 0.1,
-      "claim_state": "when the Passport is live",
-      "availability": "in_build"
-    },
-    {
-      "request": "passport_read_full",
-      "scheme": "exact",
-      "price_usd": 1.0,
-      "claim_state": "when the Passport is live",
-      "availability": "in_build"
+      "price_usd": 2.0,
+      "availability": "planned"
     }
   ],
   "agent_payment_rails": {
     "humans_stripe_checkout": "live",
-    "agents_stripe_agent_checkout": "in_build",
+    "agents_stripe_agent_checkout": "planned",
     "agents_x402_via_stripe": "in_build",
     "wallet_abstraction": "not_offered"
   },

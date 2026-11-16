@@ -52,8 +52,8 @@
         "description": "Direct human subscription with Bearer JWT auth",
         "subscription_tiers": [
           {"id": "tier-1-discovery", "name": "Discovery", "claim_state": "live"},
-          {"id": "tier-2-inquiry", "name": "Record", "claim_state": "live"},
-          {"id": "tier-3-practice", "name": "Practice", "claim_state": "live"},
+          {"id": "tier-2-inquiry", "name": "Record", "claim_state": "planned"},
+          {"id": "tier-3-practice", "name": "Practice", "claim_state": "planned"},
           {"id": "decision_room", "name": "Decision Room", "price": "on_inquiry", "claim_state": "live"}
         ]
       }
