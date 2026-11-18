@@ -265,7 +265,6 @@ jobs:
         run: |
           set -e
           # The Trust Center surface lives at the Phronesis production deployment
-          # (https://phronesis-jrstinehour.replit.app/trust). The static sites must
           # link to it from at least one location (footer typical).
           if ! grep -rn -l "trust" --include="*.html" . | xargs -I {} grep -l "trust" {} > /dev/null 2>&1; then
             echo "FAIL: no Trust Center reference present in any HTML file"
