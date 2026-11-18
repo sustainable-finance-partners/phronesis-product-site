@@ -41,10 +41,10 @@
         "authorization_budget_seconds": 5
       },
       "path_b_agent_for_human": {
-        "description": "Stripe Agentic Commerce Suite checkout flow with SPT bound to AP2 Cart Mandate at issuance (in build)",
+        "description": "Stripe Agentic Commerce Suite checkout flow with SPT bound to AP2 Cart Mandate at issuance (planned)",
         "spt_required": true,
         "ap2_cart_mandate_at_spt_issuance": true,
-        "availability": "in_build"
+        "availability": "planned"
       }
     },
     "human_paths": {
