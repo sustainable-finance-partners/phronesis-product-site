@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pricing — Phronesis</title>
-<meta name="description" content="Reading the record is free. Minting a Decision Asset is priced from $1 and settles when it resolves — the paid mint path is in build. The Decision Room is priced per engagement.">
+<meta name="description" content="Reading the record is free. An account's own forecast on the record: planned. Decision Room on inquiry.">
 <link rel="canonical" href="https://phronesisintel.com/pricing">
 <link rel="alternate" type="application/json" href="https://api.phronesisintel.com/.well-known/pricing.json" title="Phronesis pricing (machine-readable)">
 <link rel="stylesheet" href="styles.css">
@@ -151,7 +151,7 @@
   <div class="container-narrow">
     <span class="eyebrow">Pricing</span>
     <h1>Price the decision, not the call.</h1>
-    <p class="lead">Reading the record is free. Minting a Decision Asset is priced from $1 and settles when it resolves — the paid mint path is in build. The Decision Room is priced per engagement. Every number below is also published machine-readably at <a href="https://api.phronesisintel.com/.well-known/pricing.json"><code>/.well-known/pricing.json</code></a>.</p>
+    <p class="lead">Reading the record is free. An account's own forecast on the record: planned. Decision Room on inquiry. Every number below is also published machine-readably at <a href="https://api.phronesisintel.com/.well-known/pricing.json"><code>/.well-known/pricing.json</code></a>.</p>
   </div>
 </section>
 
@@ -159,31 +159,18 @@
   <div class="container">
     <div class="pricing-grid">
       <div class="tier-card">
-        <h3 class="tier-name">Discovery</h3>
-        <p class="tier-price">$0</p>
-        <p class="tier-target">Anyone.</p>
-        <p class="tier-body">Read every public Decision Asset, the Bench and the scorecard. No mints.</p>
+        <p class="tier-body">Discovery — $0. Every public record and its audit page, free to read.</p>
         <form method="post" action="https://api.phronesisintel.com/api/v1/checkout" class="cta-form"><input type="hidden" name="tier" value="tier-1-discovery"><button type="submit" class="btn btn-secondary">Start free</button></form>
       </div>
 
       <div class="tier-card">
-        <h3 class="tier-name">Record</h3>
-        <p class="tier-price">$49 <span class="period">/ month</span></p>
-        <p class="tier-target">Researchers, analysts, small agent platforms.</p>
-        <p class="tier-body">API + MCP access to the full record (unlimited reads), resolution alerts (when live), index snapshots with digests (when the record index is live), 5 Standard mints a month when the mint path is live.</p>
-        <form method="post" action="https://api.phronesisintel.com/api/v1/checkout" class="cta-form"><input type="hidden" name="tier" value="tier-2-inquiry"><button type="submit" class="btn btn-primary">Subscribe</button></form>
-        <p class="tier-note">Already subscribed? Write to <!--email_off--><a href="mailto:support@phronesisintel.com">support@phronesisintel.com</a><!--/email_off--> and we'll switch your plan — the change is prorated.</p>
-        <p class="tier-note">By subscribing, you agree to the <a href="https://sustainablefinancepartner.com/terms-of-service">Terms of Service</a> and the <a href="https://sustainablefinancepartner.com/refund-policy">Refund Policy</a>.</p>
+        <p class="tier-body">Record — $49 a month. Planned: an account's own forecasts on the record — time-stamped before the outcome, resolved by a frozen rule, scored beside reference forecasts. Until it is live, a subscription adds nothing to Discovery.</p>
+        <span class="btn btn-secondary" aria-disabled="true">Planned</span>
       </div>
 
       <div class="tier-card">
-        <h3 class="tier-name">Practice</h3>
-        <p class="tier-price">$499 <span class="period">/ month</span></p>
-        <p class="tier-target">Advisory firms, allocators, agent platforms in production.</p>
-        <p class="tier-body">Everything in Record plus all archetypes and a 99% uptime target. 50 Standard mints a month, with Deep and Strategic mints metered at the agent schedule, when the mint path is live. Passport reads included when the Passport is live.</p>
-        <form method="post" action="https://api.phronesisintel.com/api/v1/checkout" class="cta-form"><input type="hidden" name="tier" value="tier-3-practice"><button type="submit" class="btn btn-primary">Subscribe</button></form>
-        <p class="tier-note">Already subscribed? Write to <!--email_off--><a href="mailto:support@phronesisintel.com">support@phronesisintel.com</a><!--/email_off--> and we'll switch your plan — the change is prorated.</p>
-        <p class="tier-note">By subscribing, you agree to the <a href="https://sustainablefinancepartner.com/terms-of-service">Terms of Service</a> and the <a href="https://sustainablefinancepartner.com/refund-policy">Refund Policy</a>.</p>
+        <p class="tier-body">Practice — $499 a month. Planned: Record at a higher volume, for a team's methods. Until it is live, a subscription adds nothing to Discovery.</p>
+        <span class="btn btn-secondary" aria-disabled="true">Planned</span>
       </div>
 
       <div class="tier-card">
@@ -212,15 +199,12 @@
           <tr><th>Request</th><th>Price</th><th>Status</th></tr>
         </thead>
         <tbody>
-          <tr><td>Reading a public Decision Asset, its digest, or an index snapshot</td><td>free</td><td>live</td></tr>
-          <tr><td>Reading a party-scoped or unresolved asset</td><td>$0.05</td><td>in build</td></tr>
-          <tr><td>Minting a Standard Decision Asset (scheduled series, statistical method, baseline fixed at mint)</td><td>$1.00, plus $0.50 when it resolves</td><td>in build</td></tr>
-          <tr><td>Minting a Deep asset (model-assisted; inputs and payload archived)</td><td>up to $25, plus $5 at resolution</td><td>in build</td></tr>
-          <tr><td>Minting a Strategic asset</td><td>up to $100, plus $50 at resolution</td><td>in build</td></tr>
-          <tr><td>Passport read (digest / full)</td><td>$0.10 / $1.00 — when the Passport is live</td><td>when the Passport is live</td></tr>
+          <tr><td>a signed receipt for a record</td><td>$0.05</td><td>planned</td></tr>
+          <tr><td>a signed score for a resolved record</td><td>$0.05</td><td>planned</td></tr>
+          <tr><td>a forecast on the record</td><td>$2.00</td><td>planned</td></tr>
         </tbody>
       </table>
-      <p>Rows marked <em>in build</em> are priced now and purchasable when their path is live.</p>
+      <p>Rows marked planned or in build cannot be bought.</p>
     </div>
   </div>
 </section>
@@ -228,10 +212,7 @@
 <section>
   <div class="container-narrow">
     <span class="eyebrow">Rails</span>
-    <p class="lead">Humans pay by card through Stripe. Agents acting for a human will pay through Stripe's agent checkout when per-request purchases are live. Agent-native payment over x402 (USDC on Base) is <strong>in build; not yet accepted</strong> — and every priced request will offer it alongside Stripe when it is live. Phronesis holds no customer keys; receipts settle to an operator account.</p>
-
-    <span class="eyebrow" style="margin-top: var(--space-8); display: block;">Re-reads and retries</span>
-    <p class="lead"><strong>When per-request purchases are live (in build):</strong> A purchase buys a <em>version</em> of a Decision Asset, identified by its digest. Re-reading what you bought is free until the asset is superseded, and the record tells you why it was. If your agent retries a purchase with the same <code>purchase_id</code> within 72 hours, nothing is charged twice.</p>
+    <p class="lead">Humans pay by card through Stripe. Agent-native payment over x402 (USDC on Base) is <strong>in build; not yet accepted</strong> — and every priced request will offer it alongside Stripe when it is live. Phronesis holds no customer keys; receipts settle to an operator account.</p>
   </div>
 </section>
 
@@ -240,15 +221,11 @@
     <span class="eyebrow">Frequently asked questions</span>
     <div class="faq-item">
       <h4>What exactly am I paying for?</h4>
-      <p>A Decision Asset — a forecast with its evidence, a frozen resolution rule, and a public score when reality resolves. When the mint path is live (in build), you pay to mint it and a smaller amount when it resolves; reading is free or cents.</p>
+      <p>Reading the record is free. The paid plans are not live: until they are, a subscription adds nothing to Discovery. The Decision Room is priced per engagement.</p>
     </div>
     <div class="faq-item">
       <h4>Can I switch tiers mid-month?</h4>
       <p>Yes — write to support and we'll switch you; the change is prorated.</p>
-    </div>
-    <div class="faq-item">
-      <h4>Do you offer annual pricing?</h4>
-      <p>Not yet.</p>
     </div>
     <div class="faq-item">
       <h4>What payment methods?</h4>

@@ -68,11 +68,6 @@
       "source": "Copy Set v1 W-A2 §2 C10 (made true in code §7)"
     },
     {
-      "file": "site/pricing.html",
-      "text": "Agents acting for a human will pay through Stripe's agent checkout when per-request purchases are live.",
-      "source": "Copy Set v1 W-A2 §2 C11"
-    },
-    {
       "file": "site/for-agents.html",
       "text": "Agents acting for a human will pay through Stripe's agent checkout when per-request purchases are live.",
       "source": "Copy Set v1 W-A2 §2 C11"
