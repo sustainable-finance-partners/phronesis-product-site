@@ -63,7 +63,7 @@
   "agent_payment_rails": {
     "humans_stripe_checkout": "live",
     "agents_stripe_agent_checkout": "planned",
-    "agents_x402_via_stripe": "in_build",
+    "agents_x402_via_stripe": "planned",
     "wallet_abstraction": "not_offered"
   },
   "honest_claim_states": true,
